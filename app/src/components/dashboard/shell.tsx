@@ -17,6 +17,7 @@ import {
   X,
   ChevronDown,
   ArrowUpRight,
+  Wallet,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -34,6 +35,7 @@ const homeNav = [
 ];
 
 const financeNav = [
+  { href: "/dashboard/finances", label: "Overview", icon: Wallet },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
 ];
