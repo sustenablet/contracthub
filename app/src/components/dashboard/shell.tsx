@@ -200,6 +200,7 @@ export function DashboardShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notifCount, setNotifCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const supabase = createClient();
@@ -227,6 +228,34 @@ export function DashboardShell({
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  // Fetch unread-ish activity count (recent items from last 24h)
+  useEffect(() => {
+    async function fetchCount() {
+      const since = new Date();
+      since.setHours(since.getHours() - 24);
+      const isoSince = since.toISOString();
+
+      const [jobsRes, invRes] = await Promise.allSettled([
+        supabase
+          .from("jobs")
+          .select("id", { count: "exact", head: true })
+          .gte("updated_at", isoSince),
+        supabase
+          .from("invoices")
+          .select("id", { count: "exact", head: true })
+          .gte("updated_at", isoSince),
+      ]);
+
+      let total = 0;
+      if (jobsRes.status === "fulfilled" && jobsRes.value.count)
+        total += jobsRes.value.count;
+      if (invRes.status === "fulfilled" && invRes.value.count)
+        total += invRes.value.count;
+      setNotifCount(total);
+    }
+    fetchCount();
+  }, [supabase, pathname]);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -302,9 +331,14 @@ export function DashboardShell({
             {/* Bell */}
             <Link
               href="/dashboard/notifications"
-              className="p-2 rounded-xl hover:bg-gray-100 text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
+              className="relative p-2 rounded-xl hover:bg-gray-100 text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
             >
               <Bell className="h-4 w-4" />
+              {notifCount > 0 && (
+                <span className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-teal-500 px-1 text-[9px] font-bold text-white shadow-sm">
+                  {notifCount > 99 ? "99+" : notifCount}
+                </span>
+              )}
             </Link>
 
             {/* User dropdown */}
