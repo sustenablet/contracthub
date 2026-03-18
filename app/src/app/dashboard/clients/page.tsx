@@ -63,6 +63,8 @@ export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "archived">("all");
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Form state
   const [firstName, setFirstName] = useState("");
@@ -171,12 +173,6 @@ export default function ClientsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Build notes with preferred service prefix
-      const noteParts: string[] = [];
-      if (preferredService) noteParts.push(`Preferred service: ${preferredService}`);
-      if (notes.trim()) noteParts.push(notes.trim());
-      const combinedNotes = noteParts.length > 0 ? noteParts.join("\n") : null;
-
       // Insert client
       const { data: newClient, error: clientError } = await supabase
         .from("clients")
@@ -186,7 +182,8 @@ export default function ClientsPage() {
           last_name: lastName.trim(),
           email: email.trim() || null,
           phone: phone.trim() || null,
-          notes: combinedNotes,
+          preferred_service: preferredService || null,
+          notes: notes.trim() || null,
           status: "active",
         })
         .select()
@@ -221,6 +218,7 @@ export default function ClientsPage() {
   };
 
   const filtered = clients.filter((c) => {
+    if (statusFilter !== "all" && c.status !== statusFilter) return false;
     const q = search.toLowerCase();
     const fullName = `${c.first_name} ${c.last_name}`.toLowerCase();
     return (
@@ -289,13 +287,42 @@ export default function ClientsPage() {
               style={{ fontFamily: "'Syne', sans-serif" }}
             />
           </div>
-          <button
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            Filter
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+                statusFilter !== "all"
+                  ? "text-[#1A2332] bg-[#1A2332]/[0.08] border border-[#1A2332]/20"
+                  : "text-[#1A2332]/55 bg-gray-50 border border-gray-200 hover:bg-gray-100"
+              }`}
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Filter
+              {statusFilter !== "all" && (
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1A2332]" />
+              )}
+            </button>
+            {filterOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                  {(["all", "active", "archived"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => { setStatusFilter(opt); setFilterOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors ${
+                        statusFilter === opt ? "text-[#1A2332] bg-[#1A2332]/[0.04]" : "text-[#1A2332]/60 hover:bg-gray-50"
+                      }`}
+                      style={{ fontFamily: "'Syne', sans-serif" }}
+                    >
+                      {opt === "all" ? "All Clients" : opt.charAt(0).toUpperCase() + opt.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {isEmpty ? (

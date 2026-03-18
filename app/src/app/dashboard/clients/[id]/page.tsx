@@ -14,6 +14,7 @@ import {
   Edit2,
   Archive,
   Plus,
+  Trash2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -22,11 +23,13 @@ import {
   FormField,
   FormInput,
   FormTextarea,
+  FormSelect,
   FormActions,
   PrimaryButton,
   SecondaryButton,
 } from "@/components/dashboard/slide-panel";
 import type { Client, Address, Job, Invoice } from "@/lib/types";
+import { SERVICE_TYPES } from "@/lib/types";
 import { toast } from "sonner";
 
 const JOB_STATUS_CONFIG: Record<string, { label: string; className: string }> = {
@@ -91,6 +94,7 @@ export default function ClientDetailPage() {
   const [editState, setEditState] = useState("");
   const [editZip, setEditZip] = useState("");
   const [editNotes, setEditNotes] = useState("");
+  const [editPreferredService, setEditPreferredService] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -154,6 +158,7 @@ export default function ClientDetailPage() {
     setEditLastName(client.last_name);
     setEditEmail(client.email || "");
     setEditPhone(client.phone || "");
+    setEditPreferredService(client.preferred_service || "");
     const addr = addresses[0];
     setEditStreet(addr?.street || "");
     setEditCity(addr?.city || "");
@@ -178,6 +183,7 @@ export default function ClientDetailPage() {
           last_name: editLastName.trim(),
           email: editEmail.trim() || null,
           phone: editPhone.trim() || null,
+          preferred_service: editPreferredService || null,
           notes: editNotes.trim() || null,
           updated_at: new Date().toISOString(),
         })
@@ -248,6 +254,30 @@ export default function ClientDetailPage() {
     } catch (err) {
       console.error("Error archiving client:", err);
       toast.error(`Failed to ${action} client`);
+    }
+  };
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+
+  const handleDelete = async () => {
+    if (!deleteConfirm) {
+      setDeleteConfirm(true);
+      // Reset after 3 seconds if not confirmed
+      setTimeout(() => setDeleteConfirm(false), 3000);
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from("clients")
+        .delete()
+        .eq("id", clientId);
+      if (error) throw error;
+      toast.success("Client deleted");
+      router.push("/dashboard/clients");
+    } catch (err) {
+      console.error("Error deleting client:", err);
+      toast.error("Failed to delete client");
+      setDeleteConfirm(false);
     }
   };
 
@@ -380,6 +410,18 @@ export default function ClientDetailPage() {
               {client.status === "active" ? "Archive" : "Reactivate"}
             </button>
             <button
+              onClick={handleDelete}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+                deleteConfirm
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "text-red-400 bg-white border border-gray-200 hover:bg-red-50 hover:text-red-500"
+              }`}
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {deleteConfirm ? "Confirm Delete?" : "Delete"}
+            </button>
+            <button
               onClick={() => router.push("/dashboard/schedule")}
               className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1A2332] hover:bg-[#1A2332]/90 rounded-xl shadow-sm transition-colors"
               style={{ fontFamily: "'Syne', sans-serif" }}
@@ -413,6 +455,27 @@ export default function ClientDetailPage() {
               {formatAddress(primaryAddress)}
             </p>
           </div>
+
+          {/* Preferred Service */}
+          {client.preferred_service && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Briefcase className="h-4 w-4 text-gray-300" />
+                <h3
+                  className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
+                  style={{ fontFamily: "'Syne', sans-serif" }}
+                >
+                  Preferred Service
+                </h3>
+              </div>
+              <p
+                className="text-sm text-[#1A2332]/70 leading-relaxed"
+                style={{ fontFamily: "'Syne', sans-serif" }}
+              >
+                {client.preferred_service}
+              </p>
+            </div>
+          )}
 
           {/* Notes */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
@@ -740,6 +803,22 @@ export default function ClientDetailPage() {
                 value={editPhone}
                 onChange={(e) => setEditPhone(e.target.value)}
               />
+            </FormField>
+          </FormSection>
+
+          <FormSection label="Service Preference">
+            <FormField label="Preferred Service">
+              <FormSelect
+                value={editPreferredService}
+                onChange={(e) => setEditPreferredService(e.target.value)}
+              >
+                <option value="">Select a service type...</option>
+                {SERVICE_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </FormSelect>
             </FormField>
           </FormSection>
 

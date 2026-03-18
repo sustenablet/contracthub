@@ -5,6 +5,7 @@ export interface Client {
   last_name: string;
   email: string | null;
   phone: string | null;
+  preferred_service: string | null;
   notes: string | null;
   status: "active" | "archived";
   created_at: string;
@@ -72,10 +73,31 @@ export interface Invoice {
   status: "unpaid" | "paid" | "void";
   due_date: string | null;
   payment_date: string | null;
+  notes: string | null;
   created_at: string;
   updated_at: string;
   clients?: Client;
   jobs?: Job;
+}
+
+export interface RecurringRule {
+  id: string;
+  user_id: string;
+  client_id: string;
+  address_id: string | null;
+  frequency: "weekly" | "biweekly" | "monthly" | "custom";
+  custom_interval_days: number | null;
+  start_date: string;
+  end_date: string | null;
+  service_type: string | null;
+  duration_minutes: number | null;
+  price: number | null;
+  start_time: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  clients?: Client;
+  addresses?: Address;
 }
 
 export const SERVICE_TYPES = [
