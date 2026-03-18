@@ -301,14 +301,14 @@ export default function NotificationsPage() {
                 onClick={() => setActiveTab(tab.value)}
                 className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
                   activeTab === tab.value
-                    ? "bg-teal-50 text-teal-700"
+                    ? "bg-[#1A2332]/[0.06] text-[#1A2332]"
                     : "text-gray-400 hover:text-[#1A2332] hover:bg-gray-50"
                 }`}
                 style={syne}
               >
                 {tab.label}
                 {count > 0 && (
-                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-teal-500 text-white text-[9px] font-bold">
+                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-[#1A2332] text-white text-[9px] font-bold">
                     {count}
                   </span>
                 )}
@@ -320,7 +320,7 @@ export default function NotificationsPage() {
         {/* Loading */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-6 w-6 text-teal-500 animate-spin" />
+            <Loader2 className="h-6 w-6 text-[#1A2332]/30 animate-spin" />
             <p className="text-sm text-gray-400 mt-3" style={syne}>
               Loading activity…
             </p>
@@ -349,7 +349,7 @@ export default function NotificationsPage() {
                 <div
                   key={item.id}
                   className={`flex items-start gap-4 px-5 py-4 hover:bg-gray-50/50 transition-colors cursor-pointer ${
-                    item.unread ? "bg-teal-50/20" : ""
+                    item.unread ? "bg-[#1A2332]/[0.02]" : ""
                   }`}
                   onClick={() => markRead(item.id)}
                 >
@@ -375,7 +375,7 @@ export default function NotificationsPage() {
                           {item.relativeTime}
                         </span>
                         {item.unread && (
-                          <div className="h-2 w-2 rounded-full bg-teal-500 shrink-0" />
+                          <div className="h-2 w-2 rounded-full bg-[#1A2332] shrink-0" />
                         )}
                       </div>
                     </div>

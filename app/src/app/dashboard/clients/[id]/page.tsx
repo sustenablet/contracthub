@@ -285,7 +285,7 @@ export default function ClientDetailPage() {
         </p>
         <button
           onClick={() => router.push("/dashboard/clients")}
-          className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+          className="text-sm text-[#1A2332]/55 hover:text-[#1A2332] font-medium"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           Back to clients
@@ -318,7 +318,7 @@ export default function ClientDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-start gap-5">
           {/* Avatar */}
           <div
-            className="h-16 w-16 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-xl font-bold shrink-0"
+            className="h-16 w-16 rounded-full bg-[#1A2332]/[0.08] text-[#1A2332] flex items-center justify-center text-xl font-bold shrink-0"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             {initials}
@@ -381,7 +381,7 @@ export default function ClientDetailPage() {
             </button>
             <button
               onClick={() => router.push("/dashboard/schedule")}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-teal-500 hover:bg-teal-600 rounded-xl shadow-sm transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1A2332] hover:bg-[#1A2332]/90 rounded-xl shadow-sm transition-colors"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <Plus className="h-3.5 w-3.5" />

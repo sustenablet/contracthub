@@ -304,7 +304,7 @@ export default function EstimatesPage() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           <Plus className="h-4 w-4" />
@@ -323,7 +323,7 @@ export default function EstimatesPage() {
               placeholder="Search estimates..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 w-52 transition-all"
+              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 w-52 transition-all"
               style={{ fontFamily: "'Syne', sans-serif" }}
             />
           </div>
@@ -356,7 +356,7 @@ export default function EstimatesPage() {
             </p>
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <Plus className="h-4 w-4" />
@@ -503,7 +503,7 @@ export default function EstimatesPage() {
                         {est.status === "accepted" && (
                           <button
                             onClick={() => openConvert(est)}
-                            className="flex items-center gap-1 text-xs font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+                            className="flex items-center gap-1 text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors"
                             style={{ fontFamily: "'Syne', sans-serif" }}
                           >
                             Convert to Job
@@ -557,7 +557,7 @@ export default function EstimatesPage() {
                       onChange={(e) =>
                         updateLineItem(idx, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all placeholder:text-gray-300"
+                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     />
                   </div>
@@ -574,7 +574,7 @@ export default function EstimatesPage() {
                           Math.max(1, parseInt(e.target.value) || 1)
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all text-center"
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-center"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     />
                   </div>
@@ -592,7 +592,7 @@ export default function EstimatesPage() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all text-right"
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-right"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     />
                   </div>
@@ -617,7 +617,7 @@ export default function EstimatesPage() {
             <button
               type="button"
               onClick={addLineItem}
-              className="flex items-center gap-1.5 text-xs font-semibold text-teal-600 hover:text-teal-700 transition-colors mt-1"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors mt-1"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <Plus className="h-3.5 w-3.5" />

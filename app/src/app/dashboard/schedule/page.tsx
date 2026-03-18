@@ -470,7 +470,7 @@ export default function SchedulePage() {
         </div>
         <button
           onClick={openNewJobForm}
-          className="flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           <Plus className="h-4 w-4" />
@@ -502,7 +502,7 @@ export default function SchedulePage() {
         </div>
         <button
           onClick={() => setWeekOffset(0)}
-          className="px-3 py-1.5 text-xs font-semibold text-teal-600 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold text-[#1A2332]/70 bg-[#1A2332]/[0.05] hover:bg-[#1A2332]/[0.08] rounded-lg transition-colors"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           Today
@@ -547,7 +547,7 @@ export default function SchedulePage() {
                       <span
                         className={`text-sm font-bold mt-0.5 leading-none ${
                           isToday
-                            ? "bg-teal-500 text-white w-7 h-7 rounded-full flex items-center justify-center"
+                            ? "bg-[#1A2332] text-white w-7 h-7 rounded-full flex items-center justify-center"
                             : "text-[#1A2332]"
                         }`}
                         style={{ fontFamily: "'Syne', sans-serif" }}
@@ -578,7 +578,7 @@ export default function SchedulePage() {
                     </p>
                     <button
                       onClick={openNewJobForm}
-                      className="flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       New Job

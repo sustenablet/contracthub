@@ -18,11 +18,13 @@ import {
   FormField,
   FormInput,
   FormTextarea,
+  FormSelect,
   FormActions,
   PrimaryButton,
   SecondaryButton,
 } from "@/components/dashboard/slide-panel";
 import type { Client, Address } from "@/lib/types";
+import { SERVICE_TYPES } from "@/lib/types";
 import { toast } from "sonner";
 
 const AVATAR_COLORS = [
@@ -72,6 +74,7 @@ export default function ClientsPage() {
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
   const [notes, setNotes] = useState("");
+  const [preferredService, setPreferredService] = useState("");
 
   const fetchClients = useCallback(async () => {
     try {
@@ -145,6 +148,7 @@ export default function ClientsPage() {
     setState("");
     setZip("");
     setNotes("");
+    setPreferredService("");
   };
 
   const openPanel = () => {
@@ -167,6 +171,12 @@ export default function ClientsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Build notes with preferred service prefix
+      const noteParts: string[] = [];
+      if (preferredService) noteParts.push(`Preferred service: ${preferredService}`);
+      if (notes.trim()) noteParts.push(notes.trim());
+      const combinedNotes = noteParts.length > 0 ? noteParts.join("\n") : null;
+
       // Insert client
       const { data: newClient, error: clientError } = await supabase
         .from("clients")
@@ -176,7 +186,7 @@ export default function ClientsPage() {
           last_name: lastName.trim(),
           email: email.trim() || null,
           phone: phone.trim() || null,
-          notes: notes.trim() || null,
+          notes: combinedNotes,
           status: "active",
         })
         .select()
@@ -256,7 +266,7 @@ export default function ClientsPage() {
         </div>
         <button
           onClick={openPanel}
-          className="flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
           <Plus className="h-4 w-4" />
@@ -275,7 +285,7 @@ export default function ClientsPage() {
               placeholder="Search clients..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 w-52 transition-all"
+              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 w-52 transition-all"
               style={{ fontFamily: "'Syne', sans-serif" }}
             />
           </div>
@@ -308,7 +318,7 @@ export default function ClientsPage() {
             </p>
             <button
               onClick={openPanel}
-              className="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <Plus className="h-4 w-4" />
@@ -441,7 +451,7 @@ export default function ClientsPage() {
                       </td>
                       <td className="px-5 py-4 hidden xl:table-cell">
                         <span
-                          className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-teal-50 text-teal-700 text-xs font-bold"
+                          className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-[#1A2332]/[0.06] text-[#1A2332] text-xs font-bold"
                           style={{ fontFamily: "'Syne', sans-serif" }}
                         >
                           {client.jobs_count}
@@ -512,6 +522,22 @@ export default function ClientsPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
+            </FormField>
+          </FormSection>
+
+          <FormSection label="Service Preference">
+            <FormField label="Preferred Service">
+              <FormSelect
+                value={preferredService}
+                onChange={(e) => setPreferredService(e.target.value)}
+              >
+                <option value="">Select a service type...</option>
+                {SERVICE_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </FormSelect>
             </FormField>
           </FormSection>
 

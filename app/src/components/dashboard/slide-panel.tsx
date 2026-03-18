@@ -141,7 +141,7 @@ export function FormInput({
   return (
     <input
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all placeholder:text-gray-300 ${props.className || ""}`}
+      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300 ${props.className || ""}`}
       style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
     />
   );
@@ -153,7 +153,7 @@ export function FormTextarea({
   return (
     <textarea
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all placeholder:text-gray-300 resize-none ${props.className || ""}`}
+      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300 resize-none ${props.className || ""}`}
       style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
     />
   );
@@ -166,7 +166,7 @@ export function FormSelect({
   return (
     <select
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition-all ${props.className || ""}`}
+      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all ${props.className || ""}`}
       style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
     >
       {children}
@@ -195,7 +195,7 @@ export function PrimaryButton({
     <button
       {...props}
       disabled={loading || props.disabled}
-      className={`px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ""}`}
+      className={`px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ""}`}
       style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
     >
       {loading ? (

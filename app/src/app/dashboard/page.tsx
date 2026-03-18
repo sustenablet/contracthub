@@ -146,7 +146,7 @@ export default async function DashboardPage() {
           </Link>
           <Link
             href="/dashboard/schedule"
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-teal-500 rounded-xl hover:bg-teal-600 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-[#1A2332] rounded-xl hover:bg-[#1A2332]/90 transition-colors"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             <Plus className="h-3.5 w-3.5" />
@@ -190,7 +190,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/schedule"
-              className="text-xs font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+              className="text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               View All →

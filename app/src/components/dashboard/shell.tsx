@@ -16,7 +16,7 @@ import {
   Menu,
   X,
   ChevronDown,
-  Sparkles,
+  ArrowUpRight,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -33,10 +33,14 @@ const homeNav = [
   { href: "/dashboard/schedule", label: "Schedule", icon: CalendarDays },
 ];
 
-const managementNav = [
+const financeNav = [
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
+];
+
+const activityNav = [
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 function getInitials(name: string | null | undefined, email: string) {
@@ -65,11 +69,13 @@ function NavItem({
   href,
   label,
   icon: Icon,
+  badge,
   onClick,
 }: {
   href: string;
   label: string;
   icon: React.ElementType;
+  badge?: number;
   onClick?: () => void;
 }) {
   const pathname = usePathname();
@@ -80,24 +86,51 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
         isActive
-          ? "bg-teal-50 text-teal-700 border-l-[3px] border-teal-500 rounded-l-none pl-[10px]"
-          : "text-[#1A2332]/55 hover:bg-[#1A2332]/5 hover:text-[#1A2332] border-l-[3px] border-transparent rounded-l-none pl-[10px]"
+          ? "bg-[#1A2332]/[0.06] text-[#1A2332] border-l-[3px] border-[#1A2332] rounded-l-none pl-[10px]"
+          : "text-[#1A2332]/50 hover:bg-[#1A2332]/[0.04] hover:text-[#1A2332]/80 border-l-[3px] border-transparent rounded-l-none pl-[10px]"
       }`}
       style={{ fontFamily: "'Syne', sans-serif" }}
     >
-      <Icon className="h-4 w-4 shrink-0" />
-      {label}
+      <Icon className="h-[15px] w-[15px] shrink-0" strokeWidth={1.8} />
+      <span className="flex-1">{label}</span>
+      {badge !== undefined && badge > 0 && (
+        <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#1A2332] px-1 text-[9px] font-bold text-white">
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
     </Link>
+  );
+}
+
+function NavSection({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p
+        className="px-3 mb-1.5 text-[10px] font-semibold tracking-[0.1em] text-[#1A2332]/30 uppercase"
+        style={{ fontFamily: "'Syne', sans-serif" }}
+      >
+        {label}
+      </p>
+      <div className="space-y-0.5">{children}</div>
+    </div>
   );
 }
 
 function SidebarContent({
   profile,
+  notifCount,
   onNavClick,
 }: {
   profile: Profile | null;
+  notifCount: number;
   onNavClick?: () => void;
 }) {
   const daysLeft = profile?.trial_start_date
@@ -111,16 +144,16 @@ function SidebarContent({
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1A2332] shadow-sm">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1A2332]">
           <span
-            className="text-[#A3E635] font-bold text-lg leading-none"
+            className="text-[#A3E635] font-bold text-base leading-none"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             M
           </span>
         </div>
         <span
-          className="text-[#1A2332] font-bold text-lg tracking-tight"
+          className="text-[#1A2332] font-bold text-[17px] tracking-tight"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
           MaidHub
@@ -128,60 +161,54 @@ function SidebarContent({
       </div>
 
       {/* Nav */}
-      <div className="flex-1 px-3 py-2 space-y-5 overflow-y-auto">
-        <div>
-          <p
-            className="px-3 mb-2 text-[10px] font-bold tracking-[0.12em] text-[#1A2332]/35 uppercase"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            Home
-          </p>
-          <div className="space-y-0.5">
-            {homeNav.map((item) => (
-              <NavItem key={item.href} {...item} onClick={onNavClick} />
-            ))}
-          </div>
-        </div>
-        <div>
-          <p
-            className="px-3 mb-2 text-[10px] font-bold tracking-[0.12em] text-[#1A2332]/35 uppercase"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            Management
-          </p>
-          <div className="space-y-0.5">
-            {managementNav.map((item) => (
-              <NavItem key={item.href} {...item} onClick={onNavClick} />
-            ))}
-          </div>
-        </div>
+      <div className="flex-1 px-3 py-1 space-y-5 overflow-y-auto">
+        <NavSection label="Home">
+          {homeNav.map((item) => (
+            <NavItem key={item.href} {...item} onClick={onNavClick} />
+          ))}
+        </NavSection>
+
+        <NavSection label="Finances">
+          {financeNav.map((item) => (
+            <NavItem key={item.href} {...item} onClick={onNavClick} />
+          ))}
+        </NavSection>
+
+        <NavSection label="Account">
+          {activityNav.map((item) => (
+            <NavItem
+              key={item.href}
+              {...item}
+              badge={item.label === "Notifications" ? notifCount : undefined}
+              onClick={onNavClick}
+            />
+          ))}
+        </NavSection>
       </div>
 
       {/* Trial banner */}
       {isTrial && (
-        <div className="mx-3 mb-4 rounded-2xl bg-[#1A2332] p-4">
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <Sparkles className="h-3 w-3 text-[#A3E635]" />
-            <span
-              className="text-[10px] font-bold text-[#A3E635] uppercase tracking-[0.1em]"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
-              Free Trial
-            </span>
-          </div>
+        <div className="mx-3 mb-4 rounded-xl bg-[#1A2332] p-4">
           <p
-            className="text-xs text-white/60 mb-3 leading-relaxed"
+            className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.08em] mb-1"
+            style={{ fontFamily: "'Syne', sans-serif" }}
+          >
+            Free Trial
+          </p>
+          <p
+            className="text-[13px] text-white/80 mb-3 leading-relaxed"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
             <span className="text-white font-semibold">{daysLeft} days</span>{" "}
-            left in your trial
+            remaining
           </p>
           <Link
             href="/dashboard/upgrade"
-            className="block text-center text-xs font-semibold bg-[#A3E635] text-[#1A2332] rounded-xl py-2 hover:bg-[#b5f040] transition-colors"
+            className="flex items-center justify-center gap-1.5 text-xs font-semibold bg-white text-[#1A2332] rounded-lg py-2 hover:bg-white/90 transition-colors"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
-            Upgrade Now
+            Upgrade Plan
+            <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
           </Link>
         </div>
       )}
@@ -229,7 +256,7 @@ export function DashboardShell({
     setMobileOpen(false);
   }, [pathname]);
 
-  // Fetch unread-ish activity count (recent items from last 24h)
+  // Fetch recent activity count (last 24h)
   useEffect(() => {
     async function fetchCount() {
       const since = new Date();
@@ -264,10 +291,10 @@ export function DashboardShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F5F4EF]">
+    <div className="flex min-h-screen bg-[#F7F7F5]">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-60 shrink-0 flex-col bg-[#F6F3EC] border-r border-[#1A2332]/[0.07] sticky top-0 h-screen overflow-hidden">
-        <SidebarContent profile={profile} />
+      <aside className="hidden md:flex w-[232px] shrink-0 flex-col bg-[#F0EFEB] border-r border-[#1A2332]/[0.06] sticky top-0 h-screen overflow-hidden">
+        <SidebarContent profile={profile} notifCount={notifCount} />
       </aside>
 
       {/* Mobile overlay */}
@@ -280,7 +307,7 @@ export function DashboardShell({
 
       {/* Mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-60 bg-[#F6F3EC] border-r border-[#1A2332]/[0.07] transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-[232px] bg-[#F0EFEB] border-r border-[#1A2332]/[0.06] transform transition-transform duration-300 ease-in-out md:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -292,6 +319,7 @@ export function DashboardShell({
         </button>
         <SidebarContent
           profile={profile}
+          notifCount={notifCount}
           onNavClick={() => setMobileOpen(false)}
         />
       </aside>
@@ -299,7 +327,7 @@ export function DashboardShell({
       {/* Main content area */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 h-[60px] bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-6">
+        <header className="sticky top-0 z-30 h-14 bg-white/80 backdrop-blur-md border-b border-[#1A2332]/[0.06] flex items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             {/* Mobile hamburger */}
             <button
@@ -313,8 +341,8 @@ export function DashboardShell({
               className="flex items-center gap-2 text-sm"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
-              <span className="text-gray-300 hidden sm:block">Home</span>
-              <span className="text-gray-200 hidden sm:block">/</span>
+              <span className="text-[#1A2332]/25 hidden sm:block">Home</span>
+              <span className="text-[#1A2332]/15 hidden sm:block">/</span>
               <span className="text-[#1A2332] font-semibold">{breadcrumb}</span>
             </div>
           </div>
@@ -322,7 +350,7 @@ export function DashboardShell({
           <div className="flex items-center gap-1">
             {/* Business name */}
             <span
-              className="hidden sm:block text-sm text-[#1A2332]/40 mr-3 font-medium"
+              className="hidden sm:block text-[13px] text-[#1A2332]/35 mr-3 font-medium"
               style={{ fontFamily: "'Syne', sans-serif" }}
             >
               {businessName}
@@ -331,11 +359,11 @@ export function DashboardShell({
             {/* Bell */}
             <Link
               href="/dashboard/notifications"
-              className="relative p-2 rounded-xl hover:bg-gray-100 text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
+              className="relative p-2 rounded-lg hover:bg-[#1A2332]/[0.04] text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
             >
-              <Bell className="h-4 w-4" />
+              <Bell className="h-4 w-4" strokeWidth={1.8} />
               {notifCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-teal-500 px-1 text-[9px] font-bold text-white shadow-sm">
+                <span className="absolute top-1.5 right-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-[#1A2332] px-0.5 text-[8px] font-bold text-white">
                   {notifCount > 99 ? "99+" : notifCount}
                 </span>
               )}
@@ -345,58 +373,58 @@ export function DashboardShell({
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 pl-2 pr-2 py-1.5 rounded-xl hover:bg-gray-100 transition-colors ml-1"
+                className="flex items-center gap-2 pl-2 pr-2 py-1.5 rounded-lg hover:bg-[#1A2332]/[0.04] transition-colors ml-0.5"
               >
-                <div className="h-7 w-7 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
+                <div className="h-7 w-7 rounded-full bg-[#1A2332]/[0.08] flex items-center justify-center shrink-0">
                   <span
-                    className="text-teal-700 text-xs font-bold"
+                    className="text-[#1A2332] text-[10px] font-bold"
                     style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     {initials}
                   </span>
                 </div>
                 <span
-                  className="hidden sm:block text-sm font-semibold text-[#1A2332]"
+                  className="hidden sm:block text-[13px] font-semibold text-[#1A2332]"
                   style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   {displayName}
                 </span>
                 <ChevronDown
-                  className={`h-3 w-3 text-gray-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                  className={`h-3 w-3 text-[#1A2332]/30 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50 overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-gray-50">
+                <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-lg border border-[#1A2332]/[0.08] py-1 z-50 overflow-hidden">
+                  <div className="px-3.5 py-2.5 border-b border-[#1A2332]/[0.05]">
                     <p
-                      className="text-xs font-semibold text-[#1A2332]"
+                      className="text-[13px] font-semibold text-[#1A2332]"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       {displayName}
                     </p>
-                    <p className="text-[11px] text-gray-400 truncate">
+                    <p className="text-[11px] text-[#1A2332]/40 truncate">
                       {user.email}
                     </p>
                   </div>
-                  <div className="py-1">
+                  <div className="py-0.5">
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-[#1A2332]/70 hover:bg-gray-50 hover:text-[#1A2332] transition-colors"
+                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#1A2332]/65 hover:bg-[#1A2332]/[0.03] hover:text-[#1A2332] transition-colors"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <Settings className="h-4 w-4" />
+                      <Settings className="h-[14px] w-[14px]" strokeWidth={1.8} />
                       Settings
                     </Link>
                   </div>
-                  <div className="border-t border-gray-50 py-1">
+                  <div className="border-t border-[#1A2332]/[0.05] py-0.5">
                     <button
                       onClick={handleSignOut}
-                      className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      className="flex w-full items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-500/80 hover:bg-red-50/50 hover:text-red-600 transition-colors"
                       style={{ fontFamily: "'Syne', sans-serif" }}
                     >
-                      <LogOut className="h-4 w-4" />
+                      <LogOut className="h-[14px] w-[14px]" strokeWidth={1.8} />
                       Sign out
                     </button>
                   </div>
