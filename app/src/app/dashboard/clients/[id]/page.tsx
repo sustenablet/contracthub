@@ -15,6 +15,7 @@ import {
   Archive,
   Plus,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -258,6 +259,7 @@ export default function ClientDetailPage() {
   };
 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [creatingInvoiceJobId, setCreatingInvoiceJobId] = useState<string | null>(null);
 
   const handleDelete = async () => {
     if (!deleteConfirm) {
@@ -281,6 +283,51 @@ export default function ClientDetailPage() {
     }
   };
 
+  const handleCreateInvoiceFromJob = async (job: Job) => {
+    setCreatingInvoiceJobId(job.id);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 14);
+
+      const { error: invoiceError } = await supabase.from("invoices").insert({
+        client_id: clientId,
+        user_id: user.id,
+        job_id: job.id,
+        line_items: [
+          {
+            description: job.service_type || "Cleaning Service",
+            quantity: 1,
+            unit_price: job.price || 0,
+          },
+        ],
+        total: job.price || 0,
+        status: "unpaid",
+        due_date: dueDate.toISOString().split("T")[0],
+        notes: null,
+      });
+
+      if (invoiceError) throw invoiceError;
+
+      const { error: jobError } = await supabase
+        .from("jobs")
+        .update({ status: "invoiced" })
+        .eq("id", job.id);
+
+      if (jobError) throw jobError;
+
+      toast.success("Invoice created successfully");
+      await fetchData();
+    } catch (err) {
+      console.error("Error creating invoice:", err);
+      toast.error("Failed to create invoice");
+    } finally {
+      setCreatingInvoiceJobId(null);
+    }
+  };
+
   // Computed stats
   const totalJobs = jobs.length;
   const completedJobs = jobs.filter(
@@ -296,7 +343,6 @@ export default function ClientDetailPage() {
       <div className="flex items-center justify-center h-64">
         <p
           className="text-sm text-gray-400 animate-pulse"
-          style={{ fontFamily: "'Syne', sans-serif" }}
         >
           Loading...
         </p>
@@ -308,15 +354,13 @@ export default function ClientDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center">
         <p
-          className="text-sm font-semibold text-[#1A2332] mb-2"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="text-sm font-semibold text-[#18181B] mb-2"
         >
           Client not found
         </p>
         <button
           onClick={() => router.push("/dashboard/clients")}
-          className="text-sm text-[#1A2332]/55 hover:text-[#1A2332] font-medium"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="text-sm text-[#18181B]/55 hover:text-[#18181B] font-medium"
         >
           Back to clients
         </button>
@@ -336,20 +380,18 @@ export default function ClientDetailPage() {
       {/* Back link */}
       <button
         onClick={() => router.push("/dashboard/clients")}
-        className="flex items-center gap-1.5 text-sm text-[#1A2332]/50 hover:text-[#1A2332]/80 transition-colors"
-        style={{ fontFamily: "'Syne', sans-serif" }}
+        className="flex items-center gap-1.5 text-sm text-[#18181B]/50 hover:text-[#18181B]/80 transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Clients
       </button>
 
       {/* Client header card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-6">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-6">
         <div className="flex flex-col sm:flex-row sm:items-start gap-5">
           {/* Avatar */}
           <div
-            className="h-16 w-16 rounded-full bg-[#1A2332]/[0.08] text-[#1A2332] flex items-center justify-center text-xl font-bold shrink-0"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="h-16 w-16 rounded-full bg-[#18181B]/[0.08] text-[#18181B] flex items-center justify-center text-xl font-bold shrink-0"
           >
             {initials}
           </div>
@@ -358,20 +400,18 @@ export default function ClientDetailPage() {
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
               <h1
-                className="text-2xl font-bold text-[#1A2332]"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]"
               >
                 {client.first_name} {client.last_name}
               </h1>
               <span
                 className={`inline-flex items-center self-start px-2.5 py-0.5 rounded-full text-[10px] font-semibold capitalize ${statusBadge}`}
-                style={{ fontFamily: "'Syne', sans-serif" }}
               >
                 {client.status}
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#1A2332]/55" style={{ fontFamily: "'Syne', sans-serif" }}>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#18181B]/55">
               {client.email && (
                 <div className="flex items-center gap-1.5">
                   <Mail className="h-3.5 w-3.5 text-gray-300" />
@@ -395,16 +435,14 @@ export default function ClientDetailPage() {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={openEditPanel}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#18181B]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
             >
               <Edit2 className="h-3.5 w-3.5" />
               Edit
             </button>
             <button
               onClick={handleArchive}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#18181B]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
             >
               <Archive className="h-3.5 w-3.5" />
               {client.status === "active" ? "Archive" : "Reactivate"}
@@ -416,15 +454,20 @@ export default function ClientDetailPage() {
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "text-red-400 bg-white border border-gray-200 hover:bg-red-50 hover:text-red-500"
               }`}
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <Trash2 className="h-3.5 w-3.5" />
               {deleteConfirm ? "Confirm Delete?" : "Delete"}
             </button>
             <button
-              onClick={() => router.push("/dashboard/schedule")}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1A2332] hover:bg-[#1A2332]/90 rounded-xl shadow-sm transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              onClick={() => router.push(`/dashboard/invoices?clientId=${clientId}`)}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-[#18181B]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+            >
+              <Receipt className="h-3.5 w-3.5" />
+              Create Invoice
+            </button>
+            <button
+              onClick={() => router.push(`/dashboard/schedule?clientId=${clientId}`)}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#18181B] hover:bg-[#18181B]/90 rounded-xl shadow-sm transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
               Book a Job
@@ -438,19 +481,17 @@ export default function ClientDetailPage() {
         {/* LEFT column */}
         <div className="lg:col-span-1 space-y-6">
           {/* Service Address */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+          <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
             <div className="flex items-center gap-2 mb-3">
               <MapPin className="h-4 w-4 text-gray-300" />
               <h3
-                className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-xs font-bold tracking-[0.08em] text-[#18181B]/40 uppercase"
               >
                 Service Address
               </h3>
             </div>
             <p
-              className="text-sm text-[#1A2332]/70 leading-relaxed"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="text-sm text-[#18181B]/70 leading-relaxed"
             >
               {formatAddress(primaryAddress)}
             </p>
@@ -458,19 +499,17 @@ export default function ClientDetailPage() {
 
           {/* Preferred Service */}
           {client.preferred_service && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+            <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Briefcase className="h-4 w-4 text-gray-300" />
                 <h3
-                  className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  className="text-xs font-bold tracking-[0.08em] text-[#18181B]/40 uppercase"
                 >
                   Preferred Service
                 </h3>
               </div>
               <p
-                className="text-sm text-[#1A2332]/70 leading-relaxed"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-sm text-[#18181B]/70 leading-relaxed"
               >
                 {client.preferred_service}
               </p>
@@ -478,19 +517,17 @@ export default function ClientDetailPage() {
           )}
 
           {/* Notes */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+          <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
             <div className="flex items-center gap-2 mb-3">
               <StickyNote className="h-4 w-4 text-gray-300" />
               <h3
-                className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-xs font-bold tracking-[0.08em] text-[#18181B]/40 uppercase"
               >
                 Notes
               </h3>
             </div>
             <p
-              className="text-sm text-[#1A2332]/70 leading-relaxed whitespace-pre-wrap"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="text-sm text-[#18181B]/70 leading-relaxed whitespace-pre-wrap"
             >
               {client.notes || "No notes yet"}
             </p>
@@ -502,38 +539,32 @@ export default function ClientDetailPage() {
           {/* Quick stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label: "Total Jobs", value: totalJobs.toString(), color: "text-[#1A2332]" },
+              { label: "Total Jobs", value: totalJobs.toString(), color: "text-[#18181B]" },
               { label: "Completed", value: completedJobs.toString(), color: "text-green-600" },
               {
                 label: "Total Invoiced",
                 value: `$${totalInvoiced.toLocaleString("en-US", { minimumFractionDigits: 0 })}`,
-                color: "text-[#1A2332]",
+                color: "text-[#18181B]",
                 isMoney: true,
               },
               {
                 label: "Outstanding",
                 value: `$${outstanding.toLocaleString("en-US", { minimumFractionDigits: 0 })}`,
-                color: outstanding > 0 ? "text-amber-600" : "text-[#1A2332]",
+                color: outstanding > 0 ? "text-amber-600" : "text-[#18181B]",
                 isMoney: true,
               },
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-4"
+                className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-4"
               >
                 <p
-                  className="text-[10px] font-bold tracking-[0.1em] text-[#1A2332]/35 uppercase mb-1.5"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  className="text-[10px] font-bold tracking-[0.1em] text-[#18181B]/35 uppercase mb-1.5"
                 >
                   {stat.label}
                 </p>
                 <p
-                  className={`text-xl font-bold tabular-nums ${stat.color}`}
-                  style={{
-                    fontFamily: stat.isMoney
-                      ? "'Fraunces', serif"
-                      : "'Syne', sans-serif",
-                  }}
+                  className={`text-xl font-bold tabular-nums ${stat.color} ${stat.isMoney ? "font-display" : ""}`}
                 >
                   {stat.value}
                 </p>
@@ -542,18 +573,16 @@ export default function ClientDetailPage() {
           </div>
 
           {/* Job History */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80">
+          <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8]">
             <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
               <Briefcase className="h-4 w-4 text-gray-300" />
               <h3
-                className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-xs font-bold tracking-[0.08em] text-[#18181B]/40 uppercase"
               >
                 Job History
               </h3>
               <span
-                className="ml-auto text-[10px] font-semibold text-[#1A2332]/30"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="ml-auto text-[10px] font-semibold text-[#18181B]/30"
               >
                 {jobs.length} job{jobs.length !== 1 ? "s" : ""}
               </span>
@@ -563,14 +592,12 @@ export default function ClientDetailPage() {
               <div className="flex flex-col items-center justify-center py-12 text-center px-6">
                 <Briefcase className="h-8 w-8 text-gray-200 mb-3" />
                 <p
-                  className="text-sm font-semibold text-[#1A2332]/50 mb-1"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  className="text-sm font-semibold text-[#18181B]/50 mb-1"
                 >
                   No jobs yet
                 </p>
                 <p
                   className="text-xs text-gray-400"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Book a job to get started
                 </p>
@@ -580,12 +607,11 @@ export default function ClientDetailPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-50/50 border-b border-gray-100">
-                      {["Date", "Service Type", "Status", "Price", "Duration"].map(
+                      {["Date", "Service Type", "Status", "Price", "Duration", "Actions"].map(
                         (h) => (
                           <th
                             key={h}
                             className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
                           >
                             {h}
                           </th>
@@ -605,45 +631,60 @@ export default function ClientDetailPage() {
                           className="hover:bg-gray-50/50 transition-colors"
                         >
                           <td
-                            className="px-5 py-4 text-xs text-[#1A2332]/70 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
+                            className="px-5 py-4 text-xs text-[#18181B]/70 whitespace-nowrap"
                           >
                             {formatDate(job.scheduled_date)}
                             {job.start_time && (
-                              <span className="text-[#1A2332]/35 ml-1.5">
+                              <span className="text-[#18181B]/35 ml-1.5">
                                 {formatTime(job.start_time)}
                               </span>
                             )}
                           </td>
                           <td
-                            className="px-5 py-4 text-xs font-medium text-[#1A2332]/70"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
+                            className="px-5 py-4 text-xs font-medium text-[#18181B]/70"
                           >
                             {job.service_type || "\u2014"}
                           </td>
                           <td className="px-5 py-4">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${status.className}`}
-                              style={{ fontFamily: "'Syne', sans-serif" }}
                             >
                               {status.label}
                             </span>
                           </td>
                           <td
-                            className="px-5 py-4 text-sm font-bold text-[#1A2332] tabular-nums"
-                            style={{ fontFamily: "'Fraunces', serif" }}
+                            className="px-5 py-4 text-sm font-bold text-[#18181B] tabular-nums font-display"
                           >
                             {job.price != null
                               ? `$${Number(job.price).toLocaleString("en-US", { minimumFractionDigits: 0 })}`
                               : "\u2014"}
                           </td>
                           <td
-                            className="px-5 py-4 text-xs text-[#1A2332]/55 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
+                            className="px-5 py-4 text-xs text-[#18181B]/55 whitespace-nowrap"
                           >
                             {job.duration_minutes
                               ? `${Math.floor(job.duration_minutes / 60)}h ${job.duration_minutes % 60}m`
                               : "\u2014"}
+                          </td>
+                          <td className="px-5 py-4">
+                            {job.status === "completed" ? (
+                              <button
+                                onClick={() => handleCreateInvoiceFromJob(job)}
+                                disabled={creatingInvoiceJobId === job.id}
+                                className="flex items-center gap-1 text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors disabled:opacity-50"
+                              >
+                                {creatingInvoiceJobId === job.id ? (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Receipt className="h-3 w-3" />
+                                )}
+                                {creatingInvoiceJobId === job.id ? "Creating..." : "Create Invoice"}
+                              </button>
+                            ) : job.status === "invoiced" ? (
+                              <span className="text-xs text-green-600 font-medium">
+                                Invoiced
+                              </span>
+                            ) : null}
                           </td>
                         </tr>
                       );
@@ -655,18 +696,16 @@ export default function ClientDetailPage() {
           </div>
 
           {/* Invoice History */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80">
+          <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8]">
             <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
               <Receipt className="h-4 w-4 text-gray-300" />
               <h3
-                className="text-xs font-bold tracking-[0.08em] text-[#1A2332]/40 uppercase"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-xs font-bold tracking-[0.08em] text-[#18181B]/40 uppercase"
               >
                 Invoice History
               </h3>
               <span
-                className="ml-auto text-[10px] font-semibold text-[#1A2332]/30"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="ml-auto text-[10px] font-semibold text-[#18181B]/30"
               >
                 {invoices.length} invoice{invoices.length !== 1 ? "s" : ""}
               </span>
@@ -676,14 +715,12 @@ export default function ClientDetailPage() {
               <div className="flex flex-col items-center justify-center py-12 text-center px-6">
                 <Receipt className="h-8 w-8 text-gray-200 mb-3" />
                 <p
-                  className="text-sm font-semibold text-[#1A2332]/50 mb-1"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  className="text-sm font-semibold text-[#18181B]/50 mb-1"
                 >
                   No invoices yet
                 </p>
                 <p
                   className="text-xs text-gray-400"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Invoices will appear here after jobs are completed
                 </p>
@@ -698,7 +735,6 @@ export default function ClientDetailPage() {
                           <th
                             key={h}
                             className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
                           >
                             {h}
                           </th>
@@ -720,19 +756,17 @@ export default function ClientDetailPage() {
                           className="hover:bg-gray-50/50 transition-colors"
                         >
                           <td
-                            className="px-5 py-4 text-xs font-mono text-[#1A2332]/50"
+                            className="px-5 py-4 text-xs font-mono text-[#18181B]/50"
                           >
                             {invoiceNum}
                           </td>
                           <td
-                            className="px-5 py-4 text-xs text-[#1A2332]/70 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
+                            className="px-5 py-4 text-xs text-[#18181B]/70 whitespace-nowrap"
                           >
                             {formatDate(invoice.created_at)}
                           </td>
                           <td
-                            className="px-5 py-4 text-sm font-bold text-[#1A2332] tabular-nums"
-                            style={{ fontFamily: "'Fraunces', serif" }}
+                            className="px-5 py-4 text-sm font-bold text-[#18181B] tabular-nums font-display"
                           >
                             {invoice.total != null
                               ? `$${Number(invoice.total).toLocaleString("en-US", { minimumFractionDigits: 0 })}`
@@ -741,14 +775,12 @@ export default function ClientDetailPage() {
                           <td className="px-5 py-4">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${status.className}`}
-                              style={{ fontFamily: "'Syne', sans-serif" }}
                             >
                               {status.label}
                             </span>
                           </td>
                           <td
-                            className="px-5 py-4 text-xs text-[#1A2332]/55 whitespace-nowrap"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
+                            className="px-5 py-4 text-xs text-[#18181B]/55 whitespace-nowrap"
                           >
                             {formatDate(invoice.due_date)}
                           </td>

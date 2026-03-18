@@ -15,10 +15,6 @@ import {
   ArrowUpRight,
   Zap,
 } from "lucide-react";
-
-const syne = { fontFamily: "'Syne', sans-serif" } as const;
-const fraunces = { fontFamily: "'Fraunces', serif" } as const;
-
 const features = [
   { icon: Users, label: "Unlimited clients & addresses" },
   { icon: CalendarDays, label: "Full job scheduling & calendar" },
@@ -77,8 +73,7 @@ export default function UpgradePage() {
       {/* Back link */}
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
-        style={syne}
+        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#18181B]/40 hover:text-[#18181B] transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
         Back to Dashboard
@@ -86,24 +81,23 @@ export default function UpgradePage() {
 
       {/* Header */}
       <div className="text-center space-y-3">
-        <h1 className="text-3xl font-bold text-[#1A2332]" style={fraunces}>
+        <h1 className="text-3xl font-bold text-[#18181B] font-display">
           Choose your plan
         </h1>
-        <p className="text-[15px] text-[#1A2332]/45 max-w-md mx-auto leading-relaxed" style={syne}>
+        <p className="text-[15px] text-[#18181B]/45 max-w-md mx-auto leading-relaxed">
           Upgrade to keep managing your cleaning business with all the tools you need.
         </p>
 
         {/* Billing toggle */}
         <div className="flex items-center justify-center gap-1 mt-5">
-          <div className="flex items-center bg-[#1A2332]/[0.05] rounded-lg p-0.5">
+          <div className="flex items-center bg-[#18181B]/[0.05] rounded-lg p-0.5">
             <button
               onClick={() => setBilling("monthly")}
               className={`px-4 py-1.5 rounded-md text-[13px] font-semibold transition-all ${
                 billing === "monthly"
-                  ? "bg-white text-[#1A2332] shadow-sm"
-                  : "text-[#1A2332]/40 hover:text-[#1A2332]/60"
+                  ? "bg-white text-[#18181B] shadow-sm"
+                  : "text-[#18181B]/40 hover:text-[#18181B]/60"
               }`}
-              style={syne}
             >
               Monthly
             </button>
@@ -111,10 +105,9 @@ export default function UpgradePage() {
               onClick={() => setBilling("yearly")}
               className={`px-4 py-1.5 rounded-md text-[13px] font-semibold transition-all flex items-center gap-1.5 ${
                 billing === "yearly"
-                  ? "bg-white text-[#1A2332] shadow-sm"
-                  : "text-[#1A2332]/40 hover:text-[#1A2332]/60"
+                  ? "bg-white text-[#18181B] shadow-sm"
+                  : "text-[#18181B]/40 hover:text-[#18181B]/60"
               }`}
-              style={syne}
             >
               Yearly
               <span className="text-[10px] font-bold text-[#0D9488] bg-[#0D9488]/10 px-1.5 py-0.5 rounded">
@@ -137,15 +130,14 @@ export default function UpgradePage() {
               key={plan.name}
               className={`relative bg-white rounded-2xl border overflow-hidden transition-all ${
                 plan.popular
-                  ? "border-[#1A2332]/20 shadow-md"
-                  : "border-[#1A2332]/[0.08] shadow-sm"
+                  ? "border-[#18181B]/20 shadow-md"
+                  : "border-[#18181B]/[0.08] shadow-sm"
               }`}
             >
               {plan.popular && (
                 <div className="absolute top-4 right-4">
                   <span
-                    className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-[#1A2332] text-white uppercase tracking-wider"
-                    style={syne}
+                    className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-[#18181B] text-white uppercase tracking-wider"
                   >
                     Recommended
                   </span>
@@ -153,23 +145,23 @@ export default function UpgradePage() {
               )}
 
               <div className="p-6 pb-0">
-                <p className="text-[13px] font-semibold text-[#1A2332]/50 mb-1" style={syne}>
+                <p className="text-[13px] font-semibold text-[#18181B]/50 mb-1">
                   {plan.name}
                 </p>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-bold text-[#1A2332]" style={fraunces}>
+                  <span className="text-4xl font-bold text-[#18181B] font-display">
                     ${price}
                   </span>
-                  <span className="text-[13px] text-[#1A2332]/35" style={syne}>
+                  <span className="text-[13px] text-[#18181B]/35">
                     /month
                   </span>
                 </div>
                 {billing === "yearly" && (
-                  <p className="text-[11px] text-[#1A2332]/35 mb-1" style={syne}>
+                  <p className="text-[11px] text-[#18181B]/35 mb-1">
                     ${price * 12}/year, billed annually
                   </p>
                 )}
-                <p className="text-[13px] text-[#1A2332]/45 leading-relaxed" style={syne}>
+                <p className="text-[13px] text-[#18181B]/45 leading-relaxed">
                   {plan.description}
                 </p>
               </div>
@@ -179,10 +171,10 @@ export default function UpgradePage() {
                 <div className="space-y-2.5">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-start gap-2.5">
-                      <div className="h-[18px] w-[18px] rounded-full bg-[#1A2332]/[0.06] flex items-center justify-center shrink-0 mt-px">
-                        <Check className="h-2.5 w-2.5 text-[#1A2332]" strokeWidth={2.5} />
+                      <div className="h-[18px] w-[18px] rounded-full bg-[#18181B]/[0.06] flex items-center justify-center shrink-0 mt-px">
+                        <Check className="h-2.5 w-2.5 text-[#18181B]" strokeWidth={2.5} />
                       </div>
-                      <span className="text-[13px] text-[#1A2332]/65" style={syne}>
+                      <span className="text-[13px] text-[#18181B]/65">
                         {feature}
                       </span>
                     </div>
@@ -193,16 +185,14 @@ export default function UpgradePage() {
                 {plan.comingSoon ? (
                   <button
                     disabled
-                    className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#1A2332]/[0.05] text-[#1A2332]/30 cursor-not-allowed"
-                    style={syne}
+                    className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#18181B]/[0.05] text-[#18181B]/30 cursor-not-allowed"
                   >
                     Coming Soon
                   </button>
                 ) : (
                   <button
                     onClick={() => handleSubscribe(plan.name)}
-                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#1A2332] text-white hover:bg-[#1A2332]/90 transition-colors shadow-sm"
-                    style={syne}
+                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#18181B] text-white hover:bg-[#18181B]/90 transition-colors shadow-sm"
                   >
                     Get Started
                     <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
@@ -215,20 +205,20 @@ export default function UpgradePage() {
       </div>
 
       {/* Feature grid */}
-      <div className="bg-white rounded-2xl border border-[#1A2332]/[0.08] p-6 shadow-sm">
-        <h2 className="text-base font-bold text-[#1A2332] mb-1" style={fraunces}>
+      <div className="bg-white rounded-2xl border border-[#18181B]/[0.08] p-6 shadow-sm">
+        <h2 className="text-base font-bold text-[#18181B] mb-1 font-display">
           Everything included
         </h2>
-        <p className="text-[13px] text-[#1A2332]/40 mb-5" style={syne}>
+        <p className="text-[13px] text-[#18181B]/40 mb-5">
           All the tools to run your cleaning business efficiently
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {features.map((f) => (
-            <div key={f.label} className="flex items-center gap-3 p-3 rounded-xl bg-[#1A2332]/[0.02]">
-              <div className="h-8 w-8 rounded-lg bg-[#1A2332]/[0.06] flex items-center justify-center shrink-0">
-                <f.icon className="h-4 w-4 text-[#1A2332]/60" strokeWidth={1.8} />
+            <div key={f.label} className="flex items-center gap-3 p-3 rounded-xl bg-[#18181B]/[0.02]">
+              <div className="h-8 w-8 rounded-lg bg-[#18181B]/[0.06] flex items-center justify-center shrink-0">
+                <f.icon className="h-4 w-4 text-[#18181B]/60" strokeWidth={1.8} />
               </div>
-              <span className="text-[13px] font-medium text-[#1A2332]/70" style={syne}>
+              <span className="text-[13px] font-medium text-[#18181B]/70">
                 {f.label}
               </span>
             </div>
@@ -237,7 +227,7 @@ export default function UpgradePage() {
       </div>
 
       {/* Footer note */}
-      <p className="text-center text-[12px] text-[#1A2332]/30 pb-4" style={syne}>
+      <p className="text-center text-[12px] text-[#18181B]/30 pb-4">
         Powered by Square. Cancel anytime. No hidden fees.
       </p>
     </div>

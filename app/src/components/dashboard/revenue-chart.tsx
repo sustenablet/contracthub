@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const data = [
-  { month: "Oct", amount: 3200 },
-  { month: "Nov", amount: 4800 },
-  { month: "Dec", amount: 3900 },
-  { month: "Jan", amount: 5600 },
-  { month: "Feb", amount: 4200 },
-  { month: "Mar", amount: 6100 },
-];
+export type RevenueDataPoint = { month: string; amount: number };
 
 const CHART_H = 180;
 const PADDING_LEFT = 44;
@@ -18,7 +11,7 @@ const PADDING_TOP = 16;
 const BAR_W = 40;
 const BAR_GAP = 36;
 
-export function RevenueChart() {
+export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [animated, setAnimated] = useState(false);
 
@@ -27,7 +20,15 @@ export function RevenueChart() {
     return () => clearTimeout(t);
   }, []);
 
-  const maxVal = Math.max(...data.map((d) => d.amount));
+  if (data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[180px] text-xs text-gray-400">
+        No revenue data yet
+      </div>
+    );
+  }
+
+  const maxVal = Math.max(...data.map((d) => d.amount)) || 1;
   const avgVal = data.reduce((a, b) => a + b.amount, 0) / data.length;
   const plotH = CHART_H - PADDING_BOTTOM - PADDING_TOP;
   const totalW = PADDING_LEFT + data.length * (BAR_W + BAR_GAP) - BAR_GAP + 24;
@@ -52,7 +53,7 @@ export function RevenueChart() {
         viewBox={`0 0 ${totalW} ${CHART_H}`}
         preserveAspectRatio="xMidYMid meet"
         className="overflow-visible"
-        style={{ fontFamily: "'Syne', sans-serif" }}
+        style={{ fontFamily: "var(--font-body)" }}
       >
         {/* Y-axis grid lines + labels */}
         {yTicks.map((val, i) => {
@@ -64,7 +65,7 @@ export function RevenueChart() {
                 y1={y}
                 x2={totalW - 8}
                 y2={y}
-                stroke="#F0F0F0"
+                stroke="#ECEAE6"
                 strokeWidth="1"
               />
               <text
@@ -86,7 +87,7 @@ export function RevenueChart() {
           y1={avgY}
           x2={totalW - 8}
           y2={avgY}
-          stroke="#1A2332"
+          stroke="#18181B"
           strokeWidth="1.5"
           strokeDasharray="5,4"
           opacity="0.2"
@@ -98,7 +99,7 @@ export function RevenueChart() {
           width={28}
           height={14}
           rx={4}
-          fill="#1A2332"
+          fill="#18181B"
           opacity="0.18"
         />
         <text
@@ -106,7 +107,7 @@ export function RevenueChart() {
           y={avgY + 1}
           textAnchor="middle"
           fontSize="8"
-          fill="#1A2332"
+          fill="#18181B"
           fontWeight="700"
           opacity="0.7"
         >
@@ -134,7 +135,7 @@ export function RevenueChart() {
                 width={BAR_W}
                 height={plotH}
                 rx={8}
-                fill="#F3F4F6"
+                fill="#EEECEA"
               />
               {/* Actual bar */}
               <rect
@@ -143,7 +144,7 @@ export function RevenueChart() {
                 width={BAR_W}
                 height={bH}
                 rx={8}
-                fill={isHov ? "#2DD4BF" : "#C7EBE8"}
+                fill={isHov ? "#2A7C6F" : "#C8E6E2"}
                 style={{
                   transformBox: "fill-box",
                   transformOrigin: "bottom",
@@ -157,7 +158,7 @@ export function RevenueChart() {
                 y={CHART_H - 6}
                 textAnchor="middle"
                 fontSize="10"
-                fill={isHov ? "#2DD4BF" : "#B0B0B0"}
+                fill={isHov ? "#2A7C6F" : "#B8B4AE"}
                 fontWeight={isHov ? "700" : "500"}
               >
                 {d.month}
@@ -172,12 +173,12 @@ export function RevenueChart() {
                     width={68}
                     height={24}
                     rx={8}
-                    fill="#1A2332"
+                    fill="#18181B"
                   />
                   {/* Tooltip tail */}
                   <polygon
                     points={`${x + BAR_W / 2 - 5},${bTop - 8} ${x + BAR_W / 2 + 5},${bTop - 8} ${x + BAR_W / 2},${bTop - 2}`}
-                    fill="#1A2332"
+                    fill="#18181B"
                   />
                   <text
                     x={x + BAR_W / 2}
@@ -186,7 +187,7 @@ export function RevenueChart() {
                     fontSize="11"
                     fill="white"
                     fontWeight="700"
-                    style={{ fontFamily: "'Fraunces', serif" }}
+                    style={{ fontFamily: "var(--font-display)" }}
                   >
                     ${d.amount.toLocaleString()}
                   </text>

@@ -88,17 +88,16 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+      className={`flex items-center gap-2.5 px-3 py-[7px] rounded-md text-[13px] font-medium transition-all duration-150 ${
         isActive
-          ? "bg-[#1A2332]/[0.06] text-[#1A2332] border-l-[3px] border-[#1A2332] rounded-l-none pl-[10px]"
-          : "text-[#1A2332]/50 hover:bg-[#1A2332]/[0.04] hover:text-[#1A2332]/80 border-l-[3px] border-transparent rounded-l-none pl-[10px]"
+          ? "bg-[#2A7C6F]/[0.10] text-[#1F5F54]"
+          : "text-[#18181B]/40 hover:bg-[#18181B]/[0.04] hover:text-[#18181B]/70"
       }`}
-      style={{ fontFamily: "'Syne', sans-serif" }}
     >
-      <Icon className="h-[15px] w-[15px] shrink-0" strokeWidth={1.8} />
+      <Icon className={`h-[15px] w-[15px] shrink-0 ${isActive ? "text-[#2A7C6F]" : ""}`} strokeWidth={isActive ? 2 : 1.6} />
       <span className="flex-1">{label}</span>
       {badge !== undefined && badge > 0 && (
-        <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#1A2332] px-1 text-[9px] font-bold text-white">
+        <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#18181B] px-1 text-[9px] font-bold text-white tabular-nums">
           {badge > 99 ? "99+" : badge}
         </span>
       )}
@@ -115,10 +114,7 @@ function NavSection({
 }) {
   return (
     <div>
-      <p
-        className="px-3 mb-1.5 text-[10px] font-semibold tracking-[0.1em] text-[#1A2332]/30 uppercase"
-        style={{ fontFamily: "'Syne', sans-serif" }}
-      >
+      <p className="px-3 mb-1.5 text-[10px] font-semibold tracking-[0.1em] text-[#18181B]/22 uppercase">
         {label}
       </p>
       <div className="space-y-0.5">{children}</div>
@@ -145,19 +141,13 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1A2332]">
-          <span
-            className="text-[#A3E635] font-bold text-base leading-none"
-            style={{ fontFamily: "'Fraunces', serif" }}
-          >
+      <div className="flex items-center gap-2.5 px-4 py-[18px]">
+        <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#18181B]">
+          <span className="text-white font-bold text-[13px] leading-none font-display italic">
             M
           </span>
         </div>
-        <span
-          className="text-[#1A2332] font-bold text-[17px] tracking-tight"
-          style={{ fontFamily: "'Fraunces', serif" }}
-        >
+        <span className="text-[#18181B] font-semibold text-[15px] tracking-[-0.02em] font-display">
           MaidHub
         </span>
       </div>
@@ -190,24 +180,19 @@ function SidebarContent({
 
       {/* Trial banner */}
       {isTrial && (
-        <div className="mx-3 mb-4 rounded-xl bg-[#1A2332] p-4">
-          <p
-            className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.08em] mb-1"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            Free Trial
-          </p>
-          <p
-            className="text-[13px] text-white/80 mb-3 leading-relaxed"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            <span className="text-white font-semibold">{daysLeft} days</span>{" "}
-            remaining
-          </p>
+        <div className="mx-3 mb-4 rounded-lg bg-[#18181B] p-3.5">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[0.08em]">
+              Free Trial
+            </p>
+            <span className="text-[11px] font-medium text-white/55 tabular-nums">{daysLeft}d left</span>
+          </div>
+          <div className="w-full h-[3px] rounded-full bg-white/[0.08] mb-3">
+            <div className="h-[3px] rounded-full bg-[#2A7C6F] transition-all" style={{ width: `${Math.min(100, ((30 - daysLeft) / 30) * 100)}%` }} />
+          </div>
           <Link
             href="/dashboard/upgrade"
-            className="flex items-center justify-center gap-1.5 text-xs font-semibold bg-white text-[#1A2332] rounded-lg py-2 hover:bg-white/90 transition-colors"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-white text-[#18181B] rounded-md py-[7px] hover:bg-white/90 transition-colors"
           >
             Upgrade Plan
             <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
@@ -293,15 +278,15 @@ export function DashboardShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F7F7F5]">
+    <div className="flex min-h-screen bg-[#F6F4F1]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E\")" }}>
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-[232px] shrink-0 flex-col bg-[#F0EFEB] border-r border-[#1A2332]/[0.06] sticky top-0 h-screen overflow-hidden">
+      <aside className="hidden md:flex w-[220px] shrink-0 flex-col bg-[#E9E7E3] border-r border-[#18181B]/[0.06] sticky top-0 h-screen overflow-hidden">
         <SidebarContent profile={profile} notifCount={notifCount} />
       </aside>
 
       {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-[#1A2332]/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#18181B]/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
           mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setMobileOpen(false)}
@@ -309,13 +294,13 @@ export function DashboardShell({
 
       {/* Mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-[232px] bg-[#F0EFEB] border-r border-[#1A2332]/[0.06] transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-[220px] bg-[#E9E7E3] border-r border-[#18181B]/[0.06] transform transition-transform duration-300 ease-in-out md:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <button
           onClick={() => setMobileOpen(false)}
-          className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-[#1A2332]/5 text-[#1A2332]/40 transition-colors"
+          className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-[#1B1F23]/5 text-[#1B1F23]/40 transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -329,31 +314,27 @@ export function DashboardShell({
       {/* Main content area */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 h-14 bg-white/80 backdrop-blur-md border-b border-[#1A2332]/[0.06] flex items-center justify-between px-4 md:px-6">
+        <header className="sticky top-0 z-30 h-[50px] bg-white/85 backdrop-blur-md border-b border-[#18181B]/[0.07] flex items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-[#1A2332]/50 transition-colors"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-[#1B1F23]/50 transition-colors"
             >
               <Menu className="h-4 w-4" />
             </button>
             {/* Breadcrumb */}
-            <div
-              className="flex items-center gap-2 text-sm"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
-              <span className="text-[#1A2332]/25 hidden sm:block">Home</span>
-              <span className="text-[#1A2332]/15 hidden sm:block">/</span>
-              <span className="text-[#1A2332] font-semibold">{breadcrumb}</span>
+            <div className="flex items-center gap-2 text-[13px]">
+              <span className="text-[#18181B]/25 hidden sm:block">Home</span>
+              <span className="text-[#18181B]/15 hidden sm:block">/</span>
+              <span className="text-[#18181B] font-semibold">{breadcrumb}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-1">
             {/* Business name */}
             <span
-              className="hidden sm:block text-[13px] text-[#1A2332]/35 mr-3 font-medium"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="hidden sm:block text-[13px] text-[#1B1F23]/35 mr-3 font-medium"
             >
               {businessName}
             </span>
@@ -361,11 +342,11 @@ export function DashboardShell({
             {/* Bell */}
             <Link
               href="/dashboard/notifications"
-              className="relative p-2 rounded-lg hover:bg-[#1A2332]/[0.04] text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
+              className="relative p-2 rounded-lg hover:bg-[#1B1F23]/[0.04] text-[#1B1F23]/40 hover:text-[#1B1F23] transition-colors"
             >
               <Bell className="h-4 w-4" strokeWidth={1.8} />
               {notifCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-[#1A2332] px-0.5 text-[8px] font-bold text-white">
+                <span className="absolute top-1.5 right-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-[#1B1F23] px-0.5 text-[8px] font-bold text-white">
                   {notifCount > 99 ? "99+" : notifCount}
                 </span>
               )}
@@ -375,56 +356,45 @@ export function DashboardShell({
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 pl-2 pr-2 py-1.5 rounded-lg hover:bg-[#1A2332]/[0.04] transition-colors ml-0.5"
+                className="flex items-center gap-2 pl-2 pr-1.5 py-1.5 rounded-md hover:bg-[#18181B]/[0.04] transition-colors ml-0.5"
               >
-                <div className="h-7 w-7 rounded-full bg-[#1A2332]/[0.08] flex items-center justify-center shrink-0">
-                  <span
-                    className="text-[#1A2332] text-[10px] font-bold"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                <div className="h-6 w-6 rounded-full bg-[#18181B]/[0.09] flex items-center justify-center shrink-0">
+                  <span className="text-[#18181B] text-[9px] font-bold tracking-wide">
                     {initials}
                   </span>
                 </div>
-                <span
-                  className="hidden sm:block text-[13px] font-semibold text-[#1A2332]"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
-                >
+                <span className="hidden sm:block text-[13px] font-medium text-[#18181B]">
                   {displayName}
                 </span>
                 <ChevronDown
-                  className={`h-3 w-3 text-[#1A2332]/30 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                  className={`h-3 w-3 text-[#18181B]/30 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-lg border border-[#1A2332]/[0.08] py-1 z-50 overflow-hidden">
-                  <div className="px-3.5 py-2.5 border-b border-[#1A2332]/[0.05]">
-                    <p
-                      className="text-[13px] font-semibold text-[#1A2332]"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
-                    >
+                <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.06)] border border-[#18181B]/[0.07] py-1 z-50 overflow-hidden">
+                  <div className="px-3.5 py-2.5 border-b border-[#18181B]/[0.05]">
+                    <p className="text-[13px] font-semibold text-[#18181B]">
                       {displayName}
                     </p>
-                    <p className="text-[11px] text-[#1A2332]/40 truncate">
+                    <p className="text-[11px] text-[#18181B]/40 truncate">
                       {user.email}
                     </p>
                   </div>
                   <div className="py-0.5">
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#1A2332]/65 hover:bg-[#1A2332]/[0.03] hover:text-[#1A2332] transition-colors"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#18181B]/60 hover:bg-[#18181B]/[0.03] hover:text-[#18181B] transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
                       <Settings className="h-[14px] w-[14px]" strokeWidth={1.8} />
                       Settings
                     </Link>
                   </div>
-                  <div className="border-t border-[#1A2332]/[0.05] py-0.5">
+                  <div className="border-t border-[#18181B]/[0.05] py-0.5">
                     <button
                       onClick={handleSignOut}
                       className="flex w-full items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-500/80 hover:bg-red-50/50 hover:text-red-600 transition-colors"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       <LogOut className="h-[14px] w-[14px]" strokeWidth={1.8} />
                       Sign out

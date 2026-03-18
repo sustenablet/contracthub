@@ -24,10 +24,6 @@ import {
 } from "lucide-react";
 import { SERVICE_TYPES } from "@/lib/types";
 import Link from "next/link";
-
-const syne = { fontFamily: "'Syne', sans-serif" } as const;
-const fraunces = { fontFamily: "'Fraunces', serif" } as const;
-
 type SettingsTab = "profile" | "business" | "notifications" | "account";
 
 const tabs: { id: SettingsTab; label: string; icon: React.ElementType; description: string }[] = [
@@ -46,9 +42,9 @@ function FieldGroup({ children }: { children: React.ReactNode }) {
 function SectionHeader({ title, description }: { title: string; description?: string }) {
   return (
     <div className="pb-1">
-      <h3 className="text-[14px] font-bold text-[#1A2332]" style={syne}>{title}</h3>
+      <h3 className="text-[14px] font-bold text-[#18181B]">{title}</h3>
       {description && (
-        <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>{description}</p>
+        <p className="text-[12px] text-[#18181B]/35 mt-0.5">{description}</p>
       )}
     </div>
   );
@@ -67,13 +63,13 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1.5 text-[12px] font-semibold text-[#1A2332]/50" style={syne}>
+      <label className="flex items-center gap-1.5 text-[12px] font-semibold text-[#18181B]/50">
         {Icon && <Icon className="h-3 w-3" strokeWidth={1.8} />}
         {label}
       </label>
       {children}
       {hint && (
-        <p className="text-[11px] text-[#1A2332]/25" style={syne}>{hint}</p>
+        <p className="text-[11px] text-[#18181B]/25">{hint}</p>
       )}
     </div>
   );
@@ -83,8 +79,8 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
   return (
     <input
       {...props}
-      className={`w-full px-3 py-2 text-[13px] bg-[#1A2332]/[0.015] border border-[#1A2332]/[0.08] rounded-lg outline-none transition-all focus:border-[#1A2332]/20 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#1A2332]/20 ${className || ""}`}
-      style={{ ...syne, ...props.style }}
+      className={`w-full px-3 py-2 text-[13px] bg-[#18181B]/[0.015] border border-[#18181B]/[0.08] rounded-lg outline-none transition-all focus:border-[#18181B]/20 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#18181B]/20 ${className || ""}`}
+      style={props.style}
     />
   );
 }
@@ -93,8 +89,8 @@ function TextArea({ className, ...props }: React.TextareaHTMLAttributes<HTMLText
   return (
     <textarea
       {...props}
-      className={`w-full px-3 py-2 text-[13px] bg-[#1A2332]/[0.015] border border-[#1A2332]/[0.08] rounded-lg outline-none transition-all focus:border-[#1A2332]/20 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#1A2332]/20 resize-none ${className || ""}`}
-      style={{ ...syne, ...props.style }}
+      className={`w-full px-3 py-2 text-[13px] bg-[#18181B]/[0.015] border border-[#18181B]/[0.08] rounded-lg outline-none transition-all focus:border-[#18181B]/20 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#18181B]/20 resize-none ${className || ""}`}
+      style={props.style}
     />
   );
 }
@@ -113,7 +109,7 @@ function Toggle({
       aria-checked={enabled}
       onClick={() => onChange(!enabled)}
       className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${
-        enabled ? "bg-[#1A2332]" : "bg-[#1A2332]/[0.12]"
+        enabled ? "bg-[#18181B]" : "bg-[#18181B]/[0.12]"
       }`}
     >
       <span
@@ -137,10 +133,10 @@ function NotifRow({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center justify-between py-3.5 border-b border-[#1A2332]/[0.04] last:border-0">
+    <div className="flex items-center justify-between py-3.5 border-b border-[#18181B]/[0.04] last:border-0">
       <div className="pr-4">
-        <p className="text-[13px] font-semibold text-[#1A2332]" style={syne}>{label}</p>
-        <p className="text-[12px] text-[#1A2332]/35 mt-0.5 leading-relaxed" style={syne}>{description}</p>
+        <p className="text-[13px] font-semibold text-[#18181B]">{label}</p>
+        <p className="text-[12px] text-[#18181B]/35 mt-0.5 leading-relaxed">{description}</p>
       </div>
       <Toggle enabled={enabled} onChange={onChange} />
     </div>
@@ -149,7 +145,7 @@ function NotifRow({
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#1A2332]/[0.06] shadow-sm overflow-hidden">
+    <div className="bg-white rounded-lg border border-[#E2DED8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
       {children}
     </div>
   );
@@ -157,10 +153,10 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function CardHeader({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="px-6 py-4 border-b border-[#1A2332]/[0.05]">
-      <h2 className="text-[15px] font-bold text-[#1A2332]" style={syne}>{title}</h2>
+    <div className="px-6 py-4 border-b border-[#18181B]/[0.05]">
+      <h2 className="text-[15px] font-bold text-[#18181B]">{title}</h2>
       {description && (
-        <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>{description}</p>
+        <p className="text-[12px] text-[#18181B]/35 mt-0.5">{description}</p>
       )}
     </div>
   );
@@ -172,7 +168,7 @@ function CardBody({ children, className }: { children: React.ReactNode; classNam
 
 function CardFooter({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-6 py-4 border-t border-[#1A2332]/[0.05] flex justify-end gap-3">
+    <div className="px-6 py-4 border-t border-[#18181B]/[0.05] flex justify-end gap-3">
       {children}
     </div>
   );
@@ -184,8 +180,7 @@ function SaveButton({ loading, onClick }: { loading: boolean; onClick?: () => vo
       type="submit"
       disabled={loading}
       onClick={onClick}
-      className="flex items-center gap-2 px-5 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-[13px] font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      style={syne}
+      className="flex items-center gap-2 px-5 py-2 bg-[#18181B] hover:bg-[#18181B]/90 text-white text-[13px] font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
       {loading ? "Saving..." : "Save Changes"}
@@ -218,6 +213,7 @@ export default function SettingsPage() {
   const [taxRate, setTaxRate] = useState("0");
   const [paymentTerms, setPaymentTerms] = useState("14");
   const [defaultDuration, setDefaultDuration] = useState("120");
+  const [businessSaving, setBusinessSaving] = useState(false);
 
   // Notifications
   const [notifJobReminder, setNotifJobReminder] = useState(true);
@@ -225,6 +221,7 @@ export default function SettingsPage() {
   const [notifPaymentReceived, setNotifPaymentReceived] = useState(true);
   const [notifNewClient, setNotifNewClient] = useState(false);
   const [notifWeeklySummary, setNotifWeeklySummary] = useState(true);
+  const [notifSaving, setNotifSaving] = useState(false);
 
   // Account
   const [subscriptionStatus, setSubscriptionStatus] = useState("trialing");
@@ -240,7 +237,7 @@ export default function SettingsPage() {
 
       const { data } = await supabase
         .from("users")
-        .select("display_name, business_name, phone, subscription_status, subscription_plan, trial_start_date")
+        .select("display_name, business_name, phone, subscription_status, subscription_plan, trial_start_date, settings")
         .eq("id", user.id)
         .single();
 
@@ -251,20 +248,68 @@ export default function SettingsPage() {
         setSubscriptionStatus(data.subscription_status || "trialing");
         setSubscriptionPlan(data.subscription_plan || "solo");
         setTrialStart(data.trial_start_date || "");
+
+        // Parse settings JSON
+        const settings = (data.settings || {}) as Record<string, unknown>;
+        const biz = (settings.business || {}) as Record<string, unknown>;
+        const notif = (settings.notifications || {}) as Record<string, unknown>;
+
+        // Business settings
+        if (Array.isArray(biz.service_types) && biz.service_types.length > 0) {
+          setServiceTypes(biz.service_types as string[]);
+        }
+        if (biz.default_rate != null) setDefaultRate(String(biz.default_rate));
+        if (biz.tax_rate != null) setTaxRate(String(biz.tax_rate));
+        if (biz.payment_terms != null) setPaymentTerms(String(biz.payment_terms));
+        if (biz.default_duration != null) setDefaultDuration(String(biz.default_duration));
+
+        // Business address from settings
+        const addr = (biz.business_address || {}) as Record<string, string>;
+        if (addr.street) setBusinessStreet(addr.street);
+        if (addr.city) setBusinessCity(addr.city);
+        if (addr.state) setBusinessState(addr.state);
+        if (addr.zip) setBusinessZip(addr.zip);
+
+        // Notification settings
+        if (notif.job_reminder != null) setNotifJobReminder(!!notif.job_reminder);
+        if (notif.invoice_reminder != null) setNotifInvoiceReminder(!!notif.invoice_reminder);
+        if (notif.payment_received != null) setNotifPaymentReceived(!!notif.payment_received);
+        if (notif.new_client != null) setNotifNewClient(!!notif.new_client);
+        if (notif.weekly_summary != null) setNotifWeeklySummary(!!notif.weekly_summary);
       }
       setInitialLoading(false);
     }
     load();
   }, [supabase]);
 
+  // Helper to read current settings from DB and merge updates
+  async function mergeSettings(userId: string, path: string, value: unknown) {
+    const { data: current } = await supabase
+      .from("users")
+      .select("settings")
+      .eq("id", userId)
+      .single();
+
+    const settings = ((current?.settings || {}) as Record<string, unknown>);
+    settings[path] = value;
+
+    const { error } = await supabase
+      .from("users")
+      .update({ settings, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+
+    return error;
+  }
+
   async function handleProfileSave(e: React.FormEvent) {
     e.preventDefault();
     setProfileSaving(true);
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setProfileSaving(false); return; }
 
-    const { error } = await supabase
+    // Update profile fields
+    const { error: profileError } = await supabase
       .from("users")
       .update({
         display_name: displayName,
@@ -274,12 +319,85 @@ export default function SettingsPage() {
       })
       .eq("id", user.id);
 
-    if (error) {
-      toast.error(error.message);
+    if (profileError) {
+      toast.error(profileError.message);
+      setProfileSaving(false);
+      return;
+    }
+
+    // Also persist business address in settings.business.business_address
+    const addressError = await mergeSettings(user.id, "business", {
+      ...(await getCurrentBusinessSettings(user.id)),
+      business_address: {
+        street: businessStreet,
+        city: businessCity,
+        state: businessState,
+        zip: businessZip,
+      },
+    });
+
+    if (addressError) {
+      toast.error("Profile saved but address preferences failed");
     } else {
       toast.success("Profile updated");
     }
     setProfileSaving(false);
+  }
+
+  async function getCurrentBusinessSettings(userId: string) {
+    const { data } = await supabase.from("users").select("settings").eq("id", userId).single();
+    const settings = ((data?.settings || {}) as Record<string, unknown>);
+    return (settings.business || {}) as Record<string, unknown>;
+  }
+
+  async function handleBusinessSave() {
+    setBusinessSaving(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setBusinessSaving(false); return; }
+
+    const bizSettings = {
+      service_types: serviceTypes,
+      default_rate: parseFloat(defaultRate) || 0,
+      tax_rate: parseFloat(taxRate) || 0,
+      payment_terms: parseInt(paymentTerms) || 14,
+      default_duration: parseInt(defaultDuration) || 120,
+      business_address: {
+        street: businessStreet,
+        city: businessCity,
+        state: businessState,
+        zip: businessZip,
+      },
+    };
+
+    const error = await mergeSettings(user.id, "business", bizSettings);
+    if (error) {
+      toast.error("Failed to save business settings");
+    } else {
+      toast.success("Business defaults saved");
+    }
+    setBusinessSaving(false);
+  }
+
+  async function handleNotificationsSave() {
+    setNotifSaving(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setNotifSaving(false); return; }
+
+    const notifSettings = {
+      job_reminder: notifJobReminder,
+      invoice_reminder: notifInvoiceReminder,
+      payment_received: notifPaymentReceived,
+      new_client: notifNewClient,
+      weekly_summary: notifWeeklySummary,
+    };
+
+    const error = await mergeSettings(user.id, "notifications", notifSettings);
+    if (error) {
+      toast.error("Failed to save notification preferences");
+    } else {
+      toast.success("Notification preferences saved");
+    }
+    setNotifSaving(false);
   }
 
   function addServiceType() {
@@ -311,7 +429,7 @@ export default function SettingsPage() {
   if (initialLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-5 w-5 text-[#1A2332]/30 animate-spin" />
+        <Loader2 className="h-5 w-5 text-[#18181B]/30 animate-spin" />
       </div>
     );
   }
@@ -320,10 +438,10 @@ export default function SettingsPage() {
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#1A2332]" style={fraunces}>
+        <h1 className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]">
           Settings
         </h1>
-        <p className="text-[13px] text-[#1A2332]/40 mt-0.5" style={syne}>
+        <p className="text-[13px] text-[#18181B]/40 mt-0.5">
           Manage your profile, business, and account preferences
         </p>
       </div>
@@ -341,19 +459,18 @@ export default function SettingsPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all whitespace-nowrap lg:whitespace-normal min-w-fit ${
                     isActive
-                      ? "bg-white shadow-sm border border-[#1A2332]/[0.06] text-[#1A2332]"
-                      : "text-[#1A2332]/40 hover:text-[#1A2332]/65 hover:bg-[#1A2332]/[0.02]"
+                      ? "bg-white shadow-sm border border-[#18181B]/[0.06] text-[#18181B]"
+                      : "text-[#18181B]/40 hover:text-[#18181B]/65 hover:bg-[#18181B]/[0.02]"
                   }`}
-                  style={syne}
                 >
                   <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    isActive ? "bg-[#1A2332]/[0.06]" : "bg-transparent"
+                    isActive ? "bg-[#18181B]/[0.06]" : "bg-transparent"
                   }`}>
                     <Icon className="h-4 w-4" strokeWidth={1.8} />
                   </div>
                   <div className="hidden lg:block">
                     <p className="text-[13px] font-semibold leading-tight">{tab.label}</p>
-                    <p className={`text-[11px] mt-0.5 ${isActive ? "text-[#1A2332]/40" : "text-[#1A2332]/25"}`}>
+                    <p className={`text-[11px] mt-0.5 ${isActive ? "text-[#18181B]/40" : "text-[#18181B]/25"}`}>
                       {tab.description}
                     </p>
                   </div>
@@ -376,8 +493,8 @@ export default function SettingsPage() {
                   <CardBody className="space-y-5">
                     {/* Avatar + name row */}
                     <div className="flex items-start gap-4">
-                      <div className="h-14 w-14 rounded-xl bg-[#1A2332]/[0.07] flex items-center justify-center shrink-0">
-                        <span className="text-[#1A2332] text-lg font-bold" style={syne}>
+                      <div className="h-14 w-14 rounded-xl bg-[#18181B]/[0.07] flex items-center justify-center shrink-0">
+                        <span className="text-[#18181B] text-lg font-bold">
                           {displayName ? displayName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "?"}
                         </span>
                       </div>
@@ -486,8 +603,7 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={addServiceType}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-[13px] font-semibold rounded-lg transition-colors shrink-0"
-                      style={syne}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/90 text-white text-[13px] font-semibold rounded-lg transition-colors shrink-0"
                     >
                       <Plus className="h-3.5 w-3.5" strokeWidth={2} />
                       Add
@@ -498,16 +614,16 @@ export default function SettingsPage() {
                     {serviceTypes.map((service, index) => (
                       <div
                         key={`${service}-${index}`}
-                        className="flex items-center gap-3 px-3 py-2.5 bg-[#1A2332]/[0.015] border border-[#1A2332]/[0.05] rounded-lg group hover:bg-[#1A2332]/[0.03] transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 bg-[#18181B]/[0.015] border border-[#18181B]/[0.05] rounded-lg group hover:bg-[#18181B]/[0.03] transition-colors"
                       >
-                        <div className="h-1.5 w-1.5 rounded-full bg-[#1A2332]/20 shrink-0" />
-                        <span className="flex-1 text-[13px] text-[#1A2332]/70" style={syne}>
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#18181B]/20 shrink-0" />
+                        <span className="flex-1 text-[13px] text-[#18181B]/70">
                           {service}
                         </span>
                         <button
                           type="button"
                           onClick={() => removeServiceType(index)}
-                          className="p-1 rounded text-[#1A2332]/15 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                          className="p-1 rounded text-[#18181B]/15 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <X className="h-3.5 w-3.5" />
                         </button>
@@ -515,7 +631,7 @@ export default function SettingsPage() {
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-[#1A2332]/25" style={syne}>
+                  <p className="text-[11px] text-[#18181B]/25">
                     {serviceTypes.length} service type{serviceTypes.length !== 1 ? "s" : ""} configured
                   </p>
                 </CardBody>
@@ -527,7 +643,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label="Default Hourly Rate" icon={DollarSign} hint="Used when creating new jobs">
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#1A2332]/30" style={syne}>$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#18181B]/30">$</span>
                         <Input
                           type="number"
                           min="0"
@@ -552,7 +668,7 @@ export default function SettingsPage() {
                           className="pr-7"
                           placeholder="0"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#1A2332]/30" style={syne}>%</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#18181B]/30">%</span>
                       </div>
                     </Field>
 
@@ -567,13 +683,13 @@ export default function SettingsPage() {
                           className="pr-12"
                           placeholder="120"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#1A2332]/25" style={syne}>min</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#18181B]/25">min</span>
                       </div>
                     </Field>
 
                     <Field label="Payment Terms" icon={Hash} hint="Days until invoice is due">
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-[#1A2332]/25" style={syne}>Net</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-[#18181B]/25">Net</span>
                         <Input
                           type="number"
                           min="0"
@@ -583,20 +699,13 @@ export default function SettingsPage() {
                           className="pl-10"
                           placeholder="14"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#1A2332]/25" style={syne}>days</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#18181B]/25">days</span>
                       </div>
                     </Field>
                   </div>
                 </CardBody>
                 <CardFooter>
-                  <button
-                    type="button"
-                    onClick={() => toast.success("Business defaults saved")}
-                    className="flex items-center gap-2 px-5 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-[13px] font-semibold rounded-lg transition-colors"
-                    style={syne}
-                  >
-                    Save Defaults
-                  </button>
+                  <SaveButton loading={businessSaving} onClick={handleBusinessSave} />
                 </CardFooter>
               </Card>
             </>
@@ -640,20 +749,13 @@ export default function SettingsPage() {
                   />
                 </CardBody>
                 <CardFooter>
-                  <button
-                    type="button"
-                    onClick={() => toast.success("Notification preferences saved")}
-                    className="flex items-center gap-2 px-5 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-[13px] font-semibold rounded-lg transition-colors"
-                    style={syne}
-                  >
-                    Save Preferences
-                  </button>
+                  <SaveButton loading={notifSaving} onClick={handleNotificationsSave} />
                 </CardFooter>
               </Card>
 
-              <div className="bg-[#1A2332]/[0.02] rounded-xl border border-[#1A2332]/[0.05] px-5 py-4">
-                <p className="text-[12px] text-[#1A2332]/35 leading-relaxed" style={syne}>
-                  Email notifications are sent to <span className="font-semibold text-[#1A2332]/50">{email}</span>.
+              <div className="bg-[#18181B]/[0.02] rounded-xl border border-[#18181B]/[0.05] px-5 py-4">
+                <p className="text-[12px] text-[#18181B]/35 leading-relaxed">
+                  Email notifications are sent to <span className="font-semibold text-[#18181B]/50">{email}</span>.
                   To change your email address, update it through your login provider.
                 </p>
               </div>
@@ -666,46 +768,45 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader title="Subscription" />
                 <CardBody className="space-y-0">
-                  <div className="flex items-center justify-between py-3.5 border-b border-[#1A2332]/[0.04]">
+                  <div className="flex items-center justify-between py-3.5 border-b border-[#18181B]/[0.04]">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#1A2332]" style={syne}>Current Plan</p>
-                      <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>
+                      <p className="text-[13px] font-semibold text-[#18181B]">Current Plan</p>
+                      <p className="text-[12px] text-[#18181B]/35 mt-0.5">
                         {subscriptionPlan === "solo" ? "Solo Cleaner" : "Team"} Plan
                       </p>
                     </div>
                     <span
-                      className="px-2.5 py-1 text-[10px] font-semibold bg-[#1A2332]/[0.06] text-[#1A2332]/60 rounded-md uppercase tracking-wider"
-                      style={syne}
+                      className="px-2.5 py-1 text-[10px] font-semibold bg-[#18181B]/[0.06] text-[#18181B]/60 rounded-md uppercase tracking-wider"
                     >
                       {subscriptionStatus}
                     </span>
                   </div>
 
                   {subscriptionStatus === "trialing" && (
-                    <div className="flex items-center justify-between py-3.5 border-b border-[#1A2332]/[0.04]">
+                    <div className="flex items-center justify-between py-3.5 border-b border-[#18181B]/[0.04]">
                       <div>
-                        <p className="text-[13px] font-semibold text-[#1A2332]" style={syne}>Trial Period</p>
-                        <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>
+                        <p className="text-[13px] font-semibold text-[#18181B]">Trial Period</p>
+                        <p className="text-[12px] text-[#18181B]/35 mt-0.5">
                           {getTrialDaysLeft()} days remaining in your free trial
                         </p>
                       </div>
-                      <div className="h-8 w-8 rounded-lg bg-[#1A2332]/[0.05] flex items-center justify-center">
-                        <Clock className="h-4 w-4 text-[#1A2332]/40" strokeWidth={1.8} />
+                      <div className="h-8 w-8 rounded-lg bg-[#18181B]/[0.05] flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-[#18181B]/40" strokeWidth={1.8} />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between py-3.5 border-b border-[#1A2332]/[0.04]">
+                  <div className="flex items-center justify-between py-3.5 border-b border-[#18181B]/[0.04]">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#1A2332]" style={syne}>Email</p>
-                      <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>{email}</p>
+                      <p className="text-[13px] font-semibold text-[#18181B]">Email</p>
+                      <p className="text-[12px] text-[#18181B]/35 mt-0.5">{email}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between py-3.5">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#1A2332]" style={syne}>Payment Method</p>
-                      <p className="text-[12px] text-[#1A2332]/35 mt-0.5" style={syne}>
+                      <p className="text-[13px] font-semibold text-[#18181B]">Payment Method</p>
+                      <p className="text-[12px] text-[#18181B]/35 mt-0.5">
                         {subscriptionStatus === "trialing" ? "No payment method on file" : "Managed by Square"}
                       </p>
                     </div>
@@ -716,13 +817,13 @@ export default function SettingsPage() {
               {subscriptionStatus === "trialing" && (
                 <Link
                   href="/dashboard/upgrade"
-                  className="flex items-center justify-between p-5 bg-[#1A2332] rounded-2xl group hover:bg-[#1A2332]/95 transition-colors"
+                  className="flex items-center justify-between p-5 bg-[#18181B] rounded-2xl group hover:bg-[#18181B]/95 transition-colors"
                 >
                   <div>
-                    <p className="text-[14px] font-semibold text-white" style={syne}>
+                    <p className="text-[14px] font-semibold text-white">
                       Upgrade your plan
                     </p>
-                    <p className="text-[12px] text-white/45 mt-0.5" style={syne}>
+                    <p className="text-[12px] text-white/45 mt-0.5">
                       Get unlimited access to all MaidHub features
                     </p>
                   </div>
@@ -734,11 +835,11 @@ export default function SettingsPage() {
                 <div className="px-6 py-4 border-b border-red-100">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-red-400" strokeWidth={1.8} />
-                    <h2 className="text-[15px] font-bold text-red-500" style={syne}>Danger Zone</h2>
+                    <h2 className="text-[15px] font-bold text-red-500">Danger Zone</h2>
                   </div>
                 </div>
                 <CardBody className="space-y-3">
-                  <p className="text-[12px] text-[#1A2332]/40 leading-relaxed" style={syne}>
+                  <p className="text-[12px] text-[#18181B]/40 leading-relaxed">
                     Deleting your account is permanent. All your data including clients, jobs, invoices,
                     and estimates will be permanently removed. This action cannot be undone.
                   </p>
@@ -746,7 +847,6 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => toast.error("Contact support to delete your account")}
                     className="px-4 py-2 text-[13px] font-semibold text-red-500 bg-red-50 border border-red-100 rounded-lg hover:bg-red-100 transition-colors"
-                    style={syne}
                   >
                     Delete Account
                   </button>

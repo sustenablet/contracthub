@@ -88,8 +88,7 @@ export function UpcomingJobsTable() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h2
-          className="text-base font-semibold text-[#1A2332]"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="text-base font-semibold text-[#1B1F23]"
         >
           Upcoming Jobs
         </h2>
@@ -102,19 +101,17 @@ export function UpcomingJobsTable() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 w-44 transition-all"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+             
             />
           </div>
           <button
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1B1F23]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             Filter
           </button>
           <button
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors hidden sm:flex"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1B1F23]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors hidden sm:flex"
           >
             ↕ Sort by
           </button>
@@ -127,14 +124,12 @@ export function UpcomingJobsTable() {
             <Briefcase className="h-6 w-6 text-teal-400" />
           </div>
           <p
-            className="text-sm font-semibold text-[#1A2332]"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="text-sm font-semibold text-[#1B1F23]"
           >
             No jobs found
           </p>
           <p
             className="text-xs text-gray-400 mt-1"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             {search
               ? "Try a different search term"
@@ -148,43 +143,36 @@ export function UpcomingJobsTable() {
               <tr className="bg-gray-50/80 border-b border-gray-100">
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Booking ID
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Client
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden md:table-cell"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Cleaner
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden lg:table-cell"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Service Type
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden lg:table-cell"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Date &amp; Time
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden xl:table-cell"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Location
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Status
                 </th>
@@ -199,43 +187,37 @@ export function UpcomingJobsTable() {
                     key={job.id}
                     className="bg-white hover:bg-gray-50/50 transition-colors"
                   >
-                    <td className="px-4 py-3.5 text-xs font-mono text-[#1A2332]/50">
+                    <td className="px-4 py-3.5 text-xs font-mono text-[#1B1F23]/50">
                       {job.id}
                     </td>
                     <td
-                      className="px-4 py-3.5 text-xs font-semibold text-[#1A2332]"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-4 py-3.5 text-xs font-semibold text-[#1B1F23]"
                     >
                       {job.client}
                     </td>
                     <td
-                      className="px-4 py-3.5 text-xs text-[#1A2332]/55 hidden md:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden md:table-cell"
                     >
                       {job.cleaner}
                     </td>
                     <td
-                      className="px-4 py-3.5 text-xs text-[#1A2332]/55 hidden lg:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden lg:table-cell"
                     >
                       {job.serviceType}
                     </td>
                     <td
-                      className="px-4 py-3.5 text-xs text-[#1A2332]/55 hidden lg:table-cell whitespace-nowrap"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden lg:table-cell whitespace-nowrap"
                     >
                       {job.dateTime}
                     </td>
                     <td
-                      className="px-4 py-3.5 text-xs text-[#1A2332]/55 hidden xl:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden xl:table-cell"
                     >
                       {job.location}
                     </td>
                     <td className="px-4 py-3.5">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${status.className}`}
-                        style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {status.label}
                       </span>

@@ -6,7 +6,6 @@ import {
   Search,
   Plus,
   SlidersHorizontal,
-  MoreHorizontal,
   UserRound,
   Mail,
   Phone,
@@ -236,7 +235,6 @@ export default function ClientsPage() {
       <div className="flex items-center justify-center h-64">
         <p
           className="text-sm text-gray-400 animate-pulse"
-          style={{ fontFamily: "'Syne', sans-serif" }}
         >
           Loading...
         </p>
@@ -249,72 +247,62 @@ export default function ClientsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1
-            className="text-2xl font-bold text-[#1A2332]"
-            style={{ fontFamily: "'Fraunces', serif" }}
-          >
+          <h1 className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]">
             Clients
           </h1>
-          <p
-            className="text-sm text-gray-400 mt-0.5"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
+          <p className="text-[12.5px] text-[#18181B]/38 mt-0.5">
             Manage your client relationships
           </p>
         </div>
         <button
           onClick={openPanel}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg shadow-sm transition-colors"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           Add Client
         </button>
       </div>
 
       {/* Table card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8]">
         {/* Toolbar */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#ECEAE6]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-350" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#18181B]/25" />
             <input
               type="text"
               placeholder="Search clients..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 w-52 transition-all"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="pl-9 pr-3 py-1.5 text-[12.5px] bg-[#F6F4F1] border border-[#E2DED8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 w-52 transition-all placeholder:text-[#18181B]/30"
             />
           </div>
           <div className="relative">
             <button
               onClick={() => setFilterOpen(!filterOpen)}
-              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium rounded-md transition-colors ${
                 statusFilter !== "all"
-                  ? "text-[#1A2332] bg-[#1A2332]/[0.08] border border-[#1A2332]/20"
-                  : "text-[#1A2332]/55 bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                  ? "text-[#18181B] bg-[#18181B]/[0.07] border border-[#18181B]/15"
+                  : "text-[#18181B]/50 bg-[#F6F4F1] border border-[#E2DED8] hover:bg-[#ECEAE6]"
               }`}
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
               Filter
               {statusFilter !== "all" && (
-                <span className="h-1.5 w-1.5 rounded-full bg-[#1A2332]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#2A7C6F]" />
               )}
             </button>
             {filterOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.06)] border border-[#E2DED8] py-1 z-50">
                   {(["all", "active", "archived"] as const).map((opt) => (
                     <button
                       key={opt}
                       onClick={() => { setStatusFilter(opt); setFilterOpen(false); }}
-                      className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors ${
-                        statusFilter === opt ? "text-[#1A2332] bg-[#1A2332]/[0.04]" : "text-[#1A2332]/60 hover:bg-gray-50"
+                      className={`w-full text-left px-3 py-2 text-[12px] font-medium transition-colors ${
+                        statusFilter === opt ? "text-[#18181B] bg-[#18181B]/[0.04]" : "text-[#18181B]/55 hover:bg-[#F6F4F1]"
                       }`}
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       {opt === "all" ? "All Clients" : opt.charAt(0).toUpperCase() + opt.slice(1)}
                     </button>
@@ -326,44 +314,30 @@ export default function ClientsPage() {
         </div>
 
         {isEmpty ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center px-6">
-            <div className="h-16 w-16 rounded-2xl bg-teal-50 flex items-center justify-center mb-4">
-              <UserRound className="h-8 w-8 text-teal-400" />
+          <div className="flex flex-col items-center justify-center py-16 text-center px-6">
+            <div className="h-12 w-12 rounded-xl bg-[#E4F3F0] flex items-center justify-center mb-3">
+              <UserRound className="h-6 w-6 text-[#2A7C6F]" strokeWidth={1.5} />
             </div>
-            <h3
-              className="text-base font-semibold text-[#1A2332] mb-2"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
+            <h3 className="text-[14px] font-semibold text-[#18181B] mb-1.5 font-display">
               No clients yet
             </h3>
-            <p
-              className="text-sm text-gray-400 mb-6 max-w-xs leading-relaxed"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
-              Keep track of your clients, their contact info, and job history all
-              in one place.
+            <p className="text-[12px] text-[#18181B]/40 mb-5 max-w-xs leading-relaxed">
+              Keep track of your clients, their contact info, and job history all in one place.
             </p>
             <button
               onClick={openPanel}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg transition-colors"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" />
               Add Client
             </button>
           </div>
         ) : noResults ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <p
-              className="text-sm font-semibold text-[#1A2332]"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-[13px] font-semibold text-[#18181B]">
               No results for &ldquo;{search}&rdquo;
             </p>
-            <p
-              className="text-xs text-gray-400 mt-1"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
+            <p className="text-[12px] text-[#18181B]/38 mt-1">
               Try a different name, email, or phone number
             </p>
           </div>
@@ -371,47 +345,28 @@ export default function ClientsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                <tr className="border-b border-[#ECEAE6]">
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em]">
                     Name
                   </th>
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden md:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em] hidden md:table-cell">
                     Email
                   </th>
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden md:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em] hidden md:table-cell">
                     Phone
                   </th>
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden lg:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em] hidden lg:table-cell">
                     Address
                   </th>
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden xl:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em] hidden xl:table-cell">
                     Jobs
                   </th>
-                  <th
-                    className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
+                  <th className="text-left px-5 py-3 text-[10.5px] font-semibold text-[#18181B]/35 uppercase tracking-[0.06em]">
                     Status
                   </th>
-                  <th className="px-5 py-3 w-10" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-[#F4F2EF]">
                 {filtered.map((client, index) => {
                   const initials = getInitials(client.first_name, client.last_name);
                   const color = getAvatarColor(index);
@@ -419,86 +374,57 @@ export default function ClientsPage() {
                   const statusBadge =
                     client.status === "active"
                       ? "bg-green-50 text-green-700 ring-1 ring-inset ring-green-200"
-                      : "bg-gray-50 text-gray-500 ring-1 ring-inset ring-gray-200";
+                      : "bg-[#F6F4F1] text-[#18181B]/50 ring-1 ring-inset ring-[#E2DED8]";
 
                   return (
                     <tr
                       key={client.id}
                       onClick={() => router.push(`/dashboard/clients/${client.id}`)}
-                      className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+                      className="hover:bg-[#F9F8F6] transition-colors cursor-pointer"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div
-                            className={`h-8 w-8 rounded-full ${color} flex items-center justify-center text-xs font-bold shrink-0`}
-                            style={{ fontFamily: "'Syne', sans-serif" }}
-                          >
+                          <div className={`h-7 w-7 rounded-full ${color} flex items-center justify-center text-[10px] font-bold shrink-0`}>
                             {initials}
                           </div>
                           <div>
-                            <p
-                              className="text-sm font-semibold text-[#1A2332]"
-                              style={{ fontFamily: "'Syne', sans-serif" }}
-                            >
+                            <p className="text-[13px] font-semibold text-[#18181B]">
                               {client.first_name} {client.last_name}
                             </p>
-                            <p className="text-xs text-gray-400 md:hidden">
+                            <p className="text-[11px] text-[#18181B]/38 md:hidden">
                               {client.email}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 hidden md:table-cell">
+                      <td className="px-5 py-3.5 hidden md:table-cell">
                         <div className="flex items-center gap-1.5">
-                          <Mail className="h-3 w-3 text-gray-300 shrink-0" />
-                          <span
-                            className="text-xs text-[#1A2332]/60"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
-                          >
+                          <Mail className="h-3 w-3 text-[#18181B]/20 shrink-0" />
+                          <span className="text-[12px] text-[#18181B]/55">
                             {client.email || "\u2014"}
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 hidden md:table-cell">
+                      <td className="px-5 py-3.5 hidden md:table-cell">
                         <div className="flex items-center gap-1.5">
-                          <Phone className="h-3 w-3 text-gray-300 shrink-0" />
-                          <span
-                            className="text-xs text-[#1A2332]/60"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
-                          >
+                          <Phone className="h-3 w-3 text-[#18181B]/20 shrink-0" />
+                          <span className="text-[12px] text-[#18181B]/55">
                             {client.phone || "\u2014"}
                           </span>
                         </div>
                       </td>
-                      <td
-                        className="px-5 py-4 text-xs text-[#1A2332]/55 hidden lg:table-cell"
-                        style={{ fontFamily: "'Syne', sans-serif" }}
-                      >
+                      <td className="px-5 py-3.5 text-[12px] text-[#18181B]/50 hidden lg:table-cell">
                         {formatAddress(primaryAddress) || "\u2014"}
                       </td>
-                      <td className="px-5 py-4 hidden xl:table-cell">
-                        <span
-                          className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-[#1A2332]/[0.06] text-[#1A2332] text-xs font-bold"
-                          style={{ fontFamily: "'Syne', sans-serif" }}
-                        >
+                      <td className="px-5 py-3.5 hidden xl:table-cell">
+                        <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-[#18181B]/[0.06] text-[#18181B] text-[10px] font-bold">
                           {client.jobs_count}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold capitalize ${statusBadge}`}
-                          style={{ fontFamily: "'Syne', sans-serif" }}
-                        >
+                      <td className="px-5 py-3.5">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold capitalize ${statusBadge}`}>
                           {client.status}
                         </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-gray-300 hover:text-gray-500 p-1 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
                       </td>
                     </tr>
                   );

@@ -12,10 +12,6 @@ import {
   Loader2,
   Clock,
 } from "lucide-react";
-
-const syne = { fontFamily: "'Syne', sans-serif" } as const;
-const fraunces = { fontFamily: "'Fraunces', serif" } as const;
-
 type NotifCategory = "all" | "jobs" | "invoices" | "estimates";
 
 interface ActivityItem {
@@ -68,7 +64,21 @@ export default function NotificationsPage() {
   const [activeTab, setActiveTab] = useState<NotifCategory>("all");
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+  const [readIds, setReadIds] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
+    try {
+      const stored = localStorage.getItem("maidhub_read_notifs");
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  useEffect(() => {
+    if (readIds.size > 0) {
+      localStorage.setItem("maidhub_read_notifs", JSON.stringify([...readIds]));
+    }
+  }, [readIds]);
 
   const loadActivities = useCallback(async () => {
     setLoading(true);
@@ -257,16 +267,16 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1A2332]" style={fraunces}>
+          <h1 className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]">
             Notifications
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5" style={syne}>
+          <p className="text-sm text-gray-400 mt-0.5">
             {loading
               ? "Loading activity…"
               : unreadCount > 0
                 ? (
                   <span>
-                    <strong className="text-[#1A2332]">{unreadCount}</strong> unread
+                    <strong className="text-[#18181B]">{unreadCount}</strong> unread
                   </span>
                 )
                 : "You're all caught up"}
@@ -275,8 +285,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[#1A2332]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 shadow-sm transition-colors"
-            style={syne}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[#18181B]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 shadow-sm transition-colors"
           >
             <Check className="h-4 w-4" />
             Mark all read
@@ -285,7 +294,7 @@ export default function NotificationsPage() {
       </div>
 
       {/* Main Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] overflow-hidden">
         {/* Filter tabs */}
         <div className="flex items-center gap-1 p-3 border-b border-gray-100">
           {tabs.map((tab) => {
@@ -301,14 +310,13 @@ export default function NotificationsPage() {
                 onClick={() => setActiveTab(tab.value)}
                 className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
                   activeTab === tab.value
-                    ? "bg-[#1A2332]/[0.06] text-[#1A2332]"
-                    : "text-gray-400 hover:text-[#1A2332] hover:bg-gray-50"
+                    ? "bg-[#18181B]/[0.06] text-[#18181B]"
+                    : "text-gray-400 hover:text-[#18181B] hover:bg-gray-50"
                 }`}
-                style={syne}
               >
                 {tab.label}
                 {count > 0 && (
-                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-[#1A2332] text-white text-[9px] font-bold">
+                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-[#18181B] text-white text-[9px] font-bold">
                     {count}
                   </span>
                 )}
@@ -320,8 +328,8 @@ export default function NotificationsPage() {
         {/* Loading */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-6 w-6 text-[#1A2332]/30 animate-spin" />
-            <p className="text-sm text-gray-400 mt-3" style={syne}>
+            <Loader2 className="h-6 w-6 text-[#18181B]/30 animate-spin" />
+            <p className="text-sm text-gray-400 mt-3">
               Loading activity…
             </p>
           </div>
@@ -331,10 +339,10 @@ export default function NotificationsPage() {
             <div className="h-14 w-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
               <BellOff className="h-7 w-7 text-gray-300" />
             </div>
-            <p className="text-sm font-semibold text-[#1A2332]" style={syne}>
+            <p className="text-sm font-semibold text-[#18181B]">
               No activity yet
             </p>
-            <p className="text-xs text-gray-400 mt-1 max-w-xs" style={syne}>
+            <p className="text-xs text-gray-400 mt-1 max-w-xs">
               {activeTab === "all"
                 ? "Create clients, schedule jobs, and send invoices to see activity here"
                 : `No ${activeTab} activity yet`}
@@ -349,7 +357,7 @@ export default function NotificationsPage() {
                 <div
                   key={item.id}
                   className={`flex items-start gap-4 px-5 py-4 hover:bg-gray-50/50 transition-colors cursor-pointer ${
-                    item.unread ? "bg-[#1A2332]/[0.02]" : ""
+                    item.unread ? "bg-[#18181B]/[0.02]" : ""
                   }`}
                   onClick={() => markRead(item.id)}
                 >
@@ -364,27 +372,25 @@ export default function NotificationsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <p
-                        className={`text-sm font-semibold ${item.unread ? "text-[#1A2332]" : "text-[#1A2332]/70"}`}
-                        style={syne}
+                        className={`text-sm font-semibold ${item.unread ? "text-[#18181B]" : "text-[#18181B]/70"}`}
                       >
                         {item.title}
                       </p>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="flex items-center gap-1 text-xs text-gray-400 whitespace-nowrap" style={syne}>
+                        <span className="flex items-center gap-1 text-xs text-gray-400 whitespace-nowrap">
                           <Clock className="h-3 w-3" />
                           {item.relativeTime}
                         </span>
                         {item.unread && (
-                          <div className="h-2 w-2 rounded-full bg-[#1A2332] shrink-0" />
+                          <div className="h-2 w-2 rounded-full bg-[#18181B] shrink-0" />
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed" style={syne}>
+                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
                       {item.message}
                     </p>
                     <span
                       className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500 capitalize"
-                      style={syne}
                     >
                       {item.category}
                     </span>

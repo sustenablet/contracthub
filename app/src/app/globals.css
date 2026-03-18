@@ -7,8 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-sans), system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -116,12 +116,62 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* MaidHub Design Tokens */
+:root {
+  /* Typography */
+  --font-body: var(--font-sans), system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, serif;
+
+  /* Brand Colors */
+  --mh-ink: #18181B;
+  --mh-ink-light: #3F3F46;
+  --mh-ink-muted: #71717A;
+  --mh-ink-faint: #A1A1AA;
+  --mh-surface: #F6F4F1;
+  --mh-surface-raised: #FFFFFF;
+  --mh-surface-sunken: #EEECE8;
+  --mh-sidebar: #E9E7E3;
+  --mh-border: #E2DED8;
+  --mh-border-subtle: #ECEAE6;
+  --mh-accent: #2A7C6F;
+  --mh-accent-light: #E4F3F0;
+  --mh-accent-hover: #1F5F54;
+  --mh-warm: #B5804A;
+  --mh-warm-light: #FBF3E8;
+
+  /* Shadows */
+  --mh-shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --mh-shadow-dropdown: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+  --mh-shadow-panel: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+}
+
+/* Base typography */
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--mh-surface);
+  /* Subtle paper texture */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Refined card style */
+.mh-card {
+  background: var(--mh-surface-raised);
+  border: 1px solid var(--mh-border);
+  box-shadow: var(--mh-shadow-card);
+  border-radius: 10px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
   }
   html {
     @apply font-sans;

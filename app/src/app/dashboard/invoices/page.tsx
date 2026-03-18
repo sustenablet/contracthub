@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   Plus,
@@ -8,6 +9,7 @@ import {
   Receipt,
   X,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -63,10 +65,14 @@ const emptyLineItem = (): LineItem => ({
 });
 
 export default function InvoicesPage() {
+  const searchParams = useSearchParams();
+  const [userId, setUserId] = useState<string | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "unpaid" | "paid" | "void">("all");
+  const [filterOpen, setFilterOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
 
   // Form state
@@ -79,35 +85,59 @@ export default function InvoicesPage() {
   const [formDueDate, setFormDueDate] = useState(defaultDueDate());
   const [formNotes, setFormNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editInvoiceId, setEditInvoiceId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   // Client jobs for the optional job link
   const [clientJobs, setClientJobs] = useState<Job[]>([]);
 
+  // Fetch authenticated user on mount
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    })();
+  }, []);
+
   const fetchData = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     const [invRes, clientRes] = await Promise.all([
       supabase
         .from("invoices")
         .select("*, clients(*)")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false }),
       supabase
         .from("clients")
         .select("*")
+        .eq("user_id", userId)
         .eq("status", "active")
         .order("first_name"),
     ]);
     if (invRes.data) setInvoices(invRes.data as Invoice[]);
     if (clientRes.data) setClients(clientRes.data as Client[]);
     setLoading(false);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
+  // Auto-open form when navigated with clientId param
+  useEffect(() => {
+    const clientIdParam = searchParams.get("clientId");
+    if (clientIdParam && clients.length > 0) {
+      setFormClientId(clientIdParam);
+      setPanelOpen(true);
+      window.history.replaceState({}, "", "/dashboard/invoices");
+    }
+  }, [searchParams, clients]);
+
   // Fetch completed jobs when client changes
   useEffect(() => {
-    if (!formClientId) {
+    if (!formClientId || !userId) {
       setClientJobs([]);
       setFormJobId("");
       return;
@@ -116,12 +146,13 @@ export default function InvoicesPage() {
       const { data } = await supabase
         .from("jobs")
         .select("*")
+        .eq("user_id", userId)
         .eq("client_id", formClientId)
         .eq("status", "completed")
         .order("scheduled_date", { ascending: false });
       setClientJobs((data as Job[]) || []);
     })();
-  }, [formClientId]);
+  }, [formClientId, userId]);
 
   // When a job is selected, auto-add a line item
   useEffect(() => {
@@ -185,6 +216,7 @@ export default function InvoicesPage() {
 
   // Filter invoices
   const filtered = invoices.filter((inv) => {
+    if (statusFilter !== "all" && inv.status !== statusFilter) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     const clientName = inv.clients
@@ -198,6 +230,8 @@ export default function InvoicesPage() {
 
   // Open create panel
   function openCreate() {
+    setEditMode(false);
+    setEditInvoiceId(null);
     setFormClientId("");
     setFormJobId("");
     setFormLineItems([emptyLineItem()]);
@@ -208,8 +242,32 @@ export default function InvoicesPage() {
     setPanelOpen(true);
   }
 
+  // Open edit panel
+  function openEdit(inv: Invoice) {
+    setEditMode(true);
+    setEditInvoiceId(inv.id);
+    setFormClientId(inv.client_id);
+    setFormJobId(inv.job_id || "");
+    setFormLineItems(inv.line_items?.length ? [...inv.line_items] : [emptyLineItem()]);
+    // Reverse-calculate tax percent from total and line items
+    const lineSubtotal = (inv.line_items || []).reduce(
+      (sum, li) => sum + li.quantity * li.unit_price, 0
+    );
+    const taxPct = lineSubtotal > 0 && inv.total
+      ? Math.round(((inv.total - lineSubtotal) / lineSubtotal) * 10000) / 100
+      : 0;
+    setFormTaxPercent(Math.max(0, taxPct));
+    setFormDueDate(inv.due_date || defaultDueDate());
+    setFormNotes(inv.notes || "");
+    setPanelOpen(true);
+  }
+
   // Save invoice
   async function handleSave() {
+    if (!userId) {
+      toast.error("Not authenticated");
+      return;
+    }
     if (!formClientId) {
       toast.error("Please select a client.");
       return;
@@ -223,6 +281,7 @@ export default function InvoicesPage() {
     }
     setSaving(true);
     const { error } = await supabase.from("invoices").insert({
+      user_id: userId,
       client_id: formClientId,
       job_id: formJobId || null,
       line_items: formLineItems,
@@ -241,12 +300,53 @@ export default function InvoicesPage() {
     fetchData();
   }
 
+  // Update invoice
+  async function handleUpdate() {
+    if (!userId) {
+      toast.error("Not authenticated");
+      return;
+    }
+    if (!editInvoiceId || !formClientId) {
+      toast.error("Please select a client.");
+      return;
+    }
+    if (formLineItems.length === 0 || formLineItems.every((li) => !li.description)) {
+      toast.error("Add at least one line item.");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase
+      .from("invoices")
+      .update({
+        client_id: formClientId,
+        job_id: formJobId || null,
+        line_items: formLineItems,
+        total: Math.round(total * 100) / 100,
+        due_date: formDueDate || null,
+        notes: formNotes || null,
+      })
+      .eq("id", editInvoiceId)
+      .eq("user_id", userId);
+    setSaving(false);
+    if (error) {
+      toast.error("Failed to update invoice.");
+      return;
+    }
+    toast.success("Invoice updated.");
+    setPanelOpen(false);
+    setEditMode(false);
+    setEditInvoiceId(null);
+    fetchData();
+  }
+
   // Mark as Paid
   async function markPaid(inv: Invoice) {
+    if (!userId) return;
     const { error } = await supabase
       .from("invoices")
       .update({ status: "paid", payment_date: todayStr() })
-      .eq("id", inv.id);
+      .eq("id", inv.id)
+      .eq("user_id", userId);
     if (error) {
       toast.error("Failed to update invoice.");
       return;
@@ -264,15 +364,34 @@ export default function InvoicesPage() {
 
   // Void invoice
   async function voidInvoice(inv: Invoice) {
+    if (!userId) return;
     const { error } = await supabase
       .from("invoices")
       .update({ status: "void" })
-      .eq("id", inv.id);
+      .eq("id", inv.id)
+      .eq("user_id", userId);
     if (error) {
       toast.error("Failed to void invoice.");
       return;
     }
     toast.success("Invoice voided.");
+    fetchData();
+  }
+
+  async function deleteInvoice(inv: Invoice) {
+    if (!userId) return;
+    if (deleteConfirmId !== inv.id) {
+      setDeleteConfirmId(inv.id);
+      setTimeout(() => setDeleteConfirmId(null), 3000);
+      return;
+    }
+    const { error } = await supabase.from("invoices").delete().eq("id", inv.id).eq("user_id", userId);
+    if (error) {
+      toast.error("Failed to delete invoice.");
+      return;
+    }
+    toast.success("Invoice deleted.");
+    setDeleteConfirmId(null);
     fetchData();
   }
 
@@ -299,22 +418,19 @@ export default function InvoicesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1
-            className="text-2xl font-bold text-[#1A2332]"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]"
           >
             Invoices
           </h1>
           <p
             className="text-sm text-gray-400 mt-0.5"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Track billing and payments
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg shadow-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Invoice
@@ -323,44 +439,38 @@ export default function InvoicesPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+        <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
           <p
             className="text-xs font-semibold text-gray-400 uppercase tracking-wider"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Total Invoiced
           </p>
           <p
-            className="text-2xl font-bold text-[#1A2332] mt-1"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-2xl font-bold text-[#18181B] mt-1 font-display"
           >
             {formatCurrency(summaryTotalInvoiced)}
           </p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+        <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
           <p
             className="text-xs font-semibold text-gray-400 uppercase tracking-wider"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Collected
           </p>
           <p
-            className="text-2xl font-bold text-green-600 mt-1"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-2xl font-bold text-green-600 mt-1 font-display"
           >
             {formatCurrency(summaryCollected)}
           </p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-5">
+        <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] p-5">
           <p
             className="text-xs font-semibold text-gray-400 uppercase tracking-wider"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Outstanding
           </p>
           <p
-            className="text-2xl font-bold text-amber-600 mt-1"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-2xl font-bold text-amber-600 mt-1 font-display"
           >
             {formatCurrency(summaryOutstanding)}
           </p>
@@ -368,7 +478,7 @@ export default function InvoicesPage() {
       </div>
 
       {/* Invoice Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8]">
         {/* Toolbar */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <div className="relative">
@@ -378,17 +488,44 @@ export default function InvoicesPage() {
               placeholder="Search invoices..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 w-52 transition-all"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 w-52 transition-all"
+             
             />
           </div>
-          <button
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            Filter
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+                statusFilter !== "all"
+                  ? "text-[#18181B] bg-[#18181B]/[0.08] border border-[#18181B]/20"
+                  : "text-[#18181B]/55 bg-gray-50 border border-gray-200 hover:bg-gray-100"
+              }`}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Filter
+              {statusFilter !== "all" && (
+                <span className="h-1.5 w-1.5 rounded-full bg-[#18181B]" />
+              )}
+            </button>
+            {filterOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                  {(["all", "unpaid", "paid", "void"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => { setStatusFilter(opt); setFilterOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-medium capitalize transition-colors ${
+                        statusFilter === opt ? "text-[#18181B] bg-[#18181B]/[0.04]" : "text-[#18181B]/60 hover:bg-gray-50"
+                      }`}
+                    >
+                      {opt === "all" ? "All Invoices" : opt}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {invoices.length === 0 ? (
@@ -397,22 +534,19 @@ export default function InvoicesPage() {
               <Receipt className="h-8 w-8 text-teal-400" />
             </div>
             <h3
-              className="text-base font-semibold text-[#1A2332] mb-2"
-              style={{ fontFamily: "'Fraunces', serif" }}
+              className="text-base font-semibold text-[#18181B] mb-2 font-display"
             >
               No invoices yet
             </h3>
             <p
               className="text-sm text-gray-400 mb-6 max-w-xs leading-relaxed"
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Create your first invoice to start tracking payments and keeping
               your finances organized.
             </p>
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#18181B] hover:bg-[#18181B]/90 text-white text-sm font-semibold rounded-xl transition-colors"
             >
               <Plus className="h-4 w-4" />
               New Invoice
@@ -421,14 +555,12 @@ export default function InvoicesPage() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <p
-              className="text-sm font-semibold text-[#1A2332]"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="text-sm font-semibold text-[#18181B]"
             >
               No results for &ldquo;{search}&rdquo;
             </p>
             <p
               className="text-xs text-gray-400 mt-1"
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Try a different search term
             </p>
@@ -440,37 +572,31 @@ export default function InvoicesPage() {
                 <tr className="bg-gray-50/50 border-b border-gray-100">
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Invoice #
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Client
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Amount
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden md:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Issue Date
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden lg:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Due Date
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Status
                   </th>
@@ -484,44 +610,44 @@ export default function InvoicesPage() {
                     className="hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-5 py-4">
-                      <span className="text-sm font-medium text-[#1A2332] font-mono">
+                      <span className="text-sm font-medium text-[#18181B] font-mono">
                         {invoiceNumber(inv.id)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className="text-sm text-[#1A2332]/70"
-                        style={{ fontFamily: "'Syne', sans-serif" }}
+                        className="text-sm text-[#18181B]/70"
                       >
                         {inv.clients
                           ? `${inv.clients.first_name} ${inv.clients.last_name}`
                           : "-"}
+                        {inv.job_id && (
+                          <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-teal-50 text-teal-600 ring-1 ring-inset ring-teal-200">
+                            From Job
+                          </span>
+                        )}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className="text-sm font-bold text-[#1A2332]"
-                        style={{ fontFamily: "'Fraunces', serif" }}
+                        className="text-sm font-bold text-[#18181B] font-display"
                       >
                         {formatCurrency(inv.total || 0)}
                       </span>
                     </td>
                     <td
-                      className="px-5 py-4 text-xs text-[#1A2332]/55 whitespace-nowrap hidden md:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-5 py-4 text-xs text-[#18181B]/55 whitespace-nowrap hidden md:table-cell"
                     >
                       {formatDate(inv.created_at?.split("T")[0] || null)}
                     </td>
                     <td
-                      className="px-5 py-4 text-xs text-[#1A2332]/55 whitespace-nowrap hidden lg:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-5 py-4 text-xs text-[#18181B]/55 whitespace-nowrap hidden lg:table-cell"
                     >
                       {formatDate(inv.due_date)}
                     </td>
                     <td className="px-5 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold capitalize ${statusBadge(inv.status)}`}
-                        style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {inv.status}
                       </span>
@@ -531,18 +657,32 @@ export default function InvoicesPage() {
                         {inv.status === "unpaid" && (
                           <>
                             <button
+                              onClick={() => openEdit(inv)}
+                              className="text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
                               onClick={() => markPaid(inv)}
-                              className="text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif" }}
+                              className="text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors"
                             >
                               Mark Paid
                             </button>
                             <button
                               onClick={() => voidInvoice(inv)}
                               className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif" }}
                             >
                               Void
+                            </button>
+                            <button
+                              onClick={() => deleteInvoice(inv)}
+                              className={`text-xs font-semibold transition-colors ${
+                                deleteConfirmId === inv.id
+                                  ? "text-red-500"
+                                  : "text-gray-300 hover:text-red-400"
+                              }`}
+                            >
+                              {deleteConfirmId === inv.id ? "Confirm?" : "Delete"}
                             </button>
                           </>
                         )}
@@ -559,9 +699,9 @@ export default function InvoicesPage() {
       {/* Create Invoice Panel */}
       <SlidePanel
         open={panelOpen}
-        onClose={() => setPanelOpen(false)}
-        title="New Invoice"
-        subtitle="Create and send a new invoice"
+        onClose={() => { setPanelOpen(false); setEditMode(false); setEditInvoiceId(null); }}
+        title={editMode ? "Edit Invoice" : "New Invoice"}
+        subtitle={editMode ? "Update invoice details" : "Create and send a new invoice"}
         width="w-full max-w-xl"
       >
         <div className="px-6 py-6 space-y-6">
@@ -613,8 +753,8 @@ export default function InvoicesPage() {
                       onChange={(e) =>
                         updateLineItem(idx, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all placeholder:text-gray-300"
+                     
                     />
                   </div>
                   <div className="w-16">
@@ -630,8 +770,8 @@ export default function InvoicesPage() {
                           Math.max(1, parseInt(e.target.value) || 1)
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-center"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all text-center"
+                     
                     />
                   </div>
                   <div className="w-24">
@@ -648,14 +788,13 @@ export default function InvoicesPage() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-right"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all text-right"
+                     
                     />
                   </div>
                   <div className="w-20 flex items-center justify-end py-2.5">
                     <span
-                      className="text-sm font-semibold text-[#1A2332]/70"
-                      style={{ fontFamily: "'Fraunces', serif" }}
+                      className="text-sm font-semibold text-[#18181B]/70 font-display"
                     >
                       {formatCurrency(li.quantity * li.unit_price)}
                     </span>
@@ -673,8 +812,7 @@ export default function InvoicesPage() {
             <button
               type="button"
               onClick={addLineItem}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors mt-1"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors mt-1"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Line Item
@@ -718,13 +856,11 @@ export default function InvoicesPage() {
             <div className="flex justify-between text-sm">
               <span
                 className="text-gray-400"
-                style={{ fontFamily: "'Syne', sans-serif" }}
               >
                 Subtotal
               </span>
               <span
-                className="text-[#1A2332]/70"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="text-[#18181B]/70"
               >
                 {formatCurrency(subtotal)}
               </span>
@@ -733,13 +869,11 @@ export default function InvoicesPage() {
               <div className="flex justify-between text-sm">
                 <span
                   className="text-gray-400"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   Tax ({formTaxPercent}%)
                 </span>
                 <span
-                  className="text-[#1A2332]/70"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
+                  className="text-[#18181B]/70"
                 >
                   {formatCurrency(taxAmount)}
                 </span>
@@ -747,14 +881,12 @@ export default function InvoicesPage() {
             )}
             <div className="flex justify-between text-lg pt-1 border-t border-gray-100">
               <span
-                className="font-semibold text-[#1A2332]"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="font-semibold text-[#18181B]"
               >
                 Total
               </span>
               <span
-                className="font-bold text-[#1A2332]"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                className="font-bold text-[#18181B] font-display"
               >
                 {formatCurrency(total)}
               </span>
@@ -763,11 +895,11 @@ export default function InvoicesPage() {
         </div>
 
         <FormActions>
-          <SecondaryButton onClick={() => setPanelOpen(false)}>
+          <SecondaryButton onClick={() => { setPanelOpen(false); setEditMode(false); setEditInvoiceId(null); }}>
             Cancel
           </SecondaryButton>
-          <PrimaryButton loading={saving} onClick={handleSave}>
-            Create Invoice
+          <PrimaryButton loading={saving} onClick={editMode ? handleUpdate : handleSave}>
+            {editMode ? "Update Invoice" : "Create Invoice"}
           </PrimaryButton>
         </FormActions>
       </SlidePanel>

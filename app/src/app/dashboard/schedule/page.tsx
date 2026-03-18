@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Plus,
   ChevronLeft,
@@ -11,6 +12,10 @@ import {
   DollarSign,
   FileText,
   User,
+  Trash2,
+  Repeat,
+  Loader2,
+  Receipt,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -24,7 +29,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from "@/components/dashboard/slide-panel";
-import type { Client, Address, Job } from "@/lib/types";
+import type { Client, Address, Job, RecurringRule } from "@/lib/types";
 import { SERVICE_TYPES } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -163,6 +168,7 @@ function isSameDay(a: Date, b: Date): boolean {
 
 export default function SchedulePage() {
   const supabase = createClient();
+  const searchParams = useSearchParams();
   const today = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -179,8 +185,28 @@ export default function SchedulePage() {
   const [formOpen, setFormOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [editJobId, setEditJobId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
-  /* New job form state */
+  /* Recurring rules */
+  const [recurringOpen, setRecurringOpen] = useState(false);
+  const [recurringRules, setRecurringRules] = useState<RecurringRule[]>([]);
+  const [recurringFormOpen, setRecurringFormOpen] = useState(false);
+  const [recSaving, setRecSaving] = useState(false);
+  const [recGenerating, setRecGenerating] = useState<string | null>(null);
+  const [recClientId, setRecClientId] = useState("");
+  const [recAddressId, setRecAddressId] = useState("");
+  const [recFrequency, setRecFrequency] = useState<RecurringRule["frequency"]>("weekly");
+  const [recCustomDays, setRecCustomDays] = useState("7");
+  const [recStartDate, setRecStartDate] = useState("");
+  const [recEndDate, setRecEndDate] = useState("");
+  const [recServiceType, setRecServiceType] = useState("");
+  const [recDuration, setRecDuration] = useState("120");
+  const [recPrice, setRecPrice] = useState("");
+  const [recStartTime, setRecStartTime] = useState("");
+
+  /* Job form state */
   const [formClientId, setFormClientId] = useState("");
   const [formAddressId, setFormAddressId] = useState("");
   const [formServiceType, setFormServiceType] = useState("");
@@ -206,6 +232,15 @@ export default function SchedulePage() {
     const client = clients.find((c) => c.id === formClientId);
     return client?.addresses ?? [];
   }, [clients, formClientId]);
+
+  /* Pre-fill service type from client's preferred_service */
+  useEffect(() => {
+    if (!formClientId) return;
+    const selectedClient = clients.find((c) => c.id === formClientId);
+    if (selectedClient?.preferred_service && !formServiceType) {
+      setFormServiceType(selectedClient.preferred_service);
+    }
+  }, [formClientId, clients, formServiceType]);
 
   /* ── Data fetching ──────────────────────────────────────────── */
 
@@ -244,6 +279,17 @@ export default function SchedulePage() {
     Promise.all([fetchJobs(), fetchClients()]).finally(() => setLoading(false));
   }, [fetchJobs, fetchClients]);
 
+  // Auto-open form when navigated with clientId param
+  useEffect(() => {
+    const clientIdParam = searchParams.get("clientId");
+    if (clientIdParam && clients.length > 0) {
+      setFormClientId(clientIdParam);
+      setFormOpen(true);
+      // Clear the param from URL without navigation
+      window.history.replaceState({}, "", "/dashboard/schedule");
+    }
+  }, [searchParams, clients]);
+
   /* ── Group jobs by day ──────────────────────────────────────── */
 
   const jobsByDay = useMemo(() => {
@@ -273,10 +319,28 @@ export default function SchedulePage() {
     setFormDuration("60");
     setFormPrice("");
     setFormNotes("");
+    setFormMode("create");
+    setEditJobId(null);
   }
 
   function openNewJobForm() {
     resetForm();
+    setFormOpen(true);
+  }
+
+  function openEditForm(job: Job) {
+    setFormMode("edit");
+    setEditJobId(job.id);
+    setFormClientId(job.client_id);
+    setFormAddressId(job.address_id || "");
+    setFormServiceType(job.service_type || "");
+    setFormDate(job.scheduled_date);
+    setFormStartTime(job.start_time || "");
+    setFormDuration(String(job.duration_minutes || 60));
+    setFormPrice(job.price != null ? String(job.price) : "");
+    setFormNotes(job.notes || "");
+    setDetailOpen(false);
+    setSelectedJob(null);
     setFormOpen(true);
   }
 
@@ -311,6 +375,218 @@ export default function SchedulePage() {
     fetchJobs();
   }
 
+  async function handleUpdateJob() {
+    if (!editJobId || !formClientId || !formDate) {
+      toast.error("Please select a client and date");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase
+      .from("jobs")
+      .update({
+        client_id: formClientId,
+        address_id: formAddressId || null,
+        scheduled_date: formDate,
+        start_time: formStartTime || null,
+        duration_minutes: parseInt(formDuration) || 60,
+        service_type: formServiceType || null,
+        price: formPrice ? parseFloat(formPrice) : null,
+        notes: formNotes || null,
+      })
+      .eq("id", editJobId);
+    setSaving(false);
+
+    if (error) {
+      console.error("Failed to update job:", error);
+      toast.error("Failed to update job");
+      return;
+    }
+
+    toast.success("Job updated");
+    setFormOpen(false);
+    resetForm();
+    fetchJobs();
+  }
+
+  async function handleDeleteJob(job: Job) {
+    if (!deleteConfirm) {
+      setDeleteConfirm(true);
+      setTimeout(() => setDeleteConfirm(false), 3000);
+      return;
+    }
+    const { error } = await supabase.from("jobs").delete().eq("id", job.id);
+    if (error) {
+      toast.error("Failed to delete job");
+      setDeleteConfirm(false);
+      return;
+    }
+    toast.success("Job deleted");
+    setDetailOpen(false);
+    setSelectedJob(null);
+    setDeleteConfirm(false);
+    fetchJobs();
+  }
+
+  /* ── Recurring rules ──────────────────────────────────── */
+
+  const fetchRecurringRules = useCallback(async () => {
+    const { data } = await supabase
+      .from("recurring_rules")
+      .select("*, clients(*), addresses(*)")
+      .order("created_at", { ascending: false });
+    setRecurringRules((data as RecurringRule[]) ?? []);
+  }, [supabase]);
+
+  function resetRecurringForm() {
+    setRecClientId("");
+    setRecAddressId("");
+    setRecFrequency("weekly");
+    setRecCustomDays("7");
+    setRecStartDate("");
+    setRecEndDate("");
+    setRecServiceType("");
+    setRecDuration("120");
+    setRecPrice("");
+    setRecStartTime("");
+  }
+
+  async function handleCreateRule() {
+    if (!recClientId || !recStartDate) {
+      toast.error("Client and start date are required");
+      return;
+    }
+    setRecSaving(true);
+    const { error } = await supabase.from("recurring_rules").insert({
+      client_id: recClientId,
+      address_id: recAddressId || null,
+      frequency: recFrequency,
+      custom_interval_days: recFrequency === "custom" ? parseInt(recCustomDays) || 7 : null,
+      start_date: recStartDate,
+      end_date: recEndDate || null,
+      service_type: recServiceType || null,
+      duration_minutes: parseInt(recDuration) || 120,
+      price: recPrice ? parseFloat(recPrice) : null,
+      start_time: recStartTime || null,
+      is_active: true,
+    });
+    setRecSaving(false);
+    if (error) {
+      toast.error("Failed to create recurring rule");
+      return;
+    }
+    toast.success("Recurring rule created");
+    setRecurringFormOpen(false);
+    resetRecurringForm();
+    fetchRecurringRules();
+  }
+
+  async function toggleRuleActive(rule: RecurringRule) {
+    const { error } = await supabase
+      .from("recurring_rules")
+      .update({ is_active: !rule.is_active })
+      .eq("id", rule.id);
+    if (error) {
+      toast.error("Failed to update rule");
+      return;
+    }
+    fetchRecurringRules();
+  }
+
+  async function deleteRule(ruleId: string) {
+    const { error } = await supabase.from("recurring_rules").delete().eq("id", ruleId);
+    if (error) {
+      toast.error("Failed to delete rule");
+      return;
+    }
+    toast.success("Rule deleted");
+    fetchRecurringRules();
+  }
+
+  function getNextOccurrences(rule: RecurringRule, count: number): string[] {
+    const dates: string[] = [];
+    const start = new Date(rule.start_date + "T00:00:00");
+    const end = rule.end_date ? new Date(rule.end_date + "T00:00:00") : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let current = new Date(start);
+    // Move to next occurrence if start is in the past
+    while (current < today) {
+      advanceDate(current, rule);
+    }
+
+    for (let i = 0; i < count; i++) {
+      if (end && current > end) break;
+      dates.push(current.toISOString().split("T")[0]);
+      advanceDate(current, rule);
+    }
+    return dates;
+  }
+
+  function advanceDate(date: Date, rule: RecurringRule) {
+    switch (rule.frequency) {
+      case "weekly":
+        date.setDate(date.getDate() + 7);
+        break;
+      case "biweekly":
+        date.setDate(date.getDate() + 14);
+        break;
+      case "monthly":
+        date.setMonth(date.getMonth() + 1);
+        break;
+      case "custom":
+        date.setDate(date.getDate() + (rule.custom_interval_days || 7));
+        break;
+    }
+  }
+
+  async function generateJobs(rule: RecurringRule) {
+    setRecGenerating(rule.id);
+    const dates = getNextOccurrences(rule, 4);
+    if (dates.length === 0) {
+      toast.error("No upcoming dates to generate");
+      setRecGenerating(null);
+      return;
+    }
+
+    // Check which dates already have jobs for this rule
+    const { data: existingJobs } = await supabase
+      .from("jobs")
+      .select("scheduled_date")
+      .eq("recurring_rule_id", rule.id)
+      .in("scheduled_date", dates);
+
+    const existingDates = new Set((existingJobs ?? []).map((j) => j.scheduled_date));
+    const newDates = dates.filter((d) => !existingDates.has(d));
+
+    if (newDates.length === 0) {
+      toast.success("All upcoming jobs already exist");
+      setRecGenerating(null);
+      return;
+    }
+
+    const jobsToInsert = newDates.map((d) => ({
+      client_id: rule.client_id,
+      address_id: rule.address_id,
+      recurring_rule_id: rule.id,
+      scheduled_date: d,
+      start_time: rule.start_time || null,
+      duration_minutes: rule.duration_minutes || 120,
+      service_type: rule.service_type || null,
+      price: rule.price,
+      status: "scheduled" as const,
+    }));
+
+    const { error } = await supabase.from("jobs").insert(jobsToInsert);
+    setRecGenerating(null);
+    if (error) {
+      toast.error("Failed to generate jobs");
+      return;
+    }
+    toast.success(`Generated ${newDates.length} job${newDates.length > 1 ? "s" : ""}`);
+    fetchJobs();
+  }
+
   async function handleStatusChange(job: Job, newStatus: Job["status"]) {
     setUpdatingStatus(true);
     const { error } = await supabase
@@ -333,6 +609,51 @@ export default function SchedulePage() {
     };
     toast.success(statusLabels[newStatus] ?? "Status updated");
     setSelectedJob({ ...job, status: newStatus });
+    fetchJobs();
+  }
+
+  async function handleCreateInvoiceFromJob(job: Job) {
+    setUpdatingStatus(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Not authenticated");
+      setUpdatingStatus(false);
+      return;
+    }
+
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 14);
+
+    const { error: invError } = await supabase.from("invoices").insert({
+      user_id: user.id,
+      client_id: job.client_id,
+      job_id: job.id,
+      line_items: [{
+        description: job.service_type || "Cleaning Service",
+        quantity: 1,
+        unit_price: job.price || 0,
+      }],
+      total: job.price || 0,
+      status: "unpaid",
+      due_date: dueDate.toISOString().split("T")[0],
+    });
+
+    if (invError) {
+      console.error("Failed to create invoice:", invError);
+      toast.error("Failed to create invoice");
+      setUpdatingStatus(false);
+      return;
+    }
+
+    await supabase.from("jobs").update({
+      status: "invoiced",
+      updated_at: new Date().toISOString(),
+    }).eq("id", job.id);
+
+    setUpdatingStatus(false);
+    toast.success("Invoice created");
+    setDetailOpen(false);
+    setSelectedJob(null);
     fetchJobs();
   }
 
@@ -359,7 +680,6 @@ export default function SchedulePage() {
         style={{
           top: `${top}px`,
           height: `${height}px`,
-          fontFamily: "'Syne', sans-serif",
           zIndex: 10,
         }}
         title={`${clientName} - ${job.service_type ?? "Service"}`}
@@ -436,10 +756,13 @@ export default function SchedulePage() {
         {buttons.map((btn) => (
           <button
             key={btn.status}
-            onClick={() => handleStatusChange(job, btn.status)}
+            onClick={() =>
+              btn.status === "invoiced"
+                ? handleCreateInvoiceFromJob(job)
+                : handleStatusChange(job, btn.status)
+            }
             disabled={updatingStatus}
             className={`px-4 py-2 text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 ${btn.color}`}
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             {btn.label}
           </button>
@@ -456,30 +779,36 @@ export default function SchedulePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1
-            className="text-2xl font-bold text-[#1A2332]"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]"
           >
             Schedule
           </h1>
           <p
             className="text-sm text-gray-400 mt-1"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Manage your cleaning appointments
           </p>
         </div>
-        <button
-          onClick={openNewJobForm}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
-        >
-          <Plus className="h-4 w-4" />
-          New Job
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { setRecurringOpen(true); fetchRecurringRules(); }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#18181B]/[0.06] hover:bg-[#18181B]/[0.1] text-[#18181B] text-sm font-semibold rounded-xl transition-colors"
+          >
+            <Repeat className="h-4 w-4" />
+            Recurring
+          </button>
+          <button
+            onClick={openNewJobForm}
+            className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg shadow-sm transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            New Job
+          </button>
+        </div>
       </div>
 
       {/* Week navigation */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 px-4 py-3 flex items-center justify-between">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setWeekOffset((o) => o - 1)}
@@ -494,27 +823,24 @@ export default function SchedulePage() {
             <ChevronRight className="h-4 w-4" />
           </button>
           <span
-            className="text-sm font-semibold text-[#1A2332] ml-1"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            className="text-sm font-semibold text-[#18181B] ml-1"
           >
             {formatWeekLabel(weekStart)}
           </span>
         </div>
         <button
           onClick={() => setWeekOffset(0)}
-          className="px-3 py-1.5 text-xs font-semibold text-[#1A2332]/70 bg-[#1A2332]/[0.05] hover:bg-[#1A2332]/[0.08] rounded-lg transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="px-3 py-1.5 text-xs font-semibold text-[#18181B]/70 bg-[#18181B]/[0.05] hover:bg-[#18181B]/[0.08] rounded-lg transition-colors"
         >
           Today
         </button>
       </div>
 
       {/* Calendar grid */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8] overflow-hidden">
         {loading ? (
           <div
             className="flex items-center justify-center py-32 text-gray-400 text-sm"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Loading...
           </div>
@@ -540,17 +866,15 @@ export default function SchedulePage() {
                         className={`text-[10px] font-bold uppercase tracking-wider ${
                           isToday ? "text-teal-600" : "text-gray-400"
                         }`}
-                        style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {DAY_NAMES[i]}
                       </span>
                       <span
                         className={`text-sm font-bold mt-0.5 leading-none ${
                           isToday
-                            ? "bg-[#1A2332] text-white w-7 h-7 rounded-full flex items-center justify-center"
-                            : "text-[#1A2332]"
+                            ? "bg-[#18181B] text-white w-7 h-7 rounded-full flex items-center justify-center"
+                            : "text-[#18181B]"
                         }`}
-                        style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {day.getDate()}
                       </span>
@@ -565,12 +889,11 @@ export default function SchedulePage() {
                 {jobs.length === 0 && (
                   <div
                     className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-[1px]"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-3">
                       <Calendar className="h-6 w-6 text-gray-400" />
                     </div>
-                    <p className="text-sm font-semibold text-[#1A2332]">
+                    <p className="text-sm font-semibold text-[#18181B]">
                       No jobs this week
                     </p>
                     <p className="text-xs text-gray-400 mt-1 mb-4">
@@ -578,7 +901,7 @@ export default function SchedulePage() {
                     </p>
                     <button
                       onClick={openNewJobForm}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/90 text-white text-sm font-semibold rounded-xl transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       New Job
@@ -601,7 +924,6 @@ export default function SchedulePage() {
                         className="absolute right-2 text-[10px] text-gray-400 font-medium leading-none"
                         style={{
                           top: `${i * HOUR_HEIGHT - 5}px`,
-                          fontFamily: "'Syne', sans-serif",
                         }}
                       >
                         {((START_HOUR + i) % 12 || 12) +
@@ -672,13 +994,21 @@ export default function SchedulePage() {
                 className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold ${
                   STATUS_COLORS[selectedJob.status].bg
                 } ${STATUS_COLORS[selectedJob.status].text}`}
-                style={{ fontFamily: "'Syne', sans-serif" }}
               >
                 {selectedJob.status.replace("_", " ").replace(/\b\w/g, (c) =>
                   c.toUpperCase()
                 )}
               </span>
             </div>
+
+            {selectedJob.status === "invoiced" && (
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 rounded-lg mt-2">
+                <Receipt className="h-3.5 w-3.5 text-blue-500" strokeWidth={1.8} />
+                <span className="text-xs text-blue-600 font-medium">
+                  Invoice has been created for this job
+                </span>
+              </div>
+            )}
 
             {/* Info rows */}
             <div className="space-y-3">
@@ -687,13 +1017,11 @@ export default function SchedulePage() {
                 <div>
                   <p
                     className="text-xs text-gray-400 font-medium"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Client
                   </p>
                   <p
-                    className="text-sm font-semibold text-[#1A2332]"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
+                    className="text-sm font-semibold text-[#18181B]"
                   >
                     {selectedJob.clients
                       ? `${selectedJob.clients.first_name} ${selectedJob.clients.last_name}`
@@ -707,13 +1035,11 @@ export default function SchedulePage() {
                 <div>
                   <p
                     className="text-xs text-gray-400 font-medium"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Date & Time
                   </p>
                   <p
-                    className="text-sm font-semibold text-[#1A2332]"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
+                    className="text-sm font-semibold text-[#18181B]"
                   >
                     {new Date(
                       selectedJob.scheduled_date + "T00:00:00"
@@ -727,7 +1053,6 @@ export default function SchedulePage() {
                   {selectedJob.start_time && (
                     <p
                       className="text-sm text-gray-500"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       {formatTimeRange(
                         selectedJob.start_time,
@@ -747,13 +1072,11 @@ export default function SchedulePage() {
                   <div>
                     <p
                       className="text-xs text-gray-400 font-medium"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       Address
                     </p>
                     <p
-                      className="text-sm text-[#1A2332]"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="text-sm text-[#18181B]"
                     >
                       {formatAddress(selectedJob.addresses)}
                     </p>
@@ -767,13 +1090,11 @@ export default function SchedulePage() {
                   <div>
                     <p
                       className="text-xs text-gray-400 font-medium"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       Price
                     </p>
                     <p
-                      className="text-sm font-bold text-[#1A2332]"
-                      style={{ fontFamily: "'Fraunces', serif" }}
+                      className="text-sm font-bold text-[#18181B] font-display"
                     >
                       ${Number(selectedJob.price).toFixed(2)}
                     </p>
@@ -787,13 +1108,11 @@ export default function SchedulePage() {
                   <div>
                     <p
                       className="text-xs text-gray-400 font-medium"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       Notes
                     </p>
                     <p
                       className="text-sm text-gray-600 whitespace-pre-wrap"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
                     >
                       {selectedJob.notes}
                     </p>
@@ -805,7 +1124,28 @@ export default function SchedulePage() {
             {/* Divider */}
             <div className="border-t border-gray-100" />
 
-            {/* Status actions */}
+            {/* Edit + Delete + Status actions */}
+            <div className="flex flex-wrap gap-2">
+              {selectedJob.status !== "invoiced" && selectedJob.status !== "cancelled" && (
+                <button
+                  onClick={() => openEditForm(selectedJob)}
+                  className="px-4 py-2 text-sm font-semibold rounded-xl transition-colors bg-[#18181B]/[0.06] text-[#18181B] hover:bg-[#18181B]/[0.1]"
+                >
+                  Edit Job
+                </button>
+              )}
+              <button
+                onClick={() => handleDeleteJob(selectedJob)}
+                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl transition-colors ${
+                  deleteConfirm
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "text-red-400 hover:bg-red-50 hover:text-red-500"
+                }`}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {deleteConfirm ? "Confirm?" : "Delete"}
+              </button>
+            </div>
             {renderStatusActions(selectedJob)}
           </div>
         )}
@@ -814,9 +1154,9 @@ export default function SchedulePage() {
       {/* ── New Job Panel ──────────────────────────────────────── */}
       <SlidePanel
         open={formOpen}
-        onClose={() => setFormOpen(false)}
-        title="New Job"
-        subtitle="Schedule a cleaning appointment"
+        onClose={() => { setFormOpen(false); resetForm(); }}
+        title={formMode === "edit" ? "Edit Job" : "New Job"}
+        subtitle={formMode === "edit" ? "Update job details" : "Schedule a cleaning appointment"}
       >
         <div className="px-6 py-5 space-y-6">
           <FormSection label="Client & Location">
@@ -930,11 +1270,242 @@ export default function SchedulePage() {
         </div>
 
         <FormActions>
-          <SecondaryButton onClick={() => setFormOpen(false)}>
+          <SecondaryButton onClick={() => { setFormOpen(false); resetForm(); }}>
             Cancel
           </SecondaryButton>
-          <PrimaryButton loading={saving} onClick={handleCreateJob}>
-            Schedule Job
+          <PrimaryButton loading={saving} onClick={formMode === "edit" ? handleUpdateJob : handleCreateJob}>
+            {formMode === "edit" ? "Update Job" : "Schedule Job"}
+          </PrimaryButton>
+        </FormActions>
+      </SlidePanel>
+
+      {/* ── Recurring Rules Panel ──────────────────────────────── */}
+      <SlidePanel
+        open={recurringOpen}
+        onClose={() => setRecurringOpen(false)}
+        title="Recurring Jobs"
+        subtitle="Manage recurring cleaning schedules"
+        width="w-full max-w-lg"
+      >
+        <div className="px-6 py-5 space-y-4">
+          <button
+            onClick={() => { setRecurringFormOpen(true); resetRecurringForm(); }}
+            className="flex items-center gap-2 w-full px-4 py-3 bg-[#18181B]/[0.04] hover:bg-[#18181B]/[0.07] text-[#18181B] text-sm font-semibold rounded-xl transition-colors border border-dashed border-[#18181B]/15"
+          >
+            <Plus className="h-4 w-4" />
+            New Recurring Rule
+          </button>
+
+          {recurringRules.length === 0 ? (
+            <div className="py-12 text-center">
+              <Repeat className="h-8 w-8 text-gray-200 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-[#18181B]/50">
+                No recurring rules
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Create a rule to auto-generate jobs
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {recurringRules.map((rule) => {
+                const clientName = rule.clients
+                  ? `${rule.clients.first_name} ${rule.clients.last_name}`
+                  : "Unknown";
+                const freqLabel = rule.frequency === "custom"
+                  ? `Every ${rule.custom_interval_days} days`
+                  : rule.frequency.charAt(0).toUpperCase() + rule.frequency.slice(1);
+
+                return (
+                  <div
+                    key={rule.id}
+                    className={`p-4 rounded-xl border transition-colors ${
+                      rule.is_active
+                        ? "bg-white border-[#18181B]/[0.08]"
+                        : "bg-gray-50 border-gray-100 opacity-60"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="text-[13px] font-semibold text-[#18181B]">
+                          {clientName}
+                        </p>
+                        <p className="text-[11px] text-[#18181B]/40 mt-0.5">
+                          {freqLabel} &middot; {rule.service_type || "Cleaning"} &middot; {rule.price != null ? `$${rule.price}` : "No price"}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => toggleRuleActive(rule)}
+                        className={`px-2 py-1 text-[10px] font-semibold rounded-md transition-colors ${
+                          rule.is_active
+                            ? "bg-green-50 text-green-600"
+                            : "bg-gray-100 text-gray-400"
+                        }`}
+                      >
+                        {rule.is_active ? "Active" : "Paused"}
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        onClick={() => generateJobs(rule)}
+                        disabled={!rule.is_active || recGenerating === rule.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold bg-[#18181B] text-white rounded-lg hover:bg-[#18181B]/90 disabled:opacity-40 transition-colors"
+                      >
+                        {recGenerating === rule.id ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Calendar className="h-3 w-3" />
+                        )}
+                        Generate Jobs
+                      </button>
+                      <button
+                        onClick={() => deleteRule(rule.id)}
+                        className="p-1.5 text-gray-300 hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </SlidePanel>
+
+      {/* ── New Recurring Rule Panel ───────────────────────────── */}
+      <SlidePanel
+        open={recurringFormOpen}
+        onClose={() => setRecurringFormOpen(false)}
+        title="New Recurring Rule"
+        subtitle="Set up a repeating cleaning schedule"
+      >
+        <div className="px-6 py-5 space-y-6">
+          <FormSection label="Client & Location">
+            <FormField label="Client" required>
+              <FormSelect
+                value={recClientId}
+                onChange={(e) => { setRecClientId(e.target.value); setRecAddressId(""); }}
+              >
+                <option value="">Select a client...</option>
+                {clients.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.first_name} {c.last_name}
+                  </option>
+                ))}
+              </FormSelect>
+            </FormField>
+            <FormField label="Address">
+              <FormSelect
+                value={recAddressId}
+                onChange={(e) => setRecAddressId(e.target.value)}
+                disabled={!recClientId}
+              >
+                <option value="">
+                  {recClientId
+                    ? (clients.find(c => c.id === recClientId)?.addresses ?? []).length === 0
+                      ? "No addresses on file"
+                      : "Select an address..."
+                    : "Select a client first"}
+                </option>
+                {(clients.find(c => c.id === recClientId)?.addresses ?? []).map((a) => (
+                  <option key={a.id} value={a.id}>{formatAddress(a)}</option>
+                ))}
+              </FormSelect>
+            </FormField>
+          </FormSection>
+
+          <FormSection label="Frequency">
+            <FormField label="Repeat" required>
+              <FormSelect
+                value={recFrequency}
+                onChange={(e) => setRecFrequency(e.target.value as RecurringRule["frequency"])}
+              >
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Every 2 Weeks</option>
+                <option value="monthly">Monthly</option>
+                <option value="custom">Custom Interval</option>
+              </FormSelect>
+            </FormField>
+            {recFrequency === "custom" && (
+              <FormField label="Interval (days)">
+                <FormInput
+                  type="number"
+                  min="1"
+                  value={recCustomDays}
+                  onChange={(e) => setRecCustomDays(e.target.value)}
+                  placeholder="7"
+                />
+              </FormField>
+            )}
+            <div className="grid grid-cols-2 gap-3">
+              <FormField label="Start Date" required>
+                <FormInput
+                  type="date"
+                  value={recStartDate}
+                  onChange={(e) => setRecStartDate(e.target.value)}
+                />
+              </FormField>
+              <FormField label="End Date">
+                <FormInput
+                  type="date"
+                  value={recEndDate}
+                  onChange={(e) => setRecEndDate(e.target.value)}
+                />
+              </FormField>
+            </div>
+          </FormSection>
+
+          <FormSection label="Job Details">
+            <FormField label="Service Type">
+              <FormSelect
+                value={recServiceType}
+                onChange={(e) => setRecServiceType(e.target.value)}
+              >
+                <option value="">Select a service...</option>
+                {SERVICE_TYPES.map((st) => (
+                  <option key={st} value={st}>{st}</option>
+                ))}
+              </FormSelect>
+            </FormField>
+            <div className="grid grid-cols-2 gap-3">
+              <FormField label="Start Time">
+                <FormInput
+                  type="time"
+                  value={recStartTime}
+                  onChange={(e) => setRecStartTime(e.target.value)}
+                />
+              </FormField>
+              <FormField label="Duration">
+                <FormSelect
+                  value={recDuration}
+                  onChange={(e) => setRecDuration(e.target.value)}
+                >
+                  {DURATION_OPTIONS.map((d) => (
+                    <option key={d.value} value={d.value}>{d.label}</option>
+                  ))}
+                </FormSelect>
+              </FormField>
+            </div>
+            <FormField label="Price per Job">
+              <FormInput
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={recPrice}
+                onChange={(e) => setRecPrice(e.target.value)}
+              />
+            </FormField>
+          </FormSection>
+        </div>
+
+        <FormActions>
+          <SecondaryButton onClick={() => setRecurringFormOpen(false)}>
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton loading={recSaving} onClick={handleCreateRule}>
+            Create Rule
           </PrimaryButton>
         </FormActions>
       </SlidePanel>

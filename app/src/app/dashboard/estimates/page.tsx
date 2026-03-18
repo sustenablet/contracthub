@@ -9,6 +9,8 @@ import {
   X,
   Loader2,
   ArrowRight,
+  Trash2,
+  Receipt,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -55,13 +57,19 @@ const emptyLineItem = (): LineItem => ({
 });
 
 export default function EstimatesPage() {
+  const [userId, setUserId] = useState<string | null>(null);
   const [estimates, setEstimates] = useState<Estimate[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "draft" | "sent" | "accepted" | "declined">("all");
+  const [filterOpen, setFilterOpen] = useState(false);
 
-  // Create estimate panel
+  // Create/edit estimate panel
   const [createOpen, setCreateOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editEstimateId, setEditEstimateId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [formClientId, setFormClientId] = useState("");
   const [formLineItems, setFormLineItems] = useState<LineItem[]>([
     emptyLineItem(),
@@ -82,27 +90,45 @@ export default function EstimatesPage() {
   const [clientAddresses, setClientAddresses] = useState<Address[]>([]);
   const [savingJob, setSavingJob] = useState(false);
 
+  // Convert to invoice panel
+  const [convertInvoiceOpen, setConvertInvoiceOpen] = useState(false);
+  const [convertInvoiceEstimate, setConvertInvoiceEstimate] = useState<Estimate | null>(null);
+  const [invoiceDueDate, setInvoiceDueDate] = useState("");
+  const [invoiceTaxPercent, setInvoiceTaxPercent] = useState(0);
+  const [invoiceNotes, setInvoiceNotes] = useState("");
+  const [savingInvoice, setSavingInvoice] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    })();
+  }, []);
+
   const fetchData = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     const [estRes, clientRes] = await Promise.all([
       supabase
         .from("estimates")
         .select("*, clients(*)")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false }),
       supabase
         .from("clients")
         .select("*")
+        .eq("user_id", userId)
         .eq("status", "active")
         .order("first_name"),
     ]);
     if (estRes.data) setEstimates(estRes.data as Estimate[]);
     if (clientRes.data) setClients(clientRes.data as Client[]);
     setLoading(false);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (userId) fetchData();
+  }, [fetchData, userId]);
 
   // Line item helpers (create form)
   const subtotal = formLineItems.reduce(
@@ -130,6 +156,7 @@ export default function EstimatesPage() {
 
   // Filter
   const filtered = estimates.filter((est) => {
+    if (statusFilter !== "all" && est.status !== statusFilter) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     const clientName = est.clients
@@ -145,14 +172,27 @@ export default function EstimatesPage() {
 
   // Open create panel
   function openCreate() {
+    setEditMode(false);
+    setEditEstimateId(null);
     setFormClientId("");
     setFormLineItems([emptyLineItem()]);
     setFormNotes("");
     setCreateOpen(true);
   }
 
+  // Open edit panel
+  function openEdit(est: Estimate) {
+    setEditMode(true);
+    setEditEstimateId(est.id);
+    setFormClientId(est.client_id);
+    setFormLineItems(est.line_items?.length ? [...est.line_items] : [emptyLineItem()]);
+    setFormNotes(est.notes || "");
+    setCreateOpen(true);
+  }
+
   // Save estimate
   async function handleSave() {
+    if (!userId) return;
     if (!formClientId) {
       toast.error("Please select a client.");
       return;
@@ -167,6 +207,7 @@ export default function EstimatesPage() {
     setSaving(true);
     const total = Math.round(subtotal * 100) / 100;
     const { error } = await supabase.from("estimates").insert({
+      user_id: userId,
       client_id: formClientId,
       line_items: formLineItems,
       total,
@@ -180,6 +221,56 @@ export default function EstimatesPage() {
     }
     toast.success("Estimate created as draft.");
     setCreateOpen(false);
+    fetchData();
+  }
+
+  // Update estimate
+  async function handleUpdate() {
+    if (!editEstimateId || !formClientId) {
+      toast.error("Please select a client.");
+      return;
+    }
+    if (formLineItems.length === 0 || formLineItems.every((li) => !li.description)) {
+      toast.error("Add at least one line item.");
+      return;
+    }
+    setSaving(true);
+    const total = Math.round(subtotal * 100) / 100;
+    const { error } = await supabase
+      .from("estimates")
+      .update({
+        client_id: formClientId,
+        line_items: formLineItems,
+        total,
+        notes: formNotes || null,
+      })
+      .eq("id", editEstimateId);
+    setSaving(false);
+    if (error) {
+      toast.error("Failed to update estimate.");
+      return;
+    }
+    toast.success("Estimate updated.");
+    setCreateOpen(false);
+    setEditMode(false);
+    setEditEstimateId(null);
+    fetchData();
+  }
+
+  // Delete estimate
+  async function deleteEstimate(est: Estimate) {
+    if (deleteConfirmId !== est.id) {
+      setDeleteConfirmId(est.id);
+      setTimeout(() => setDeleteConfirmId(null), 3000);
+      return;
+    }
+    const { error } = await supabase.from("estimates").delete().eq("id", est.id);
+    if (error) {
+      toast.error("Failed to delete estimate.");
+      return;
+    }
+    toast.success("Estimate deleted.");
+    setDeleteConfirmId(null);
     fetchData();
   }
 
@@ -204,6 +295,7 @@ export default function EstimatesPage() {
 
   // Convert to job
   async function openConvert(est: Estimate) {
+    if (!userId) return;
     setConvertEstimate(est);
     const firstItem = est.line_items?.[0];
     setJobServiceType(firstItem?.description || "");
@@ -220,13 +312,14 @@ export default function EstimatesPage() {
       .from("addresses")
       .select("*")
       .eq("client_id", est.client_id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
     setClientAddresses((data as Address[]) || []);
     setConvertOpen(true);
   }
 
   async function handleConvertSave() {
-    if (!convertEstimate) return;
+    if (!convertEstimate || !userId) return;
     if (!jobDate) {
       toast.error("Please select a date.");
       return;
@@ -237,6 +330,7 @@ export default function EstimatesPage() {
     }
     setSavingJob(true);
     const { error } = await supabase.from("jobs").insert({
+      user_id: userId,
       client_id: convertEstimate.client_id,
       address_id: jobAddressId,
       scheduled_date: jobDate,
@@ -265,6 +359,49 @@ export default function EstimatesPage() {
     fetchData();
   }
 
+  // Convert to invoice
+  function openConvertToInvoice(est: Estimate) {
+    setConvertInvoiceEstimate(est);
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 14);
+    setInvoiceDueDate(dueDate.toISOString().split("T")[0]);
+    setInvoiceTaxPercent(0);
+    setInvoiceNotes(est.notes || "");
+    setConvertInvoiceOpen(true);
+  }
+
+  async function handleConvertToInvoice() {
+    if (!convertInvoiceEstimate || !userId) return;
+    setSavingInvoice(true);
+    const estimateSubtotal = convertInvoiceEstimate.total || 0;
+    const totalWithTax = Math.round((estimateSubtotal + (estimateSubtotal * invoiceTaxPercent / 100)) * 100) / 100;
+    const { error } = await supabase.from("invoices").insert({
+      user_id: userId,
+      client_id: convertInvoiceEstimate.client_id,
+      line_items: convertInvoiceEstimate.line_items,
+      total: totalWithTax,
+      status: "unpaid",
+      due_date: invoiceDueDate || null,
+      notes: invoiceNotes || null,
+    });
+    if (error) {
+      setSavingInvoice(false);
+      toast.error("Failed to create invoice.");
+      return;
+    }
+    // Mark estimate as accepted if not already
+    if (convertInvoiceEstimate.status !== "accepted") {
+      await supabase
+        .from("estimates")
+        .update({ status: "accepted" })
+        .eq("id", convertInvoiceEstimate.id);
+    }
+    setSavingInvoice(false);
+    toast.success("Invoice created from estimate.");
+    setConvertInvoiceOpen(false);
+    fetchData();
+  }
+
   const statusBadge = (status: Estimate["status"]) => {
     const styles: Record<string, string> = {
       draft: "bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-200",
@@ -290,22 +427,19 @@ export default function EstimatesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1
-            className="text-2xl font-bold text-[#1A2332]"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]"
           >
             Estimates
           </h1>
           <p
             className="text-sm text-gray-400 mt-0.5"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Create quotes and convert to jobs
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg shadow-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Estimate
@@ -313,7 +447,7 @@ export default function EstimatesPage() {
       </div>
 
       {/* Estimate Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100/80">
+      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E2DED8]">
         {/* Toolbar */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <div className="relative">
@@ -323,17 +457,44 @@ export default function EstimatesPage() {
               placeholder="Search estimates..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 w-52 transition-all"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 w-52 transition-all"
+             
             />
           </div>
-          <button
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#1A2332]/55 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            Filter
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+                statusFilter !== "all"
+                  ? "text-[#18181B] bg-[#18181B]/[0.08] border border-[#18181B]/20"
+                  : "text-[#18181B]/55 bg-gray-50 border border-gray-200 hover:bg-gray-100"
+              }`}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Filter
+              {statusFilter !== "all" && (
+                <span className="h-1.5 w-1.5 rounded-full bg-[#18181B]" />
+              )}
+            </button>
+            {filterOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                  {(["all", "draft", "sent", "accepted", "declined"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => { setStatusFilter(opt); setFilterOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-medium capitalize transition-colors ${
+                        statusFilter === opt ? "text-[#18181B] bg-[#18181B]/[0.04]" : "text-[#18181B]/60 hover:bg-gray-50"
+                      }`}
+                    >
+                      {opt === "all" ? "All Estimates" : opt}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {estimates.length === 0 ? (
@@ -342,22 +503,19 @@ export default function EstimatesPage() {
               <FileText className="h-8 w-8 text-teal-400" />
             </div>
             <h3
-              className="text-base font-semibold text-[#1A2332] mb-2"
-              style={{ fontFamily: "'Fraunces', serif" }}
+              className="text-base font-semibold text-[#18181B] mb-2 font-display"
             >
               No estimates yet
             </h3>
             <p
               className="text-sm text-gray-400 mb-6 max-w-xs leading-relaxed"
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Create estimates for potential clients and convert accepted ones
               into jobs.
             </p>
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl transition-colors"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#18181B] hover:bg-[#18181B]/90 text-white text-sm font-semibold rounded-xl transition-colors"
             >
               <Plus className="h-4 w-4" />
               New Estimate
@@ -366,14 +524,12 @@ export default function EstimatesPage() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <p
-              className="text-sm font-semibold text-[#1A2332]"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="text-sm font-semibold text-[#18181B]"
             >
               No results for &ldquo;{search}&rdquo;
             </p>
             <p
               className="text-xs text-gray-400 mt-1"
-              style={{ fontFamily: "'Syne', sans-serif" }}
             >
               Try a different search term
             </p>
@@ -385,37 +541,31 @@ export default function EstimatesPage() {
                 <tr className="bg-gray-50/50 border-b border-gray-100">
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Estimate #
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Client
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden md:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Service
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Amount
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400 hidden lg:table-cell"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Date
                   </th>
                   <th
                     className="text-left px-5 py-3 text-[11px] font-semibold text-gray-400"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Status
                   </th>
@@ -429,14 +579,13 @@ export default function EstimatesPage() {
                     className="hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-5 py-4">
-                      <span className="text-sm font-medium text-[#1A2332] font-mono">
+                      <span className="text-sm font-medium text-[#18181B] font-mono">
                         {estimateNumber(est.id)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className="text-sm text-[#1A2332]/70"
-                        style={{ fontFamily: "'Syne', sans-serif" }}
+                        className="text-sm text-[#18181B]/70"
                       >
                         {est.clients
                           ? `${est.clients.first_name} ${est.clients.last_name}`
@@ -444,40 +593,43 @@ export default function EstimatesPage() {
                       </span>
                     </td>
                     <td
-                      className="px-5 py-4 text-xs text-[#1A2332]/55 hidden md:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-5 py-4 text-xs text-[#18181B]/55 hidden md:table-cell"
                     >
                       {est.line_items?.[0]?.description || "-"}
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className="text-sm font-bold text-[#1A2332]"
-                        style={{ fontFamily: "'Fraunces', serif" }}
+                        className="text-sm font-bold text-[#18181B] font-display"
                       >
                         {formatCurrency(est.total || 0)}
                       </span>
                     </td>
                     <td
-                      className="px-5 py-4 text-xs text-[#1A2332]/55 whitespace-nowrap hidden lg:table-cell"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="px-5 py-4 text-xs text-[#18181B]/55 whitespace-nowrap hidden lg:table-cell"
                     >
                       {formatDate(est.created_at?.split("T")[0] || null)}
                     </td>
                     <td className="px-5 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold capitalize ${statusBadge(est.status)}`}
-                        style={{ fontFamily: "'Syne', sans-serif" }}
                       >
                         {est.status}
                       </span>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
+                        {(est.status === "draft" || est.status === "sent") && (
+                          <button
+                            onClick={() => openEdit(est)}
+                            className="text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors"
+                          >
+                            Edit
+                          </button>
+                        )}
                         {est.status === "draft" && (
                           <button
                             onClick={() => updateStatus(est, "sent")}
                             className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
                           >
                             Send
                           </button>
@@ -487,29 +639,45 @@ export default function EstimatesPage() {
                             <button
                               onClick={() => updateStatus(est, "accepted")}
                               className="text-xs font-semibold text-green-600 hover:text-green-700 transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif" }}
                             >
                               Accept
                             </button>
                             <button
                               onClick={() => updateStatus(est, "declined")}
                               className="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif" }}
                             >
                               Decline
                             </button>
                           </>
                         )}
                         {est.status === "accepted" && (
-                          <button
-                            onClick={() => openConvert(est)}
-                            className="flex items-center gap-1 text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors"
-                            style={{ fontFamily: "'Syne', sans-serif" }}
-                          >
-                            Convert to Job
-                            <ArrowRight className="h-3 w-3" />
-                          </button>
+                          <>
+                            <button
+                              onClick={() => openConvert(est)}
+                              className="flex items-center gap-1 text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors"
+                            >
+                              Convert to Job
+                              <ArrowRight className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={() => openConvertToInvoice(est)}
+                              className="flex items-center gap-1 text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors"
+                            >
+                              Invoice
+                              <Receipt className="h-3 w-3" />
+                            </button>
+                          </>
                         )}
+                        <button
+                          onClick={() => deleteEstimate(est)}
+                          className={`text-xs font-semibold transition-colors ${
+                            deleteConfirmId === est.id
+                              ? "text-red-500"
+                              : "text-gray-300 hover:text-red-400"
+                          }`}
+                        >
+                          {deleteConfirmId === est.id ? "Confirm?" : "Delete"}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -523,9 +691,9 @@ export default function EstimatesPage() {
       {/* Create Estimate Panel */}
       <SlidePanel
         open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        title="New Estimate"
-        subtitle="Create a quote for a client"
+        onClose={() => { setCreateOpen(false); setEditMode(false); setEditEstimateId(null); }}
+        title={editMode ? "Edit Estimate" : "New Estimate"}
+        subtitle={editMode ? "Update estimate details" : "Create a quote for a client"}
         width="w-full max-w-xl"
       >
         <div className="px-6 py-6 space-y-6">
@@ -557,8 +725,8 @@ export default function EstimatesPage() {
                       onChange={(e) =>
                         updateLineItem(idx, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all placeholder:text-gray-300"
+                     
                     />
                   </div>
                   <div className="w-16">
@@ -574,8 +742,8 @@ export default function EstimatesPage() {
                           Math.max(1, parseInt(e.target.value) || 1)
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-center"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all text-center"
+                     
                     />
                   </div>
                   <div className="w-24">
@@ -592,14 +760,13 @@ export default function EstimatesPage() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all text-right"
-                      style={{ fontFamily: "'Syne', sans-serif" }}
+                      className="w-full px-2 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all text-right"
+                     
                     />
                   </div>
                   <div className="w-20 flex items-center justify-end py-2.5">
                     <span
-                      className="text-sm font-semibold text-[#1A2332]/70"
-                      style={{ fontFamily: "'Fraunces', serif" }}
+                      className="text-sm font-semibold text-[#18181B]/70 font-display"
                     >
                       {formatCurrency(li.quantity * li.unit_price)}
                     </span>
@@ -617,8 +784,7 @@ export default function EstimatesPage() {
             <button
               type="button"
               onClick={addLineItem}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#1A2332]/55 hover:text-[#1A2332] transition-colors mt-1"
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#18181B]/55 hover:text-[#18181B] transition-colors mt-1"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Line Item
@@ -640,14 +806,12 @@ export default function EstimatesPage() {
           <div className="border-t border-gray-100 pt-4">
             <div className="flex justify-between text-lg">
               <span
-                className="font-semibold text-[#1A2332]"
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                className="font-semibold text-[#18181B]"
               >
                 Total
               </span>
               <span
-                className="font-bold text-[#1A2332]"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                className="font-bold text-[#18181B] font-display"
               >
                 {formatCurrency(subtotal)}
               </span>
@@ -656,11 +820,11 @@ export default function EstimatesPage() {
         </div>
 
         <FormActions>
-          <SecondaryButton onClick={() => setCreateOpen(false)}>
+          <SecondaryButton onClick={() => { setCreateOpen(false); setEditMode(false); setEditEstimateId(null); }}>
             Cancel
           </SecondaryButton>
-          <PrimaryButton loading={saving} onClick={handleSave}>
-            Create Estimate
+          <PrimaryButton loading={saving} onClick={editMode ? handleUpdate : handleSave}>
+            {editMode ? "Update Estimate" : "Create Estimate"}
           </PrimaryButton>
         </FormActions>
       </SlidePanel>
@@ -754,7 +918,6 @@ export default function EstimatesPage() {
               {clientAddresses.length === 0 && (
                 <p
                   className="text-xs text-amber-600 mt-1"
-                  style={{ fontFamily: "'Syne', sans-serif" }}
                 >
                   No addresses found for this client. Add one first.
                 </p>
@@ -780,6 +943,118 @@ export default function EstimatesPage() {
           </SecondaryButton>
           <PrimaryButton loading={savingJob} onClick={handleConvertSave}>
             Create Job
+          </PrimaryButton>
+        </FormActions>
+      </SlidePanel>
+
+      {/* Convert to Invoice Panel */}
+      <SlidePanel
+        open={convertInvoiceOpen}
+        onClose={() => setConvertInvoiceOpen(false)}
+        title="Convert to Invoice"
+        subtitle={
+          convertInvoiceEstimate?.clients
+            ? `${convertInvoiceEstimate.clients.first_name} ${convertInvoiceEstimate.clients.last_name} — ${formatCurrency(convertInvoiceEstimate.total || 0)}`
+            : "Create an invoice from this estimate"
+        }
+        width="w-full max-w-lg"
+      >
+        <div className="px-6 py-6 space-y-6">
+          <FormSection label="Line Items">
+            <div className="space-y-2">
+              {convertInvoiceEstimate?.line_items?.map((li, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-xl"
+                >
+                  <div className="flex-1">
+                    <span
+                      className="text-sm text-[#18181B]/70"
+                    >
+                      {li.description || "Untitled item"}
+                    </span>
+                    <span
+                      className="text-xs text-[#18181B]/40 ml-2"
+                    >
+                      x{li.quantity}
+                    </span>
+                  </div>
+                  <span
+                    className="text-sm font-semibold text-[#18181B]/70 font-display"
+                  >
+                    {formatCurrency(li.quantity * li.unit_price)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between pt-3 border-t border-gray-100">
+              <span
+                className="text-sm font-semibold text-[#18181B]"
+              >
+                Subtotal
+              </span>
+              <span
+                className="text-sm font-bold text-[#18181B] font-display"
+              >
+                {formatCurrency(convertInvoiceEstimate?.total || 0)}
+              </span>
+            </div>
+          </FormSection>
+
+          <FormSection label="Tax">
+            <FormField label="Tax Percentage (%)">
+              <FormInput
+                type="number"
+                min={0}
+                step={0.01}
+                value={invoiceTaxPercent || ""}
+                onChange={(e) =>
+                  setInvoiceTaxPercent(parseFloat(e.target.value) || 0)
+                }
+              />
+            </FormField>
+            <div className="flex justify-between pt-2">
+              <span
+                className="text-lg font-semibold text-[#18181B]"
+              >
+                Total
+              </span>
+              <span
+                className="text-lg font-bold text-[#18181B] font-display"
+              >
+                {formatCurrency(
+                  ((convertInvoiceEstimate?.total || 0) *
+                    (1 + invoiceTaxPercent / 100))
+                )}
+              </span>
+            </div>
+          </FormSection>
+
+          <FormSection label="Details">
+            <FormField label="Due Date">
+              <FormInput
+                type="date"
+                value={invoiceDueDate}
+                onChange={(e) => setInvoiceDueDate(e.target.value)}
+              />
+            </FormField>
+            <FormField label="Notes">
+              <FormTextarea
+                rows={3}
+                value={invoiceNotes}
+                onChange={(e) => setInvoiceNotes(e.target.value)}
+                placeholder="Payment terms, additional info, etc."
+              />
+            </FormField>
+          </FormSection>
+        </div>
+
+        <FormActions>
+          <SecondaryButton onClick={() => setConvertInvoiceOpen(false)}>
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton loading={savingInvoice} onClick={handleConvertToInvoice}>
+            Create Invoice
           </PrimaryButton>
         </FormActions>
       </SlidePanel>

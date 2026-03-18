@@ -43,7 +43,7 @@ export function SlidePanel({
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-[#1A2332]/30 backdrop-blur-[2px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#18181B]/25 backdrop-blur-[2px] transition-opacity duration-300 ${
           open
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -53,31 +53,25 @@ export function SlidePanel({
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 ${width} bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${
+        className={`fixed inset-y-0 right-0 z-50 ${width} bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.06)] transform transition-transform duration-300 ease-out flex flex-col border-l border-[#E2DED8] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-start justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+        <div className="flex items-start justify-between px-6 py-4.5 border-b border-[#ECEAE6] shrink-0">
           <div>
-            <h2
-              className="text-lg font-bold text-[#1A2332]"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
+            <h2 className="text-[16px] font-semibold text-[#18181B] font-display tracking-[-0.01em]">
               {title}
             </h2>
             {subtitle && (
-              <p
-                className="text-sm text-gray-400 mt-0.5"
-                style={{ fontFamily: "'Syne', sans-serif" }}
-              >
+              <p className="text-[12px] text-[#18181B]/38 mt-0.5">
                 {subtitle}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors -mr-2"
+            className="p-1.5 rounded-md hover:bg-[#18181B]/[0.05] text-[#18181B]/35 hover:text-[#18181B]/60 transition-colors -mr-1.5 mt-0.5"
           >
             <X className="h-4 w-4" />
           </button>
@@ -101,10 +95,7 @@ export function FormSection({
 }) {
   return (
     <div className="space-y-3">
-      <p
-        className="text-[10px] font-bold tracking-[0.12em] text-[#1A2332]/35 uppercase"
-        style={{ fontFamily: "'Syne', sans-serif" }}
-      >
+      <p className="text-[10px] font-bold tracking-[0.1em] text-[#18181B]/30 uppercase">
         {label}
       </p>
       {children}
@@ -123,10 +114,7 @@ export function FormField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label
-        className="text-xs font-semibold text-[#1A2332]/70"
-        style={{ fontFamily: "'Syne', sans-serif" }}
-      >
+      <label className="text-[12px] font-semibold text-[#18181B]/65">
         {label}
         {required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
@@ -141,8 +129,8 @@ export function FormInput({
   return (
     <input
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300 ${props.className || ""}`}
-      style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
+      className={`w-full px-3 py-2 text-[13px] bg-[#F6F4F1] border border-[#E2DED8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all placeholder:text-[#18181B]/25 ${props.className || ""}`}
+      style={props.style}
     />
   );
 }
@@ -153,8 +141,8 @@ export function FormTextarea({
   return (
     <textarea
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all placeholder:text-gray-300 resize-none ${props.className || ""}`}
-      style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
+      className={`w-full px-3 py-2 text-[13px] bg-[#F6F4F1] border border-[#E2DED8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all placeholder:text-[#18181B]/25 resize-none ${props.className || ""}`}
+      style={props.style}
     />
   );
 }
@@ -166,8 +154,8 @@ export function FormSelect({
   return (
     <select
       {...props}
-      className={`w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1A2332]/[0.06] focus:border-[#1A2332]/20 transition-all ${props.className || ""}`}
-      style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
+      className={`w-full px-3 py-2 text-[13px] bg-[#F6F4F1] border border-[#E2DED8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#18181B]/[0.06] focus:border-[#18181B]/20 transition-all ${props.className || ""}`}
+      style={props.style}
     >
       {children}
     </select>
@@ -180,7 +168,7 @@ export function FormActions({
   children: React.ReactNode;
 }) {
   return (
-    <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 flex items-center justify-end gap-3">
+    <div className="sticky bottom-0 bg-white border-t border-[#ECEAE6] px-6 py-4 flex items-center justify-end gap-2.5">
       {children}
     </div>
   );
@@ -195,12 +183,12 @@ export function PrimaryButton({
     <button
       {...props}
       disabled={loading || props.disabled}
-      className={`px-5 py-2.5 bg-[#1A2332] hover:bg-[#1A2332]/90 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ""}`}
-      style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
+      className={`px-5 py-2 bg-[#18181B] hover:bg-[#18181B]/88 text-white text-[13px] font-semibold rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${props.className || ""}`}
+      style={props.style}
     >
       {loading ? (
         <span className="flex items-center gap-2">
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+          <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
             <circle
               className="opacity-25"
               cx="12"
@@ -232,8 +220,8 @@ export function SecondaryButton({
   return (
     <button
       {...props}
-      className={`px-5 py-2.5 text-sm font-semibold text-[#1A2332]/60 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors ${props.className || ""}`}
-      style={{ fontFamily: "'Syne', sans-serif", ...props.style }}
+      className={`px-5 py-2 text-[13px] font-semibold text-[#18181B]/55 bg-white border border-[#E2DED8] rounded-lg hover:bg-[#F6F4F1] transition-colors ${props.className || ""}`}
+      style={props.style}
     >
       {children}
     </button>

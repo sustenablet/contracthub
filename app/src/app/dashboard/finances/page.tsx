@@ -11,10 +11,6 @@ import {
   ArrowUpRight,
   ArrowRight,
 } from "lucide-react";
-
-const syne = { fontFamily: "'Syne', sans-serif" } as const;
-const fraunces = { fontFamily: "'Fraunces', serif" } as const;
-
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -115,26 +111,24 @@ export default async function FinancesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1A2332]" style={fraunces}>
+          <h1 className="text-[21px] font-semibold text-[#18181B] font-display tracking-[-0.02em]">
             Finances
           </h1>
-          <p className="text-[13px] text-[#1A2332]/40 mt-0.5" style={syne}>
+          <p className="text-[13px] text-[#18181B]/40 mt-0.5">
             Overview of your revenue, invoices, and estimates
           </p>
         </div>
         <div className="hidden sm:flex items-center gap-2">
           <Link
             href="/dashboard/invoices"
-            className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#1A2332]/55 bg-white border border-[#1A2332]/[0.08] rounded-lg hover:bg-[#1A2332]/[0.02] transition-colors"
-            style={syne}
+            className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#18181B]/55 bg-white border border-[#18181B]/[0.08] rounded-lg hover:bg-[#18181B]/[0.02] transition-colors"
           >
             <Receipt className="h-3.5 w-3.5" strokeWidth={1.8} />
             Invoices
           </Link>
           <Link
             href="/dashboard/estimates"
-            className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#1A2332]/55 bg-white border border-[#1A2332]/[0.08] rounded-lg hover:bg-[#1A2332]/[0.02] transition-colors"
-            style={syne}
+            className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#18181B]/55 bg-white border border-[#18181B]/[0.08] rounded-lg hover:bg-[#18181B]/[0.02] transition-colors"
           >
             <FileText className="h-3.5 w-3.5" strokeWidth={1.8} />
             Estimates
@@ -174,15 +168,14 @@ export default async function FinancesPage() {
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left: Recent transactions */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-[#1A2332]/[0.06] shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1A2332]/[0.05]">
-            <h2 className="text-[14px] font-bold text-[#1A2332]" style={syne}>
+        <div className="lg:col-span-2 bg-white rounded-lg border border-[#E2DED8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#18181B]/[0.05]">
+            <h2 className="text-[14px] font-bold text-[#18181B]">
               Recent Transactions
             </h2>
             <Link
               href="/dashboard/invoices"
-              className="flex items-center gap-1 text-[12px] font-semibold text-[#1A2332]/40 hover:text-[#1A2332] transition-colors"
-              style={syne}
+              className="flex items-center gap-1 text-[12px] font-semibold text-[#18181B]/40 hover:text-[#18181B] transition-colors"
             >
               View All
               <ArrowRight className="h-3 w-3" strokeWidth={2} />
@@ -191,26 +184,25 @@ export default async function FinancesPage() {
 
           {recentInvoices.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center px-6">
-              <div className="h-12 w-12 rounded-xl bg-[#1A2332]/[0.04] flex items-center justify-center mb-3">
-                <Receipt className="h-6 w-6 text-[#1A2332]/20" strokeWidth={1.5} />
+              <div className="h-12 w-12 rounded-xl bg-[#18181B]/[0.04] flex items-center justify-center mb-3">
+                <Receipt className="h-6 w-6 text-[#18181B]/20" strokeWidth={1.5} />
               </div>
-              <p className="text-[13px] font-semibold text-[#1A2332]/60" style={syne}>
+              <p className="text-[13px] font-semibold text-[#18181B]/60">
                 No transactions yet
               </p>
-              <p className="text-[12px] text-[#1A2332]/30 mt-1 max-w-xs" style={syne}>
+              <p className="text-[12px] text-[#18181B]/30 mt-1 max-w-xs">
                 Create your first invoice to start tracking revenue
               </p>
               <Link
                 href="/dashboard/invoices"
-                className="mt-4 flex items-center gap-1.5 px-4 py-2 text-[12px] font-semibold bg-[#1A2332] text-white rounded-lg hover:bg-[#1A2332]/90 transition-colors"
-                style={syne}
+                className="mt-4 flex items-center gap-1.5 px-4 py-2 text-[12px] font-semibold bg-[#18181B] text-white rounded-lg hover:bg-[#18181B]/90 transition-colors"
               >
                 Create Invoice
                 <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-[#1A2332]/[0.04]">
+            <div className="divide-y divide-[#18181B]/[0.04]">
               {recentInvoices.map((inv: {
                 id: string;
                 total: number | null;
@@ -226,7 +218,7 @@ export default async function FinancesPage() {
                 const config = statusConfig[inv.status] || statusConfig.unpaid;
 
                 return (
-                  <div key={inv.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#1A2332]/[0.01] transition-colors">
+                  <div key={inv.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#18181B]/[0.01] transition-colors">
                     <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
                       inv.status === "paid" ? "bg-emerald-50" : inv.status === "unpaid" ? "bg-amber-50" : "bg-gray-50"
                     }`}>
@@ -238,10 +230,10 @@ export default async function FinancesPage() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-[#1A2332] truncate" style={syne}>
+                      <p className="text-[13px] font-semibold text-[#18181B] truncate">
                         {clientName}
                       </p>
-                      <p className="text-[11px] text-[#1A2332]/30" style={syne}>
+                      <p className="text-[11px] text-[#18181B]/30">
                         {timeAgo(inv.created_at)}
                         {inv.due_date && inv.status === "unpaid" && (
                           <> &middot; Due {formatDate(inv.due_date)}</>
@@ -249,13 +241,12 @@ export default async function FinancesPage() {
                       </p>
                     </div>
 
-                    <span className="text-[14px] font-bold text-[#1A2332] tabular-nums shrink-0" style={fraunces}>
+                    <span className="text-[14px] font-bold text-[#18181B] tabular-nums shrink-0 font-display">
                       {inv.total != null ? formatCurrency(Number(inv.total)) : "-"}
                     </span>
 
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${config.className} shrink-0`}
-                      style={syne}
                     >
                       {config.label}
                     </span>
@@ -269,8 +260,8 @@ export default async function FinancesPage() {
         {/* Right: Summary panel */}
         <div className="space-y-4">
           {/* Payment Status */}
-          <div className="bg-white rounded-2xl border border-[#1A2332]/[0.06] shadow-sm p-5">
-            <h3 className="text-[13px] font-bold text-[#1A2332] mb-4" style={syne}>
+          <div className="bg-white rounded-lg border border-[#E2DED8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5">
+            <h3 className="text-[13px] font-bold text-[#18181B] mb-4">
               Invoice Status
             </h3>
             <div className="space-y-3">
@@ -295,7 +286,7 @@ export default async function FinancesPage() {
             </div>
 
             {invoiceCount === 0 && (
-              <p className="text-[12px] text-[#1A2332]/25 text-center py-4" style={syne}>
+              <p className="text-[12px] text-[#18181B]/25 text-center py-4">
                 No invoices yet
               </p>
             )}
@@ -307,16 +298,15 @@ export default async function FinancesPage() {
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" strokeWidth={1.8} />
                 <div>
-                  <p className="text-[13px] font-semibold text-red-600" style={syne}>
+                  <p className="text-[13px] font-semibold text-red-600">
                     {overdueCount} overdue invoice{overdueCount !== 1 ? "s" : ""}
                   </p>
-                  <p className="text-[12px] text-red-400 mt-0.5" style={syne}>
+                  <p className="text-[12px] text-red-400 mt-0.5">
                     {formatCurrency(totalOverdue)} outstanding past due date
                   </p>
                   <Link
                     href="/dashboard/invoices"
                     className="inline-flex items-center gap-1 text-[12px] font-semibold text-red-500 hover:text-red-600 mt-2 transition-colors"
-                    style={syne}
                   >
                     Review invoices
                     <ArrowRight className="h-3 w-3" strokeWidth={2} />
@@ -327,25 +317,24 @@ export default async function FinancesPage() {
           )}
 
           {/* Open Estimates */}
-          <div className="bg-white rounded-2xl border border-[#1A2332]/[0.06] shadow-sm p-5">
+          <div className="bg-white rounded-lg border border-[#E2DED8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[13px] font-bold text-[#1A2332]" style={syne}>
+              <h3 className="text-[13px] font-bold text-[#18181B]">
                 Open Estimates
               </h3>
               <Link
                 href="/dashboard/estimates"
-                className="text-[11px] font-semibold text-[#1A2332]/35 hover:text-[#1A2332] transition-colors"
-                style={syne}
+                className="text-[11px] font-semibold text-[#18181B]/35 hover:text-[#18181B] transition-colors"
               >
                 View All
               </Link>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-[#1A2332] tabular-nums" style={fraunces}>
+              <span className="text-[24px] font-normal text-[#18181B] tabular-nums font-display">
                 {formatCurrency(totalEstimatesValue)}
               </span>
             </div>
-            <p className="text-[12px] text-[#1A2332]/30 mt-1" style={syne}>
+            <p className="text-[12px] text-[#18181B]/30 mt-1">
               {openEstimates.length} estimate{openEstimates.length !== 1 ? "s" : ""} pending response
             </p>
           </div>
@@ -354,32 +343,32 @@ export default async function FinancesPage() {
           <div className="space-y-2">
             <Link
               href="/dashboard/invoices"
-              className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-[#1A2332]/[0.06] hover:border-[#1A2332]/[0.12] hover:shadow-sm transition-all group"
+              className="flex items-center justify-between p-3.5 bg-white rounded-lg border border-[#E2DED8] hover:border-[#18181B]/[0.14] hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] transition-all group"
             >
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-[#1A2332]/[0.04] flex items-center justify-center">
-                  <Receipt className="h-4 w-4 text-[#1A2332]/50" strokeWidth={1.8} />
+                <div className="h-8 w-8 rounded-lg bg-[#18181B]/[0.04] flex items-center justify-center">
+                  <Receipt className="h-4 w-4 text-[#18181B]/50" strokeWidth={1.8} />
                 </div>
-                <span className="text-[13px] font-semibold text-[#1A2332]/70" style={syne}>
+                <span className="text-[13px] font-semibold text-[#18181B]/70">
                   Create Invoice
                 </span>
               </div>
-              <ArrowRight className="h-3.5 w-3.5 text-[#1A2332]/20 group-hover:text-[#1A2332]/50 transition-colors" strokeWidth={1.8} />
+              <ArrowRight className="h-3.5 w-3.5 text-[#18181B]/20 group-hover:text-[#18181B]/50 transition-colors" strokeWidth={1.8} />
             </Link>
 
             <Link
               href="/dashboard/estimates"
-              className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-[#1A2332]/[0.06] hover:border-[#1A2332]/[0.12] hover:shadow-sm transition-all group"
+              className="flex items-center justify-between p-3.5 bg-white rounded-lg border border-[#E2DED8] hover:border-[#18181B]/[0.14] hover:shadow-[0_2px_6px_rgba(0,0,0,0.08)] transition-all group"
             >
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-[#1A2332]/[0.04] flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-[#1A2332]/50" strokeWidth={1.8} />
+                <div className="h-8 w-8 rounded-lg bg-[#18181B]/[0.04] flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-[#18181B]/50" strokeWidth={1.8} />
                 </div>
-                <span className="text-[13px] font-semibold text-[#1A2332]/70" style={syne}>
+                <span className="text-[13px] font-semibold text-[#18181B]/70">
                   New Estimate
                 </span>
               </div>
-              <ArrowRight className="h-3.5 w-3.5 text-[#1A2332]/20 group-hover:text-[#1A2332]/50 transition-colors" strokeWidth={1.8} />
+              <ArrowRight className="h-3.5 w-3.5 text-[#18181B]/20 group-hover:text-[#18181B]/50 transition-colors" strokeWidth={1.8} />
             </Link>
           </div>
         </div>
@@ -404,26 +393,26 @@ function StatCard({
   alert?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-[#1A2332]/[0.06] shadow-sm p-4">
+    <div className="bg-white rounded-lg border border-[#E2DED8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-4">
       <div className="flex items-center justify-between mb-3">
         <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
-          alert ? "bg-red-50" : "bg-[#1A2332]/[0.04]"
+          alert ? "bg-red-50" : "bg-[#18181B]/[0.04]"
         }`}>
-          <Icon className={`h-4 w-4 ${alert ? "text-red-400" : "text-[#1A2332]/40"}`} strokeWidth={1.8} />
+          <Icon className={`h-4 w-4 ${alert ? "text-red-400" : "text-[#18181B]/40"}`} strokeWidth={1.8} />
         </div>
         {alert && (
           <AlertCircle className="h-3.5 w-3.5 text-red-400" strokeWidth={1.8} />
         )}
       </div>
-      <p className="text-xl font-bold text-[#1A2332] tabular-nums" style={{ fontFamily: "'Fraunces', serif" }}>
+      <p className="text-[20px] font-normal text-[#18181B] tabular-nums font-display">
         {value}
       </p>
       <div className="flex items-center justify-between mt-1">
-        <p className="text-[11px] text-[#1A2332]/35 font-medium" style={{ fontFamily: "'Syne', sans-serif" }}>
+        <p className="text-[11px] text-[#18181B]/35 font-medium">
           {label}
         </p>
         {detail && (
-          <p className="text-[10px] text-[#1A2332]/25" style={{ fontFamily: "'Syne', sans-serif" }}>
+          <p className="text-[10px] text-[#18181B]/25">
             {detail}
           </p>
         )}
@@ -447,14 +436,14 @@ function StatusRow({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-[12px] text-[#1A2332]/55 font-medium" style={{ fontFamily: "'Syne', sans-serif" }}>
+        <span className="text-[12px] text-[#18181B]/55 font-medium">
           {label}
         </span>
-        <span className="text-[12px] text-[#1A2332]/35 tabular-nums" style={{ fontFamily: "'Syne', sans-serif" }}>
+        <span className="text-[12px] text-[#18181B]/35 tabular-nums">
           {count}
         </span>
       </div>
-      <div className="h-1.5 bg-[#1A2332]/[0.06] rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[#18181B]/[0.06] rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color} transition-all duration-500`}
           style={{ width: `${pct}%` }}

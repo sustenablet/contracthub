@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 
-const services = [
-  { label: "Deep Clean", value: 42, color: "#2DD4BF", amount: 3929 },
-  { label: "Regular Clean", value: 30, color: "#1A2332", amount: 2807 },
-  { label: "Move-Out", value: 18, color: "#A3E635", amount: 1684 },
-  { label: "Post-Construction", value: 10, color: "#F97316", amount: 935 },
-];
-
-const TOTAL = 9355;
+export type ServiceDataPoint = { label: string; value: number; color: string; amount: number };
 const cx = 90;
 const cy = 90;
 const R = 68;
@@ -43,8 +36,16 @@ function arcPath(
   ].join(" ");
 }
 
-export function ServiceDonut() {
+export function ServiceDonut({ services, total }: { services: ServiceDataPoint[]; total: number }) {
   const [hovered, setHovered] = useState<number | null>(null);
+
+  if (services.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[180px] text-xs text-gray-400">
+        No service data yet
+      </div>
+    );
+  }
 
   let cumulative = 0;
   const segments = services.map((s, i) => {
@@ -91,7 +92,7 @@ export function ServiceDonut() {
             textAnchor="middle"
             fontSize="8.5"
             fill="#9CA3AF"
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            style={{ fontFamily: "var(--font-body)" }}
           >
             Revenue Total
           </text>
@@ -101,10 +102,10 @@ export function ServiceDonut() {
             textAnchor="middle"
             fontSize="15"
             fontWeight="700"
-            fill="#1A2332"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            fill="#1B1F23"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            ${(TOTAL / 1000).toFixed(1)}K
+            ${(total / 1000).toFixed(1)}K
           </text>
 
           {/* Hover tooltip in center */}
@@ -116,7 +117,7 @@ export function ServiceDonut() {
                 textAnchor="middle"
                 fontSize="8"
                 fill={services[hovered].color}
-                style={{ fontFamily: "'Syne', sans-serif" }}
+                style={{ fontFamily: "var(--font-body)" }}
               >
                 {services[hovered].label}
               </text>
@@ -126,8 +127,8 @@ export function ServiceDonut() {
                 textAnchor="middle"
                 fontSize="14"
                 fontWeight="700"
-                fill="#1A2332"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                fill="#1B1F23"
+                style={{ fontFamily: "var(--font-display)" }}
               >
                 ${services[hovered].amount.toLocaleString()}
               </text>
@@ -152,8 +153,7 @@ export function ServiceDonut() {
             <span
               className="text-[11px] text-gray-500 leading-tight"
               style={{
-                fontFamily: "'Syne', sans-serif",
-                color: hovered === i ? "#1A2332" : undefined,
+                color: hovered === i ? "#1B1F23" : undefined,
               }}
             >
               {s.label}
