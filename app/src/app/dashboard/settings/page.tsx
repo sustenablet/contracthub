@@ -518,7 +518,7 @@ export default function SettingsPage() {
           {activeTab === "profile" && (
             <>
               <Card>
-                <CardHeader title="Personal Information" description="How you appear across MaidHub" />
+                <CardHeader title="Personal Information" description="How you appear across ContractHub" />
                 <form onSubmit={handleProfileSave}>
                   <CardBody className="space-y-5">
                     {/* Avatar + name row */}
@@ -560,14 +560,14 @@ export default function SettingsPage() {
               </Card>
 
               <Card>
-                <CardHeader title="Business Details" description="Your cleaning business information shown on invoices and estimates" />
+                <CardHeader title="Business Details" description="Your contractor business information shown on invoices and estimates" />
                 <form onSubmit={handleProfileSave}>
                   <CardBody className="space-y-4">
                     <Field label="Business Name" icon={Building2}>
                       <Input
                         value={businessName}
                         onChange={(e) => setBusinessName(e.target.value)}
-                        placeholder="e.g. Sparkling Clean Co."
+                        placeholder="e.g. Apex Contracting Co."
                       />
                     </Field>
 
@@ -615,13 +615,13 @@ export default function SettingsPage() {
           {activeTab === "business" && (
             <>
               <Card>
-                <CardHeader title="Service Types" description="The cleaning services you offer. These appear in job and estimate forms." />
+                <CardHeader title="Work Types" description="The types of work you offer. These appear in work order and bid forms." />
                 <CardBody className="space-y-4">
                   <div className="flex gap-2">
                     <Input
                       value={newService}
                       onChange={(e) => setNewService(e.target.value)}
-                      placeholder="Add a new service type..."
+                      placeholder="Add a new work type..."
                       className="flex-1"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -662,7 +662,7 @@ export default function SettingsPage() {
                   </div>
 
                   <p className="text-[11px] text-[#555555]">
-                    {serviceTypes.length} service type{serviceTypes.length !== 1 ? "s" : ""} configured
+                    {serviceTypes.length} work type{serviceTypes.length !== 1 ? "s" : ""} configured
                   </p>
                 </CardBody>
               </Card>
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                       </div>
                     </Field>
 
-                    <Field label="Default Job Duration" icon={Clock} hint="Minutes per cleaning session">
+                    <Field label="Default Work Order Duration" icon={Clock} hint="Minutes per work order visit">
                       <div className="relative">
                         <Input
                           type="number"
@@ -802,7 +802,7 @@ export default function SettingsPage() {
                     <div>
                       <p className="text-[13px] font-semibold text-[#D4D4D4]">Current Plan</p>
                       <p className="text-[12px] text-[#888888] mt-0.5">
-                        {subscriptionPlan === "solo" ? "Solo Cleaner" : "Team"} Plan
+                        {subscriptionPlan === "solo" ? "Solo Contractor" : "Team"} Plan
                       </p>
                     </div>
                     <span
@@ -854,7 +854,7 @@ export default function SettingsPage() {
                       Upgrade your plan
                     </p>
                     <p className="text-[12px] text-white/45 mt-0.5">
-                      Get unlimited access to all MaidHub features
+                      Get unlimited access to all ContractHub features
                     </p>
                   </div>
                   <ArrowUpRight className="h-5 w-5 text-white/40 group-hover:text-white transition-colors" strokeWidth={1.8} />

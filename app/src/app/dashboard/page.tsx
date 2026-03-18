@@ -336,7 +336,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <Briefcase className="h-8 w-8 text-[#333333] mb-2" strokeWidth={1.5} />
               <p className="text-[12px] text-[#555555]">
-                Activity will appear here as you use MaidHub
+                Activity will appear here as you use ContractHub
               </p>
             </div>
           ) : (

@@ -18,7 +18,7 @@ import {
 const features = [
   { icon: Users, label: "Unlimited clients & addresses" },
   { icon: CalendarDays, label: "Full job scheduling & calendar" },
-  { icon: RefreshCw, label: "Recurring job rules" },
+  { icon: RefreshCw, label: "Recurring work order rules" },
   { icon: FileText, label: "Estimates with contract text" },
   { icon: Receipt, label: "Invoicing & payment tracking" },
   { icon: Smartphone, label: "Mobile-optimized interface" },
@@ -30,7 +30,7 @@ const plans = [
   {
     name: "Solo",
     price: 29,
-    description: "Everything a solo cleaner needs",
+    description: "Everything a solo contractor needs",
     popular: true,
     features: [
       "Unlimited clients",
@@ -44,7 +44,7 @@ const plans = [
   {
     name: "Team",
     price: 49,
-    description: "For growing cleaning businesses",
+    description: "For growing contractor businesses",
     popular: false,
     features: [
       "Everything in Solo",
@@ -85,7 +85,7 @@ export default function UpgradePage() {
           Choose your plan
         </h1>
         <p className="text-[15px] text-[#888888] max-w-md mx-auto leading-relaxed">
-          Upgrade to keep managing your cleaning business with all the tools you need.
+          Upgrade to keep managing your contracting business with all the tools you need.
         </p>
 
         {/* Billing toggle */}
@@ -210,7 +210,7 @@ export default function UpgradePage() {
           Everything included
         </h2>
         <p className="text-[13px] text-[#888888] mb-5">
-          All the tools to run your cleaning business efficiently
+          All the tools to run your contracting business efficiently
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {features.map((f) => (

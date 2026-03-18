@@ -366,19 +366,19 @@ export default function LoginPage() {
         {/* ── Brand Panel ── */}
         <div className="lp-brand">
           <Link href="/" className="lp-logo">
-            <div className="lp-logomark">M</div>
-            <span className="lp-logoname">MaidHub</span>
+            <div className="lp-logomark">C</div>
+            <span className="lp-logoname">ContractHub</span>
           </Link>
 
           <div className="lp-headline">
             <h1>
-              Your cleaning<br />
+              Your contracting<br />
               business,<br />
               <em>organized.</em>
             </h1>
             <p>
-              Everything you need to run your solo cleaning business —
-              clients, bookings, invoices, and more.
+              Everything you need to run your solo contracting business —
+              clients, work orders, invoices, and more.
             </p>
             <div className="lp-stat-row">
               <div className="lp-stat">
@@ -405,7 +405,7 @@ export default function LoginPage() {
               <div className="lp-avatar">M</div>
               <div>
                 <div className="lp-author-name">Maria G.</div>
-                <div className="lp-author-role">Solo cleaner &middot; Miami, FL</div>
+                <div className="lp-author-role">Solo contractor &middot; Miami, FL</div>
               </div>
             </div>
           </div>

@@ -20,11 +20,15 @@ interface Onboarding {
 }
 
 const SERVICES = [
-  { id: "regular",    icon: "🔄", label: "Regular / recurring cleaning" },
-  { id: "deep",       icon: "✨", label: "Deep cleaning" },
-  { id: "moveinout",  icon: "📦", label: "Move-in / move-out" },
-  { id: "airbnb",     icon: "🏡", label: "Airbnb / short-term rental" },
-  { id: "commercial", icon: "🏢", label: "Office / commercial" },
+  { id: "general",      icon: "🔧", label: "General maintenance & repairs" },
+  { id: "plumbing",     icon: "🚿", label: "Plumbing" },
+  { id: "electrical",   icon: "⚡", label: "Electrical" },
+  { id: "hvac",         icon: "❄️", label: "HVAC / Mechanical" },
+  { id: "carpentry",    icon: "🪵", label: "Carpentry / Framing" },
+  { id: "drywall",      icon: "🎨", label: "Drywall & Painting" },
+  { id: "roofing",      icon: "🏗️", label: "Roofing" },
+  { id: "concrete",     icon: "🧱", label: "Concrete / Masonry" },
+  { id: "landscaping",  icon: "🌿", label: "Landscaping / Site Work" },
 ];
 
 /* ─────────────────────────────────────────────
@@ -504,7 +508,7 @@ export default function SignupPage() {
               <h2 className="sp-success-title">Check your inbox</h2>
               <p className="sp-success-text">
                 We sent a verification link to <strong>{email}</strong>.
-                <br />Click it to activate your MaidHub account.
+                <br />Click it to activate your ContractHub account.
               </p>
               <Link href="/login" className="sp-success-link">← Back to sign in</Link>
             </div>
@@ -522,8 +526,8 @@ export default function SignupPage() {
         {/* Header */}
         <header className="sp-header">
           <Link href="/" className="sp-logo">
-            <div className="sp-logomark">M</div>
-            <span className="sp-logoname">MaidHub</span>
+            <div className="sp-logomark">C</div>
+            <span className="sp-logoname">ContractHub</span>
           </Link>
 
           <div className="sp-progress-wrap">
@@ -544,7 +548,7 @@ export default function SignupPage() {
             <div className="sp-step" key="step1">
               <p className="sp-eyebrow">Getting started</p>
               <h1 className="sp-heading">Tell us about<br />your business</h1>
-              <p className="sp-subtext">We&apos;ll personalize MaidHub to fit exactly how you work</p>
+              <p className="sp-subtext">We&apos;ll set up ContractHub to match exactly how you work</p>
 
               <div className="sp-fields">
                 <div>
@@ -552,14 +556,14 @@ export default function SignupPage() {
                   <input
                     className="sp-text-input"
                     type="text"
-                    placeholder="e.g. Sparkle Clean Co."
+                    placeholder="e.g. Apex Contracting Co."
                     value={ob.businessName}
                     onChange={e => setOb(p => ({ ...p, businessName: e.target.value }))}
                   />
                 </div>
 
                 <div>
-                  <label className="sp-field-label">How long have you been cleaning professionally?</label>
+                  <label className="sp-field-label">How long have you been working as a contractor?</label>
                   <div className="sp-pills">
                     {[
                       { v: "new",  l: "Just starting" },

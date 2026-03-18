@@ -343,7 +343,7 @@ export default function EstimatesPage() {
     });
     if (error) {
       setSavingJob(false);
-      toast.error("Failed to create job.");
+      toast.error("Failed to create work order.");
       return;
     }
     // Mark estimate as accepted if not already
@@ -354,7 +354,7 @@ export default function EstimatesPage() {
         .eq("id", convertEstimate.id);
     }
     setSavingJob(false);
-    toast.success("Job created from estimate.");
+    toast.success("Work order created from estimate.");
     setConvertOpen(false);
     fetchData();
   }
@@ -430,7 +430,7 @@ export default function EstimatesPage() {
             Estimates
           </h1>
           <p className="text-sm text-[#888888] mt-0.5">
-            Create quotes and convert to jobs
+            Create bids and convert to work orders
           </p>
         </div>
         <button
@@ -501,8 +501,8 @@ export default function EstimatesPage() {
               No estimates yet
             </h3>
             <p className="text-sm text-[#888888] mb-6 max-w-xs leading-relaxed">
-              Create estimates for potential clients and convert accepted ones
-              into jobs.
+              Create bids for potential clients and convert accepted ones
+              into work orders.
             </p>
             <button
               onClick={openCreate}
@@ -621,7 +621,7 @@ export default function EstimatesPage() {
                               onClick={() => openConvert(est)}
                               className="flex items-center gap-1 text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors"
                             >
-                              Convert to Job
+                              Convert to Work Order
                               <ArrowRight className="h-3 w-3" />
                             </button>
                             <button
@@ -789,22 +789,22 @@ export default function EstimatesPage() {
       <SlidePanel
         open={convertOpen}
         onClose={() => setConvertOpen(false)}
-        title="Convert to Job"
+        title="Convert to Work Order"
         subtitle={
           convertEstimate?.clients
             ? `${convertEstimate.clients.first_name} ${convertEstimate.clients.last_name} — ${formatCurrency(convertEstimate.total || 0)}`
-            : "Schedule a job from this estimate"
+            : "Schedule a work order from this bid"
         }
         width="w-full max-w-lg"
       >
         <div className="px-6 py-6 space-y-6">
-          <FormSection label="Job Details">
-            <FormField label="Service Type">
+          <FormSection label="Work Order Details">
+            <FormField label="Work Type">
               <FormSelect
                 value={jobServiceType}
                 onChange={(e) => setJobServiceType(e.target.value)}
               >
-                <option value="">Select service type</option>
+                <option value="">Select work type</option>
                 {SERVICE_TYPES.map((st) => (
                   <option key={st} value={st}>
                     {st}
@@ -880,12 +880,12 @@ export default function EstimatesPage() {
           </FormSection>
 
           <FormSection label="Notes">
-            <FormField label="Job Notes">
+            <FormField label="Work Order Notes">
               <FormTextarea
                 rows={3}
                 value={jobNotes}
                 onChange={(e) => setJobNotes(e.target.value)}
-                placeholder="Special instructions, access codes, etc."
+                placeholder="Special instructions, site access, safety notes, etc."
               />
             </FormField>
           </FormSection>
@@ -896,7 +896,7 @@ export default function EstimatesPage() {
             Cancel
           </SecondaryButton>
           <PrimaryButton loading={savingJob} onClick={handleConvertSave}>
-            Create Job
+            Create Work Order
           </PrimaryButton>
         </FormActions>
       </SlidePanel>

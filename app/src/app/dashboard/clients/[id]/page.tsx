@@ -298,7 +298,7 @@ export default function ClientDetailPage() {
         job_id: job.id,
         line_items: [
           {
-            description: job.service_type || "Cleaning Service",
+            description: job.service_type || "Work Order",
             quantity: 1,
             unit_price: job.price || 0,
           },

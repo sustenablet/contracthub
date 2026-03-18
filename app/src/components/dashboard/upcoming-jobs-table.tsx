@@ -8,7 +8,7 @@ type JobStatus = "pending" | "confirmed" | "completed" | "cancelled";
 interface Job {
   id: string;
   client: string;
-  cleaner: string;
+  contractor: string;
   serviceType: string;
   dateTime: string;
   location: string;
@@ -19,7 +19,7 @@ const mockJobs: Job[] = [
   {
     id: "JB-1001",
     client: "Sarah Johnson",
-    cleaner: "Maria Lopez",
+    contractor: "Maria Lopez",
     serviceType: "Deep Clean",
     dateTime: "Mar 18, 2026, 10:00 AM",
     location: "Brooklyn, NY",
@@ -28,7 +28,7 @@ const mockJobs: Job[] = [
   {
     id: "JB-1002",
     client: "Tom Wilson",
-    cleaner: "Anna Chen",
+    contractor: "Anna Chen",
     serviceType: "Regular Clean",
     dateTime: "Mar 19, 2026, 2:00 PM",
     location: "Manhattan, NY",
@@ -37,7 +37,7 @@ const mockJobs: Job[] = [
   {
     id: "JB-1003",
     client: "Lisa Park",
-    cleaner: "Maria Lopez",
+    contractor: "Maria Lopez",
     serviceType: "Move-Out",
     dateTime: "Mar 20, 2026, 9:00 AM",
     location: "Queens, NY",
@@ -46,7 +46,7 @@ const mockJobs: Job[] = [
   {
     id: "JB-1004",
     client: "David Brown",
-    cleaner: "Kate Smith",
+    contractor: "Kate Smith",
     serviceType: "Post-Construction",
     dateTime: "Mar 22, 2026, 11:00 AM",
     location: "Bronx, NY",
@@ -154,12 +154,12 @@ export function UpcomingJobsTable() {
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden md:table-cell"
                 >
-                  Cleaner
+                  Contractor
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden lg:table-cell"
                 >
-                  Service Type
+                  Work Type
                 </th>
                 <th
                   className="text-left px-4 py-3 text-[11px] font-semibold text-gray-400 whitespace-nowrap hidden lg:table-cell"
@@ -198,7 +198,7 @@ export function UpcomingJobsTable() {
                     <td
                       className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden md:table-cell"
                     >
-                      {job.cleaner}
+                      {job.contractor}
                     </td>
                     <td
                       className="px-4 py-3.5 text-xs text-[#1B1F23]/55 hidden lg:table-cell"

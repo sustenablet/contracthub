@@ -5,7 +5,7 @@ const serif = Instrument_Serif({ subsets: ["latin"], weight: ["400"] });
 const sans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata = {
-  title: "Terms of Service — MaidHub",
+  title: "Terms of Service — ContractHub",
 };
 
 export default function TermsPage() {
@@ -18,7 +18,7 @@ export default function TermsPage() {
             <div className="h-7 w-7 rounded-[6px] bg-[#18181B] flex items-center justify-center">
               <span className={`${serif.className} text-white text-[13px] italic font-bold leading-none`}>M</span>
             </div>
-            <span className={`${serif.className} text-[#18181B] font-semibold text-[15px] tracking-[-0.02em]`}>MaidHub</span>
+            <span className={`${serif.className} text-[#18181B] font-semibold text-[15px] tracking-[-0.02em]`}>ContractHub</span>
           </Link>
           <Link href="/login" className="text-[13px] font-medium text-[#18181B]/50 hover:text-[#18181B] transition-colors">
             Sign in →
@@ -40,8 +40,8 @@ export default function TermsPage() {
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">1. Agreement to Terms</h2>
-            <p>By accessing or using MaidHub (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;). If you do not agree to these Terms, do not use the Service.</p>
-            <p>MaidHub is operated as a business management platform for solo residential and small-office cleaning business owners.</p>
+            <p>By accessing or using ContractHub (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;). If you do not agree to these Terms, do not use the Service.</p>
+            <p>ContractHub is operated as a business management platform for solo residential and small-office contractors.</p>
           </section>
 
           <section className="space-y-3">
@@ -66,21 +66,21 @@ export default function TermsPage() {
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">3. Accounts</h2>
-            <p>You are responsible for maintaining the security of your account and password. MaidHub cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.</p>
-            <p>You are responsible for all content posted and activity that occurs under your account. Each account is for a single user only — one account per cleaning business owner.</p>
+            <p>You are responsible for maintaining the security of your account and password. ContractHub cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.</p>
+            <p>You are responsible for all content posted and activity that occurs under your account. Each account is for a single user only — one account per contractor.</p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">4. Free Trial and Subscription</h2>
-            <p>MaidHub offers a 30-day free trial upon account creation. No credit card is required to start the trial.</p>
+            <p>ContractHub offers a 30-day free trial upon account creation. No credit card is required to start the trial.</p>
             <p>After the trial period, continued use of the Service requires a paid subscription at the then-current pricing. Subscriptions are billed monthly or annually through our payment processor (Square).</p>
             <p>You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period. No refunds are provided for partial billing periods.</p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">5. Your Content</h2>
-            <p>You retain ownership of all data and content you enter into MaidHub, including client information, job records, invoices, and estimates (&ldquo;Your Content&rdquo;).</p>
-            <p>By using the Service, you grant MaidHub a limited license to store, process, and display Your Content solely to provide the Service to you.</p>
+            <p>You retain ownership of all data and content you enter into ContractHub, including client information, job records, invoices, and estimates (&ldquo;Your Content&rdquo;).</p>
+            <p>By using the Service, you grant ContractHub a limited license to store, process, and display Your Content solely to provide the Service to you.</p>
             <p>You are responsible for ensuring Your Content complies with applicable laws, including data protection regulations governing your clients&rsquo; personal information.</p>
           </section>
 
@@ -96,7 +96,7 @@ export default function TermsPage() {
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">8. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, MaidHub shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use of the Service.</p>
+            <p>To the maximum extent permitted by law, ContractHub shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use of the Service.</p>
             <p>Our total liability for any claim arising from these Terms or your use of the Service shall not exceed the amount you paid us in the 12 months preceding the claim.</p>
           </section>
 
@@ -125,7 +125,7 @@ export default function TermsPage() {
             <h2 className="text-[16px] font-semibold text-[#18181B]">13. Contact</h2>
             <p>For questions about these Terms, contact us at:</p>
             <div className="mt-3 p-4 bg-[#F6F4F1] rounded-lg border border-[#E2DED8] text-[13px]">
-              <p className="font-semibold text-[#18181B]">MaidHub Support</p>
+              <p className="font-semibold text-[#18181B]">ContractHub Support</p>
               <p className="text-[#18181B]/55 mt-1">support@maidhub.io</p>
             </div>
           </section>
@@ -133,7 +133,7 @@ export default function TermsPage() {
         </div>
 
         <div className="mt-8 flex items-center justify-between text-[12px] text-[#18181B]/35">
-          <span>© {new Date().getFullYear()} MaidHub</span>
+          <span>© {new Date().getFullYear()} ContractHub</span>
           <Link href="/privacy" className="hover:text-[#18181B]/60 transition-colors">Privacy Policy →</Link>
         </div>
       </main>

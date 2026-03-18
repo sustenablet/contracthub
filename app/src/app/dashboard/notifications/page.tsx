@@ -67,7 +67,7 @@ export default function NotificationsPage() {
   const [readIds, setReadIds] = useState<Set<string>>(() => {
     if (typeof window === "undefined") return new Set();
     try {
-      const stored = localStorage.getItem("maidhub_read_notifs");
+      const stored = localStorage.getItem("contracthub_read_notifs");
       return stored ? new Set(JSON.parse(stored)) : new Set();
     } catch {
       return new Set();
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     if (readIds.size > 0) {
-      localStorage.setItem("maidhub_read_notifs", JSON.stringify([...readIds]));
+      localStorage.setItem("contracthub_read_notifs", JSON.stringify([...readIds]));
     }
   }, [readIds]);
 
@@ -101,24 +101,24 @@ export default function NotificationsPage() {
 
         switch (job.status) {
           case "scheduled":
-            title = "Job Scheduled";
-            message = `${job.service_type || "Cleaning"} for ${clientName} on ${new Date(job.scheduled_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}${job.start_time ? ` at ${job.start_time.slice(0, 5)}` : ""}`;
+            title = "Work Order Scheduled";
+            message = `${job.service_type || "Work Order"} for ${clientName} on ${new Date(job.scheduled_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}${job.start_time ? ` at ${job.start_time.slice(0, 5)}` : ""}`;
             break;
           case "in_progress":
-            title = "Job In Progress";
-            message = `${job.service_type || "Cleaning"} for ${clientName} is currently in progress`;
+            title = "Work Order In Progress";
+            message = `${job.service_type || "Work Order"} for ${clientName} is currently in progress`;
             break;
           case "completed":
-            title = "Job Completed";
-            message = `${job.service_type || "Cleaning"} for ${clientName} has been completed${job.price ? ` — $${Number(job.price).toFixed(0)}` : ""}`;
+            title = "Work Order Completed";
+            message = `${job.service_type || "Work Order"} for ${clientName} has been completed${job.price ? ` — $${Number(job.price).toFixed(0)}` : ""}`;
             break;
           case "invoiced":
-            title = "Job Invoiced";
-            message = `Invoice created for ${clientName}'s ${job.service_type || "cleaning"}${job.price ? ` — $${Number(job.price).toFixed(0)}` : ""}`;
+            title = "Work Order Invoiced";
+            message = `Invoice created for ${clientName}'s ${job.service_type || "work order"}${job.price ? ` — $${Number(job.price).toFixed(0)}` : ""}`;
             break;
           case "cancelled":
-            title = "Job Cancelled";
-            message = `${job.service_type || "Cleaning"} for ${clientName} was cancelled`;
+            title = "Work Order Cancelled";
+            message = `${job.service_type || "Work Order"} for ${clientName} was cancelled`;
             break;
         }
 
@@ -344,7 +344,7 @@ export default function NotificationsPage() {
             </p>
             <p className="text-xs text-[#888888] mt-1 max-w-xs">
               {activeTab === "all"
-                ? "Create clients, schedule jobs, and send invoices to see activity here"
+                ? "Create clients, schedule work orders, and send invoices to see activity here"
                 : `No ${activeTab} activity yet`}
             </p>
           </div>

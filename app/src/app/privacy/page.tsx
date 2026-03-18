@@ -5,7 +5,7 @@ const serif = Instrument_Serif({ subsets: ["latin"], weight: ["400"] });
 const sans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata = {
-  title: "Privacy Policy — MaidHub",
+  title: "Privacy Policy — ContractHub",
 };
 
 export default function PrivacyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             <div className="h-7 w-7 rounded-[6px] bg-[#18181B] flex items-center justify-center">
               <span className={`${serif.className} text-white text-[13px] italic font-bold leading-none`}>M</span>
             </div>
-            <span className={`${serif.className} text-[#18181B] font-semibold text-[15px] tracking-[-0.02em]`}>MaidHub</span>
+            <span className={`${serif.className} text-[#18181B] font-semibold text-[15px] tracking-[-0.02em]`}>ContractHub</span>
           </Link>
           <Link href="/login" className="text-[13px] font-medium text-[#18181B]/50 hover:text-[#18181B] transition-colors">
             Sign in →
@@ -40,8 +40,8 @@ export default function PrivacyPage() {
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">1. Introduction</h2>
-            <p>MaidHub (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) operates a business management platform for solo cleaning business owners. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.</p>
-            <p>By using MaidHub, you agree to the collection and use of information in accordance with this policy.</p>
+            <p>ContractHub (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) operates a business management platform for solo construction contractors. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.</p>
+            <p>By using ContractHub, you agree to the collection and use of information in accordance with this policy.</p>
           </section>
 
           <section className="space-y-3">
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
             <h2 className="text-[16px] font-semibold text-[#18181B]">3. How We Use Your Information</h2>
             <ul className="space-y-2 list-none">
               {[
-                "Provide, maintain, and improve the MaidHub platform",
+                "Provide, maintain, and improve the ContractHub platform",
                 "Process transactions and send related information",
                 "Send account notifications and service updates",
                 "Respond to your comments and questions",
@@ -122,7 +122,7 @@ export default function PrivacyPage() {
 
           <section className="space-y-3">
             <h2 className="text-[16px] font-semibold text-[#18181B]">8. Children&rsquo;s Privacy</h2>
-            <p>MaidHub is not directed to individuals under 18 years of age. We do not knowingly collect personal information from children.</p>
+            <p>ContractHub is not directed to individuals under 18 years of age. We do not knowingly collect personal information from children.</p>
           </section>
 
           <section className="space-y-3">
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
             <h2 className="text-[16px] font-semibold text-[#18181B]">10. Contact</h2>
             <p>If you have questions about this Privacy Policy or your data, contact us at:</p>
             <div className="mt-3 p-4 bg-[#F6F4F1] rounded-lg border border-[#E2DED8] text-[13px]">
-              <p className="font-semibold text-[#18181B]">MaidHub Support</p>
+              <p className="font-semibold text-[#18181B]">ContractHub Support</p>
               <p className="text-[#18181B]/55 mt-1">support@maidhub.io</p>
             </div>
           </section>
@@ -142,7 +142,7 @@ export default function PrivacyPage() {
         </div>
 
         <div className="mt-8 flex items-center justify-between text-[12px] text-[#18181B]/35">
-          <span>© {new Date().getFullYear()} MaidHub</span>
+          <span>© {new Date().getFullYear()} ContractHub</span>
           <Link href="/terms" className="hover:text-[#18181B]/60 transition-colors">Terms of Service →</Link>
         </div>
       </main>

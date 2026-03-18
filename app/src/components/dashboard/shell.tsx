@@ -144,11 +144,11 @@ function SidebarContent({
       <div className="flex items-center gap-2.5 px-4 py-[18px]">
         <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[4px] bg-[#0071E3]">
           <span className="text-white font-bold text-[13px] leading-none tracking-tight">
-            M
+            C
           </span>
         </div>
         <span className="text-[#D4D4D4] font-bold text-[15px] tracking-[-0.03em]">
-          MaidHub
+          ContractHub
         </span>
       </div>
 

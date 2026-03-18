@@ -629,7 +629,7 @@ export default function SchedulePage() {
       client_id: job.client_id,
       job_id: job.id,
       line_items: [{
-        description: job.service_type || "Cleaning Service",
+        description: job.service_type || "Work Order",
         quantity: 1,
         unit_price: job.price || 0,
       }],
@@ -786,7 +786,7 @@ export default function SchedulePage() {
           <p
             className="text-sm text-[#888888] mt-1"
           >
-            Manage your cleaning appointments
+            Manage your work orders
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -1155,8 +1155,8 @@ export default function SchedulePage() {
       <SlidePanel
         open={formOpen}
         onClose={() => { setFormOpen(false); resetForm(); }}
-        title={formMode === "edit" ? "Edit Job" : "New Job"}
-        subtitle={formMode === "edit" ? "Update job details" : "Schedule a cleaning appointment"}
+        title={formMode === "edit" ? "Edit Work Order" : "New Work Order"}
+        subtitle={formMode === "edit" ? "Update work order details" : "Schedule a work order"}
       >
         <div className="px-6 py-5 space-y-6">
           <FormSection label="Client & Location">
@@ -1199,13 +1199,13 @@ export default function SchedulePage() {
             </FormField>
           </FormSection>
 
-          <FormSection label="Service Details">
-            <FormField label="Service Type">
+          <FormSection label="Work Details">
+            <FormField label="Work Type">
               <FormSelect
                 value={formServiceType}
                 onChange={(e) => setFormServiceType(e.target.value)}
               >
-                <option value="">Select a service...</option>
+                <option value="">Select a work type...</option>
                 {SERVICE_TYPES.map((st) => (
                   <option key={st} value={st}>
                     {st}
@@ -1283,8 +1283,8 @@ export default function SchedulePage() {
       <SlidePanel
         open={recurringOpen}
         onClose={() => setRecurringOpen(false)}
-        title="Recurring Jobs"
-        subtitle="Manage recurring cleaning schedules"
+        title="Recurring Maintenance Plans"
+        subtitle="Manage recurring work order schedules"
         width="w-full max-w-lg"
       >
         <div className="px-6 py-5 space-y-4">
@@ -1293,7 +1293,7 @@ export default function SchedulePage() {
             className="flex items-center gap-2 w-full px-4 py-3 bg-white/[0.04] hover:bg-white/[0.07] text-[#D4D4D4] text-sm font-semibold rounded-[6px] transition-colors border border-dashed border-[#18181B]/15"
           >
             <Plus className="h-4 w-4" />
-            New Recurring Rule
+            New Recurring Maintenance Plan
           </button>
 
           {recurringRules.length === 0 ? (
@@ -1331,7 +1331,7 @@ export default function SchedulePage() {
                           {clientName}
                         </p>
                         <p className="text-[11px] text-[#888888] mt-0.5">
-                          {freqLabel} &middot; {rule.service_type || "Cleaning"} &middot; {rule.price != null ? `$${rule.price}` : "No price"}
+                          {freqLabel} &middot; {rule.service_type || "Work Order"} &middot; {rule.price != null ? `$${rule.price}` : "No price"}
                         </p>
                       </div>
                       <button
@@ -1377,8 +1377,8 @@ export default function SchedulePage() {
       <SlidePanel
         open={recurringFormOpen}
         onClose={() => setRecurringFormOpen(false)}
-        title="New Recurring Rule"
-        subtitle="Set up a repeating cleaning schedule"
+        title="New Recurring Maintenance Plan"
+        subtitle="Set up a repeating work order schedule"
       >
         <div className="px-6 py-5 space-y-6">
           <FormSection label="Client & Location">
@@ -1456,13 +1456,13 @@ export default function SchedulePage() {
             </div>
           </FormSection>
 
-          <FormSection label="Job Details">
-            <FormField label="Service Type">
+          <FormSection label="Work Order Details">
+            <FormField label="Work Type">
               <FormSelect
                 value={recServiceType}
                 onChange={(e) => setRecServiceType(e.target.value)}
               >
-                <option value="">Select a service...</option>
+                <option value="">Select a work type...</option>
                 {SERVICE_TYPES.map((st) => (
                   <option key={st} value={st}>{st}</option>
                 ))}

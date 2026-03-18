@@ -161,7 +161,7 @@ export default function InvoicesPage() {
     if (!job) return;
     setFormLineItems([
       {
-        description: job.service_type || "Cleaning Service",
+        description: job.service_type || "Work Order",
         quantity: 1,
         unit_price: job.price || 0,
       },
@@ -623,7 +623,7 @@ export default function InvoicesPage() {
                           : "-"}
                         {inv.job_id && (
                           <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#0071E3]/10 text-teal-600 ring-1 ring-inset ring-[#0071E3]/20">
-                            From Job
+                            From Work Order
                           </span>
                         )}
                       </span>
@@ -723,12 +723,12 @@ export default function InvoicesPage() {
               </FormSelect>
             </FormField>
             {formClientId && (
-              <FormField label="Link to Job (optional)">
+              <FormField label="Link to Work Order (optional)">
                 <FormSelect
                   value={formJobId}
                   onChange={(e) => setFormJobId(e.target.value)}
                 >
-                  <option value="">No linked job</option>
+                  <option value="">No linked work order</option>
                   {clientJobs.map((j) => (
                     <option key={j.id} value={j.id}>
                       {j.service_type || "Job"} &mdash;{" "}

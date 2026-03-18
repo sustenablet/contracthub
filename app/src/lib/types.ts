@@ -101,13 +101,16 @@ export interface RecurringRule {
 }
 
 export const SERVICE_TYPES = [
-  "Regular Clean",
-  "Deep Clean",
-  "Move-Out Clean",
-  "Move-In Clean",
-  "Post-Construction",
-  "One-Time Clean",
-  "Office Clean",
+  "General Maintenance",
+  "Plumbing",
+  "Electrical",
+  "HVAC / Mechanical",
+  "Carpentry / Framing",
+  "Drywall & Painting",
+  "Roofing",
+  "Concrete / Masonry",
+  "Landscaping / Site Work",
+  "Inspection / Punch-list",
 ] as const;
 
 export type ServiceType = (typeof SERVICE_TYPES)[number];

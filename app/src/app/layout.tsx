@@ -11,9 +11,9 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MaidHub — Solo Cleaner OS",
+  title: "ContractHub — Solo Contractor OS",
   description:
-    "The back-office command center for solo cleaning business owners. Manage clients, schedule jobs, send invoices.",
+    "The back-office command center for solo construction contractors. Manage clients, schedule work orders, send invoices.",
 };
 
 export default function RootLayout({
