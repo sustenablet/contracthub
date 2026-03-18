@@ -228,6 +228,11 @@ export default function SettingsPage() {
   const [subscriptionPlan, setSubscriptionPlan] = useState("solo");
   const [trialStart, setTrialStart] = useState("");
 
+  // Password change
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -398,6 +403,31 @@ export default function SettingsPage() {
       toast.success("Notification preferences saved");
     }
     setNotifSaving(false);
+  }
+
+  async function handlePasswordChange() {
+    if (!newPassword) {
+      toast.error("Enter a new password");
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    setPasswordSaving(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setPasswordSaving(false);
+    if (error) {
+      toast.error("Failed to update password");
+    } else {
+      toast.success("Password updated");
+      setNewPassword("");
+      setConfirmPassword("");
+    }
   }
 
   function addServiceType() {
@@ -830,6 +860,48 @@ export default function SettingsPage() {
                   <ArrowUpRight className="h-5 w-5 text-white/40 group-hover:text-white transition-colors" strokeWidth={1.8} />
                 </Link>
               )}
+
+              <Card>
+                <CardHeader title="Security" />
+                <CardBody className="space-y-4">
+                  <SectionHeader title="Change Password" description="Set a new password for your account" />
+                  <div className="space-y-3">
+                    <FieldGroup>
+                      <Field label="New Password">
+                        <Input
+                          type="password"
+                          placeholder="Minimum 8 characters"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                      </Field>
+                      <Field label="Confirm New Password">
+                        <Input
+                          type="password"
+                          placeholder="Re-enter new password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                      </Field>
+                    </FieldGroup>
+                    <button
+                      type="button"
+                      onClick={handlePasswordChange}
+                      disabled={passwordSaving || !newPassword || !confirmPassword}
+                      className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold bg-[#18181B] text-white rounded-lg hover:bg-[#18181B]/88 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {passwordSaving ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          Updating…
+                        </>
+                      ) : (
+                        "Update Password"
+                      )}
+                    </button>
+                  </div>
+                </CardBody>
+              </Card>
 
               <Card>
                 <div className="px-6 py-4 border-b border-red-100">

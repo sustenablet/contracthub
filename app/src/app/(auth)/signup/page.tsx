@@ -757,8 +757,8 @@ export default function SignupPage() {
 
                 <p className="sp-legal">
                   By creating an account you agree to our{" "}
-                  <Link href="/terms.html">Terms of Service</Link> and{" "}
-                  <Link href="/privacy.html">Privacy Policy</Link>.
+                  <Link href="/terms">Terms of Service</Link> and{" "}
+                  <Link href="/privacy">Privacy Policy</Link>.
                 </p>
               </form>
             </div>
