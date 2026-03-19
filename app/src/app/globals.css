@@ -47,82 +47,122 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ContractHub — Warm Industrial Dark design system */
+/* ContractHub — Blueprint Pro (Stripe-inspired, contractor-grade) */
 :root {
-  --background: #191410;
-  --foreground: #E8DFD0;
-  --card: #1F1B14;
-  --card-foreground: #E8DFD0;
-  --popover: #1A1610;
-  --popover-foreground: #E8DFD0;
-  --primary: #F59E0B;
-  --primary-foreground: #0F0D09;
-  --secondary: #252017;
-  --secondary-foreground: #E8DFD0;
-  --muted: #252017;
-  --muted-foreground: #8C7D6A;
-  --accent: #F59E0B;
-  --accent-foreground: #0F0D09;
-  --destructive: #FF453A;
-  --border: #302A1F;
-  --input: #252017;
-  --ring: #F59E0B;
-  --chart-1: #F59E0B;
-  --chart-2: #D97706;
-  --chart-3: #34C759;
-  --chart-4: #60A5FA;
-  --chart-5: #FF453A;
-  --radius: 0.375rem;
-  --sidebar: #120F0B;
-  --sidebar-foreground: #E8DFD0;
-  --sidebar-primary: #F59E0B;
-  --sidebar-primary-foreground: #0F0D09;
-  --sidebar-accent: rgba(245, 158, 11, 0.12);
-  --sidebar-accent-foreground: #F59E0B;
-  --sidebar-border: #231F18;
-  --sidebar-ring: #F59E0B;
+  /* Page surface */
+  --background: #F0F4F8;
+  --foreground: #0D1B2A;
+
+  /* Cards */
+  --card: #FFFFFF;
+  --card-foreground: #0D1B2A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0D1B2A;
+
+  /* Brand: construction orange */
+  --primary: #EA580C;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary / surfaces */
+  --secondary: #EFF2F7;
+  --secondary-foreground: #374151;
+  --muted: #F8FAFC;
+  --muted-foreground: #64748B;
+
+  /* Accent (same as primary for consistency) */
+  --accent: #EA580C;
+  --accent-foreground: #FFFFFF;
+
+  /* Status */
+  --destructive: #DC2626;
+
+  /* Borders & inputs */
+  --border: #E2E8F0;
+  --input: #F8FAFC;
+  --ring: #EA580C;
+
+  /* Charts */
+  --chart-1: #EA580C;
+  --chart-2: #0EA5E9;
+  --chart-3: #10B981;
+  --chart-4: #F59E0B;
+  --chart-5: #8B5CF6;
+
+  /* Border radius */
+  --radius: 0.5rem;
+
+  /* Sidebar — deep navy blueprint */
+  --sidebar: #0D1B2A;
+  --sidebar-foreground: #94A3B8;
+  --sidebar-primary: #EA580C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(234, 88, 12, 0.12);
+  --sidebar-accent-foreground: #FB923C;
+  --sidebar-border: rgba(255, 255, 255, 0.07);
+  --sidebar-ring: #EA580C;
 }
 
 /* ContractHub Design Tokens */
 :root {
-  /* Typography */
   --font-body: var(--font-sans), system-ui, sans-serif;
 
-  /* Brand Colors */
-  --ch-bg: #191410;
-  --ch-sidebar: #120F0B;
-  --ch-surface: #1F1B14;
-  --ch-surface-raised: #252017;
-  --ch-surface-sunken: #120F0B;
-  --ch-border: #302A1F;
-  --ch-border-subtle: #231F18;
-  --ch-text: #E8DFD0;
-  --ch-text-muted: #8C7D6A;
-  --ch-text-faint: #5A5040;
-  --ch-accent: #F59E0B;
-  --ch-accent-tint: rgba(245, 158, 11, 0.12);
-  --ch-accent-hover: #D97706;
+  /* Content surfaces */
+  --ch-bg: #F0F4F8;
+  --ch-surface: #FFFFFF;
+  --ch-surface-raised: #F8FAFC;
+  --ch-border: #E2E8F0;
+  --ch-border-strong: #CBD5E1;
 
-  /* Shadows */
-  --ch-shadow-card: 0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
-  --ch-shadow-dropdown: 0 4px 16px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.5);
-  --ch-shadow-panel: 0 20px 60px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5);
+  /* Sidebar (navy blueprint) */
+  --ch-sidebar: #0D1B2A;
+  --ch-sidebar-border: rgba(255, 255, 255, 0.07);
+  --ch-sidebar-hover: rgba(255, 255, 255, 0.05);
+  --ch-sidebar-active: rgba(234, 88, 12, 0.15);
+
+  /* Text hierarchy */
+  --ch-text: #0D1B2A;
+  --ch-text-muted: #64748B;
+  --ch-text-faint: #94A3B8;
+  --ch-text-sidebar: #94A3B8;
+  --ch-text-sidebar-active: #FB923C;
+
+  /* Accent: construction orange */
+  --ch-accent: #EA580C;
+  --ch-accent-light: #FFF7ED;
+  --ch-accent-hover: #C2410C;
+
+  /* Semantic colors */
+  --ch-green: #059669;
+  --ch-green-bg: #ECFDF5;
+  --ch-blue: #0284C7;
+  --ch-blue-bg: #F0F9FF;
+  --ch-amber: #D97706;
+  --ch-amber-bg: #FFFBEB;
+  --ch-red: #DC2626;
+  --ch-red-bg: #FEF2F2;
+
+  /* Shadows (Stripe-style: very subtle) */
+  --ch-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ch-shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --ch-shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ch-shadow-panel: 0 24px 64px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* Base */
 body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: var(--ch-bg);
   color: var(--ch-text);
 }
 
-/* Card */
+/* Card utility */
 .ch-card {
   background: var(--ch-surface);
   border: 1px solid var(--ch-border);
   box-shadow: var(--ch-shadow-card);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 @layer base {

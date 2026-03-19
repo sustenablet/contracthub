@@ -18,6 +18,7 @@ import {
   ChevronDown,
   ArrowUpRight,
   Wallet,
+  HardHat,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -88,16 +89,19 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-2.5 px-3 py-[7px] rounded-[4px] text-[13px] font-medium transition-all duration-150 ${
+      className={`flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] font-medium transition-all duration-150 ${
         isActive
-          ? "bg-[#F59E0B]/[0.14] text-[#F59E0B]"
-          : "text-[#8C7D6A] hover:bg-white/[0.05] hover:text-[#E8DFD0]"
+          ? "bg-[rgba(234,88,12,0.15)] text-[#FB923C]"
+          : "text-[#94A3B8] hover:bg-white/[0.05] hover:text-[#CBD5E1]"
       }`}
     >
-      <Icon className={`h-[15px] w-[15px] shrink-0`} strokeWidth={isActive ? 2 : 1.6} />
+      <Icon
+        className="h-[15px] w-[15px] shrink-0"
+        strokeWidth={isActive ? 2.2 : 1.7}
+      />
       <span className="flex-1">{label}</span>
       {badge !== undefined && badge > 0 && (
-        <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#F59E0B] px-1 text-[9px] font-bold text-white tabular-nums">
+        <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#EA580C] px-1 text-[9px] font-bold text-white tabular-nums">
           {badge > 99 ? "99+" : badge}
         </span>
       )}
@@ -114,7 +118,7 @@ function NavSection({
 }) {
   return (
     <div>
-      <p className="px-3 mb-1.5 text-[10px] font-semibold tracking-[0.1em] text-[#5A5040] uppercase">
+      <p className="px-3 mb-1 text-[10px] font-semibold tracking-[0.1em] text-[rgba(255,255,255,0.2)] uppercase">
         {label}
       </p>
       <div className="space-y-0.5">{children}</div>
@@ -141,20 +145,18 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-4 py-[18px]">
-        <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[4px] bg-[#F59E0B]">
-          <span className="text-white font-bold text-[13px] leading-none tracking-tight">
-            C
-          </span>
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-[rgba(255,255,255,0.07)]">
+        <div className="flex h-[30px] w-[30px] items-center justify-center rounded-[6px] bg-[#EA580C]">
+          <HardHat className="h-[16px] w-[16px] text-white" strokeWidth={2} />
         </div>
-        <span className="text-[#E8DFD0] font-bold text-[15px] tracking-[-0.03em]">
+        <span className="text-white font-bold text-[15px] tracking-[-0.02em]">
           ContractHub
         </span>
       </div>
 
       {/* Nav */}
-      <div className="flex-1 px-3 py-1 space-y-5 overflow-y-auto">
-        <NavSection label="Home">
+      <div className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+        <NavSection label="Workspace">
           {workNav.map((item) => (
             <NavItem key={item.href} {...item} onClick={onNavClick} />
           ))}
@@ -180,19 +182,24 @@ function SidebarContent({
 
       {/* Trial banner */}
       {isTrial && (
-        <div className="mx-3 mb-4 rounded-[4px] bg-[#1F1B14] border border-[#312B20] p-3.5">
+        <div className="mx-3 mb-4 rounded-[8px] bg-white/[0.06] border border-white/[0.08] p-3.5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[10px] font-semibold text-[#5A5040] uppercase tracking-[0.08em]">
+            <p className="text-[10px] font-semibold text-[rgba(255,255,255,0.35)] uppercase tracking-[0.08em]">
               Free Trial
             </p>
-            <span className="text-[11px] font-medium text-[#8C7D6A] tabular-nums">{daysLeft}d left</span>
+            <span className="text-[11px] font-medium text-[#94A3B8] tabular-nums">
+              {daysLeft}d left
+            </span>
           </div>
-          <div className="w-full h-[3px] rounded-full bg-white/[0.06] mb-3">
-            <div className="h-[3px] rounded-full bg-[#F59E0B] transition-all" style={{ width: `${Math.min(100, ((30 - daysLeft) / 30) * 100)}%` }} />
+          <div className="w-full h-[3px] rounded-full bg-white/[0.1] mb-3">
+            <div
+              className="h-[3px] rounded-full bg-[#EA580C] transition-all"
+              style={{ width: `${Math.min(100, ((30 - daysLeft) / 30) * 100)}%` }}
+            />
           </div>
           <Link
             href="/dashboard/upgrade"
-            className="flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-[#F59E0B] text-white rounded-[4px] py-[7px] hover:bg-[#D97706] transition-colors"
+            className="flex items-center justify-center gap-1.5 text-[11px] font-semibold bg-[#EA580C] text-white rounded-[6px] py-[7px] hover:bg-[#C2410C] transition-colors"
           >
             Upgrade Plan
             <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
@@ -238,12 +245,10 @@ export function DashboardShell({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile drawer on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
 
-  // Fetch recent activity count (last 24h)
   useEffect(() => {
     async function fetchCount() {
       const since = new Date();
@@ -278,15 +283,15 @@ export function DashboardShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#191410]">
+    <div className="flex min-h-screen bg-[#F0F4F8]">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-[220px] shrink-0 flex-col bg-[#120F0B] border-r border-[#242018] sticky top-0 h-screen overflow-hidden">
+      <aside className="hidden md:flex w-[220px] shrink-0 flex-col bg-[#0D1B2A] sticky top-0 h-screen overflow-hidden">
         <SidebarContent profile={profile} notifCount={notifCount} />
       </aside>
 
       {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
           mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setMobileOpen(false)}
@@ -294,13 +299,13 @@ export function DashboardShell({
 
       {/* Mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-[220px] bg-[#120F0B] border-r border-[#242018] transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-[220px] bg-[#0D1B2A] transform transition-transform duration-300 ease-in-out md:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <button
           onClick={() => setMobileOpen(false)}
-          className="absolute top-4 right-4 p-1.5 rounded-md hover:bg-white/[0.05] text-[#5A5040] transition-colors"
+          className="absolute top-4 right-4 p-1.5 rounded-md hover:bg-white/[0.07] text-[#64748B] transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -314,37 +319,40 @@ export function DashboardShell({
       {/* Main content area */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 h-[50px] bg-[#120F0B]/90 backdrop-blur-md border-b border-[#242018] flex items-center justify-between px-4 md:px-6">
+        <header className="sticky top-0 z-30 h-[52px] bg-white border-b border-[#E2E8F0] flex items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 rounded-md hover:bg-white/[0.05] text-[#8C7D6A] transition-colors"
+              className="md:hidden p-2 rounded-md hover:bg-[#F0F4F8] text-[#64748B] transition-colors"
             >
               <Menu className="h-4 w-4" />
             </button>
+
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-[13px]">
-              <span className="text-[#4E4235] hidden sm:block">Home</span>
-              <span className="text-[#3C352A] hidden sm:block">/</span>
-              <span className="text-[#E8DFD0] font-semibold">{breadcrumb}</span>
+              <span className="text-[#94A3B8] hidden sm:block font-medium">
+                ContractHub
+              </span>
+              <span className="text-[#CBD5E1] hidden sm:block">/</span>
+              <span className="text-[#0D1B2A] font-semibold">{breadcrumb}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-1">
             {/* Business name */}
-            <span className="hidden sm:block text-[13px] text-[#5A5040] mr-3 font-medium">
+            <span className="hidden sm:block text-[13px] text-[#94A3B8] mr-3 font-medium">
               {businessName}
             </span>
 
             {/* Bell */}
             <Link
               href="/dashboard/notifications"
-              className="relative p-2 rounded-md hover:bg-white/[0.05] text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
+              className="relative p-2 rounded-md hover:bg-[#F0F4F8] text-[#64748B] hover:text-[#0D1B2A] transition-colors"
             >
               <Bell className="h-4 w-4" strokeWidth={1.8} />
               {notifCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-[#F59E0B] px-0.5 text-[8px] font-bold text-white">
+                <span className="absolute top-1.5 right-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-[#EA580C] px-0.5 text-[8px] font-bold text-white">
                   {notifCount > 99 ? "99+" : notifCount}
                 </span>
               )}
@@ -354,45 +362,45 @@ export function DashboardShell({
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 pl-2 pr-1.5 py-1.5 rounded-md hover:bg-white/[0.05] transition-colors ml-0.5"
+                className="flex items-center gap-2 pl-2 pr-1.5 py-1.5 rounded-md hover:bg-[#F0F4F8] transition-colors ml-0.5"
               >
-                <div className="h-6 w-6 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/30 flex items-center justify-center shrink-0">
-                  <span className="text-[#F59E0B] text-[9px] font-bold tracking-wide">
+                <div className="h-7 w-7 rounded-full bg-[#0D1B2A] flex items-center justify-center shrink-0">
+                  <span className="text-white text-[10px] font-bold tracking-wide">
                     {initials}
                   </span>
                 </div>
-                <span className="hidden sm:block text-[13px] font-medium text-[#E8DFD0]">
+                <span className="hidden sm:block text-[13px] font-medium text-[#0D1B2A]">
                   {displayName}
                 </span>
                 <ChevronDown
-                  className={`h-3 w-3 text-[#5A5040] transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                  className={`h-3.5 w-3.5 text-[#94A3B8] transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-52 bg-[#1A1610] rounded-[6px] shadow-[0_4px_16px_rgba(0,0,0,0.5),0_1px_4px_rgba(0,0,0,0.4)] border border-[#312B20] py-1 z-50 overflow-hidden">
-                  <div className="px-3.5 py-2.5 border-b border-[#312B20]">
-                    <p className="text-[13px] font-semibold text-[#E8DFD0]">
+                <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-[8px] shadow-[0_8px_24px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] border border-[#E2E8F0] py-1 z-50 overflow-hidden">
+                  <div className="px-3.5 py-2.5 border-b border-[#E2E8F0]">
+                    <p className="text-[13px] font-semibold text-[#0D1B2A]">
                       {displayName}
                     </p>
-                    <p className="text-[11px] text-[#5A5040] truncate">
+                    <p className="text-[11px] text-[#94A3B8] truncate">
                       {user.email}
                     </p>
                   </div>
                   <div className="py-0.5">
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#8C7D6A] hover:bg-white/[0.04] hover:text-[#E8DFD0] transition-colors"
+                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-[#374151] hover:bg-[#F0F4F8] transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <Settings className="h-[14px] w-[14px]" strokeWidth={1.8} />
+                      <Settings className="h-[14px] w-[14px] text-[#64748B]" strokeWidth={1.8} />
                       Settings
                     </Link>
                   </div>
-                  <div className="border-t border-[#312B20] py-0.5">
+                  <div className="border-t border-[#E2E8F0] py-0.5">
                     <button
                       onClick={handleSignOut}
-                      className="flex w-full items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-400/80 hover:bg-red-500/[0.06] hover:text-red-400 transition-colors"
+                      className="flex w-full items-center gap-2.5 px-3.5 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors"
                     >
                       <LogOut className="h-[14px] w-[14px]" strokeWidth={1.8} />
                       Sign out

@@ -21,10 +21,9 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Fetch all stats in parallel, gracefully handle missing tables
   // Calculate current week boundaries (Monday to Sunday)
   const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
+  const dayOfWeek = now.getDay();
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const monday = new Date(now);
   monday.setDate(now.getDate() + mondayOffset);
@@ -39,17 +38,11 @@ export default async function DashboardPage() {
       supabase.from("jobs").select("*", { count: "exact", head: true }).eq("user_id", user!.id).eq("status", "scheduled"),
       supabase.from("estimates").select("*", { count: "exact", head: true }).eq("user_id", user!.id).in("status", ["draft", "sent"]),
       supabase.from("invoices").select("*", { count: "exact", head: true }).eq("user_id", user!.id).eq("status", "unpaid"),
-      // Today's jobs
       supabase.from("jobs").select("*, clients(first_name, last_name)").eq("user_id", user!.id).eq("scheduled_date", new Date().toISOString().split("T")[0]).order("start_time", { ascending: true }).limit(5),
-      // Recent jobs (last 5 completed/scheduled)
       supabase.from("jobs").select("*, clients(first_name, last_name)").eq("user_id", user!.id).order("updated_at", { ascending: false }).limit(5),
-      // Recent invoices
       supabase.from("invoices").select("*, clients(first_name, last_name)").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(5),
-      // Paid invoices for revenue chart (last 6 months)
       supabase.from("invoices").select("total, payment_date").eq("user_id", user!.id).eq("status", "paid").gte("payment_date", new Date(Date.now() - 180 * 86400000).toISOString().split("T")[0]),
-      // All jobs for service donut
       supabase.from("jobs").select("service_type, price").eq("user_id", user!.id),
-      // This week's jobs
       supabase.from("jobs").select("id, scheduled_date, start_time, service_type, price, status, duration_minutes, clients(first_name, last_name)").eq("user_id", user!.id).gte("scheduled_date", mondayStr).lte("scheduled_date", sundayStr).order("scheduled_date").order("start_time"),
     ]);
 
@@ -61,7 +54,6 @@ export default async function DashboardPage() {
   const recentJobs = recentJobsRes.status === "fulfilled" ? (recentJobsRes.value.data ?? []) : [];
   const recentInvoices = recentInvoicesRes.status === "fulfilled" ? (recentInvoicesRes.value.data ?? []) : [];
 
-  // Week summary data
   const weekJobs = weekJobsRes.status === "fulfilled" ? (weekJobsRes.value.data ?? []) : [];
   const weekTotal = weekJobs.length;
   const weekCompleted = weekJobs.filter((j: { status: string }) => j.status === "completed" || j.status === "invoiced").length;
@@ -70,7 +62,6 @@ export default async function DashboardPage() {
     .reduce((sum: number, j: { price: number | null }) => sum + (j.price || 0), 0);
   const weekScheduled = weekJobs.filter((j: { status: string }) => j.status === "scheduled").length;
 
-  // Revenue chart data — group paid invoices by month
   const paidInvoices = paidInvoicesRes.status === "fulfilled" ? (paidInvoicesRes.value.data ?? []) : [];
   const monthlyRevenue: Record<string, number> = {};
   for (const inv of paidInvoices) {
@@ -79,12 +70,10 @@ export default async function DashboardPage() {
     const key = date.toLocaleString("en-US", { month: "short", year: "2-digit" });
     monthlyRevenue[key] = (monthlyRevenue[key] || 0) + (inv.total || 0);
   }
-  // Sort by date and take last 6 months
   const revenueChartData: RevenueDataPoint[] = Object.entries(monthlyRevenue)
     .map(([month, amount]) => ({ month, amount: Math.round(amount * 100) / 100 }));
   const totalRevenue = revenueChartData.reduce((sum, d) => sum + d.amount, 0);
 
-  // Service donut data — group jobs by service_type
   const allJobsService = allJobsServiceRes.status === "fulfilled" ? (allJobsServiceRes.value.data ?? []) : [];
   const serviceMap: Record<string, { count: number; revenue: number }> = {};
   for (const job of allJobsService) {
@@ -94,7 +83,7 @@ export default async function DashboardPage() {
     serviceMap[sType].revenue += job.price || 0;
   }
   const totalJobCount = allJobsService.length || 1;
-  const serviceColors = ["#F59E0B", "#30B0C7", "#34C759", "#FF9F0A", "#BF5AF2", "#FF375F", "#00C7BE"];
+  const serviceColors = ["#EA580C", "#0EA5E9", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#06B6D4"];
   const serviceDonutData: ServiceDataPoint[] = Object.entries(serviceMap)
     .sort((a, b) => b[1].count - a[1].count)
     .map(([label, data], i) => ({
@@ -105,26 +94,25 @@ export default async function DashboardPage() {
     }));
   const serviceTotal = serviceDonutData.reduce((sum, d) => sum + d.amount, 0);
 
-  // Build activity feed from recent items
   type ActivityItem = { type: string; label: string; detail: string; time: string; icon: string; color: string };
   const activity: ActivityItem[] = [];
 
   for (const job of recentJobs) {
     const name = job.clients ? `${job.clients.first_name} ${job.clients.last_name}` : "Client";
     const statusLabel: Record<string, string> = {
-      scheduled: "Job scheduled",
-      in_progress: "Job started",
-      completed: "Job completed",
-      invoiced: "Job invoiced",
-      cancelled: "Job cancelled",
+      scheduled: "Work order scheduled",
+      in_progress: "Work order started",
+      completed: "Work order completed",
+      invoiced: "Work order invoiced",
+      cancelled: "Work order cancelled",
     };
     activity.push({
       type: "job",
-      label: statusLabel[job.status] || "Job updated",
-      detail: `${name} — ${job.service_type || "Service"}`,
+      label: statusLabel[job.status] || "Work order updated",
+      detail: `${name} — ${job.service_type || "Work Order"}`,
       time: job.updated_at,
       icon: "briefcase",
-      color: job.status === "completed" ? "bg-[#34C759]/10 text-[#34C759]" : job.status === "cancelled" ? "bg-red-500/10 text-red-400" : "bg-[#F59E0B]/10 text-[#F59E0B]",
+      color: job.status === "completed" ? "bg-emerald-50 text-emerald-600" : job.status === "cancelled" ? "bg-red-50 text-red-500" : "bg-orange-50 text-orange-500",
     });
   }
 
@@ -136,27 +124,26 @@ export default async function DashboardPage() {
       detail: `${name} — $${(inv.total || 0).toFixed(2)}`,
       time: inv.created_at,
       icon: "receipt",
-      color: inv.status === "paid" ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#FF9F0A]/10 text-[#FF9F0A]",
+      color: inv.status === "paid" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600",
     });
   }
 
-  // Sort by time, take top 8
   activity.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
   const recentActivity = activity.slice(0, 8);
 
   const stats = [
-    { title: "Clients", value: clientCount, href: "/dashboard/clients" },
-    { title: "Upcoming Jobs", value: jobCount, href: "/dashboard/schedule" },
-    { title: "Open Estimates", value: estimateCount, href: "/dashboard/estimates" },
-    { title: "Unpaid Invoices", value: invoiceCount, href: "/dashboard/invoices" },
+    { title: "Clients", value: clientCount, href: "/dashboard/clients", accent: "border-l-[#EA580C]" },
+    { title: "Upcoming Jobs", value: jobCount, href: "/dashboard/schedule", accent: "border-l-[#0EA5E9]" },
+    { title: "Open Estimates", value: estimateCount, href: "/dashboard/estimates", accent: "border-l-[#F59E0B]" },
+    { title: "Unpaid Invoices", value: invoiceCount, href: "/dashboard/invoices", accent: "border-l-[#8B5CF6]" },
   ];
 
   const jobStatusConfig: Record<string, { badge: string; label: string }> = {
-    scheduled: { badge: "bg-[#F59E0B]/10 text-[#F59E0B] ring-1 ring-inset ring-[#F59E0B]/20", label: "Scheduled" },
-    in_progress: { badge: "bg-[#FF9F0A]/10 text-[#FF9F0A] ring-1 ring-inset ring-[#FF9F0A]/20", label: "In Progress" },
-    completed: { badge: "bg-[#34C759]/10 text-[#34C759] ring-1 ring-inset ring-[#34C759]/20", label: "Completed" },
-    invoiced: { badge: "bg-[#30B0C7]/10 text-[#30B0C7] ring-1 ring-inset ring-[#30B0C7]/20", label: "Invoiced" },
-    cancelled: { badge: "bg-[#5A5040]/20 text-[#8C7D6A] ring-1 ring-inset ring-[#5A5040]/20", label: "Cancelled" },
+    scheduled: { badge: "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200", label: "Scheduled" },
+    in_progress: { badge: "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-200", label: "In Progress" },
+    completed: { badge: "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200", label: "Completed" },
+    invoiced: { badge: "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-200", label: "Invoiced" },
+    cancelled: { badge: "bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200", label: "Cancelled" },
   };
 
   function formatTime(time: string | null) {
@@ -188,10 +175,10 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-[21px] font-bold text-[#E8DFD0] tracking-[-0.03em]">
+          <h1 className="text-[22px] font-bold text-[#0D1B2A] tracking-[-0.02em]">
             Dashboard
           </h1>
-          <p className="text-[12.5px] text-[#5A5040] mt-0.5">
+          <p className="text-[13px] text-[#64748B] mt-0.5">
             Here&apos;s your business at a glance.
           </p>
         </div>
@@ -199,30 +186,30 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-1 text-[12px]">
           <Link
             href="/dashboard/clients"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#64748B] hover:text-[#0D1B2A] rounded-[6px] hover:bg-white border border-transparent hover:border-[#E2E8F0] transition-all"
           >
-            <UserPlus className="h-3 w-3" strokeWidth={1.6} />
+            <UserPlus className="h-3.5 w-3.5" strokeWidth={1.7} />
             Client
           </Link>
           <Link
             href="/dashboard/schedule"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#64748B] hover:text-[#0D1B2A] rounded-[6px] hover:bg-white border border-transparent hover:border-[#E2E8F0] transition-all"
           >
-            <CalendarPlus className="h-3 w-3" strokeWidth={1.6} />
+            <CalendarPlus className="h-3.5 w-3.5" strokeWidth={1.7} />
             Job
           </Link>
           <Link
             href="/dashboard/invoices"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#64748B] hover:text-[#0D1B2A] rounded-[6px] hover:bg-white border border-transparent hover:border-[#E2E8F0] transition-all"
           >
-            <Receipt className="h-3 w-3" strokeWidth={1.6} />
+            <Receipt className="h-3.5 w-3.5" strokeWidth={1.7} />
             Invoice
           </Link>
           <Link
             href="/dashboard/estimates"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#64748B] hover:text-[#0D1B2A] rounded-[6px] hover:bg-white border border-transparent hover:border-[#E2E8F0] transition-all"
           >
-            <FileText className="h-3 w-3" strokeWidth={1.6} />
+            <FileText className="h-3.5 w-3.5" strokeWidth={1.7} />
             Estimate
           </Link>
         </div>
@@ -230,13 +217,13 @@ export default async function DashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {stats.map((stat, i) => (
+        {stats.map((stat) => (
           <Link key={stat.title} href={stat.href} className="group">
-            <div className={`bg-[#1F1B14] rounded-[6px] p-4 border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] group-hover:border-[#3A3A3A] group-hover:shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-all ${i === 0 ? "border-l-2 border-l-[#F59E0B]" : ""}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.09em] text-[#5A5040] mb-3">
+            <div className={`bg-white rounded-[8px] p-5 border border-[#E2E8F0] border-l-2 ${stat.accent} shadow-[0_1px_3px_rgba(0,0,0,0.06)] group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] group-hover:border-[#CBD5E1] transition-all`}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8] mb-3">
                 {stat.title}
               </p>
-              <div className="text-[36px] font-bold text-[#E8DFD0] tabular-nums leading-none tracking-[-0.03em]">
+              <div className="text-[36px] font-bold text-[#0D1B2A] tabular-nums leading-none tracking-[-0.03em]">
                 {stat.value}
               </div>
             </div>
@@ -245,22 +232,22 @@ export default async function DashboardPage() {
       </div>
 
       {/* Week summary strip */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2.5 bg-[#1F1B14]/60 rounded-[6px] border border-[#312B20]">
-        <span className="text-[10px] font-bold text-[#5A5040] uppercase tracking-[0.1em]">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3 bg-white rounded-[8px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <span className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.1em]">
           This Week
         </span>
-        <span className="text-[12px] text-[#8C7D6A]">
-          <span className="font-semibold text-[#E8DFD0]">{weekTotal}</span> jobs
+        <span className="text-[13px] text-[#64748B]">
+          <span className="font-semibold text-[#0D1B2A]">{weekTotal}</span> jobs
         </span>
-        <span className="text-[12px] text-[#8C7D6A]">
-          <span className="font-semibold text-[#34C759]">{weekCompleted}</span> completed
+        <span className="text-[13px] text-[#64748B]">
+          <span className="font-semibold text-emerald-600">{weekCompleted}</span> completed
         </span>
-        <span className="text-[12px] text-[#8C7D6A]">
-          <span className="font-bold text-[#E8DFD0]">${weekRevenue.toLocaleString()}</span> earned
+        <span className="text-[13px] text-[#64748B]">
+          <span className="font-bold text-[#0D1B2A]">${weekRevenue.toLocaleString()}</span> earned
         </span>
         {weekScheduled > 0 && (
-          <span className="text-[12px] text-[#8C7D6A]">
-            <span className="font-semibold text-[#FF9F0A]">{weekScheduled}</span> remaining
+          <span className="text-[13px] text-[#64748B]">
+            <span className="font-semibold text-[#EA580C]">{weekScheduled}</span> remaining
           </span>
         )}
       </div>
@@ -268,48 +255,48 @@ export default async function DashboardPage() {
       {/* Today's Jobs + Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Today's Jobs */}
-        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#312B20]">
+        <div className="bg-white rounded-[8px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#F1F5F9]">
             <div className="flex items-center gap-2">
-              <Clock className="h-3.5 w-3.5 text-[#F59E0B]" strokeWidth={2} />
-              <h2 className="text-[13px] font-semibold text-[#E8DFD0]">
+              <Clock className="h-3.5 w-3.5 text-[#EA580C]" strokeWidth={2} />
+              <h2 className="text-[13px] font-semibold text-[#0D1B2A]">
                 Today&apos;s Jobs
               </h2>
             </div>
             <Link
               href="/dashboard/schedule"
-              className="text-[11px] font-medium text-[#5A5040] hover:text-[#E8DFD0] transition-colors"
+              className="text-[12px] font-medium text-[#EA580C] hover:text-[#C2410C] transition-colors"
             >
               View all →
             </Link>
           </div>
 
           {todayJobs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <CheckCircle2 className="h-8 w-8 text-[#3C352A] mb-2" strokeWidth={1.5} />
-              <p className="text-[12px] text-[#5A5040]">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <CheckCircle2 className="h-8 w-8 text-[#CBD5E1] mb-2" strokeWidth={1.5} />
+              <p className="text-[13px] font-medium text-[#94A3B8]">
                 No jobs scheduled for today
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-[#262118]">
+            <div className="divide-y divide-[#F8FAFC]">
               {todayJobs.map((job: { id: string; start_time: string | null; service_type: string | null; status: string; price: number | null; clients: { first_name: string; last_name: string } | null }) => {
                 const config = jobStatusConfig[job.status] || jobStatusConfig.scheduled;
                 return (
-                  <div key={job.id} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
-                    <div className="text-[11px] font-medium text-[#5A5040] w-14 shrink-0 tabular-nums">
+                  <div key={job.id} className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#F8FAFC] transition-colors">
+                    <div className="text-[11px] font-medium text-[#94A3B8] w-14 shrink-0 tabular-nums">
                       {formatTime(job.start_time) || "TBD"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-[#E8DFD0] truncate">
+                      <p className="text-[13px] font-semibold text-[#0D1B2A] truncate">
                         {job.clients ? `${job.clients.first_name} ${job.clients.last_name}` : "Client"}
                       </p>
-                      <p className="text-[11px] text-[#8C7D6A] truncate">
-                        {job.service_type || "Service"}
+                      <p className="text-[11px] text-[#64748B] truncate">
+                        {job.service_type || "Work Order"}
                       </p>
                     </div>
                     {job.price != null && (
-                      <span className="text-[13px] font-semibold text-[#E8DFD0] shrink-0 tabular-nums">
+                      <span className="text-[13px] font-semibold text-[#0D1B2A] shrink-0 tabular-nums">
                         ${Number(job.price).toFixed(0)}
                       </span>
                     )}
@@ -324,37 +311,37 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[#312B20]">
-            <AlertCircle className="h-3.5 w-3.5 text-[#5A5040]" strokeWidth={2} />
-            <h2 className="text-[13px] font-semibold text-[#E8DFD0]">
+        <div className="bg-white rounded-[8px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[#F1F5F9]">
+            <AlertCircle className="h-3.5 w-3.5 text-[#94A3B8]" strokeWidth={2} />
+            <h2 className="text-[13px] font-semibold text-[#0D1B2A]">
               Recent Activity
             </h2>
           </div>
 
           {recentActivity.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <Briefcase className="h-8 w-8 text-[#3C352A] mb-2" strokeWidth={1.5} />
-              <p className="text-[12px] text-[#5A5040]">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Briefcase className="h-8 w-8 text-[#CBD5E1] mb-2" strokeWidth={1.5} />
+              <p className="text-[13px] font-medium text-[#94A3B8]">
                 Activity will appear here as you use ContractHub
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-[#262118]">
+            <div className="divide-y divide-[#F8FAFC]">
               {recentActivity.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
-                  <div className={`h-7 w-7 rounded-[4px] ${item.color} flex items-center justify-center shrink-0`}>
+                <div key={i} className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#F8FAFC] transition-colors">
+                  <div className={`h-7 w-7 rounded-[6px] ${item.color} flex items-center justify-center shrink-0`}>
                     <ActivityIcon type={item.icon} className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-semibold text-[#E8DFD0]">
+                    <p className="text-[12px] font-semibold text-[#0D1B2A]">
                       {item.label}
                     </p>
-                    <p className="text-[11px] text-[#8C7D6A] truncate">
+                    <p className="text-[11px] text-[#64748B] truncate">
                       {item.detail}
                     </p>
                   </div>
-                  <span className="text-[10px] text-[#4E4235] shrink-0 tabular-nums">
+                  <span className="text-[10px] text-[#CBD5E1] shrink-0 tabular-nums">
                     {timeAgo(item.time)}
                   </span>
                 </div>
@@ -366,16 +353,16 @@ export default async function DashboardPage() {
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#312B20]">
+        <div className="lg:col-span-2 bg-white rounded-[8px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#F1F5F9]">
             <div>
-              <h2 className="text-[13px] font-semibold text-[#E8DFD0]">Revenue</h2>
+              <h2 className="text-[13px] font-semibold text-[#0D1B2A]">Revenue</h2>
               <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-[22px] font-bold text-[#E8DFD0] leading-none tabular-nums tracking-[-0.03em]">
+                <span className="text-[24px] font-bold text-[#0D1B2A] leading-none tabular-nums tracking-[-0.03em]">
                   ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 {revenueChartData.length === 0 && (
-                  <span className="text-[11px] text-[#4E4235]">No paid invoices yet</span>
+                  <span className="text-[11px] text-[#CBD5E1]">No paid invoices yet</span>
                 )}
               </div>
             </div>
@@ -385,9 +372,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-[#312B20]">
-            <h2 className="text-[13px] font-semibold text-[#E8DFD0]">Services</h2>
+        <div className="bg-white rounded-[8px] border border-[#E2E8F0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#F1F5F9]">
+            <h2 className="text-[13px] font-semibold text-[#0D1B2A]">Work Types</h2>
           </div>
           <div className="p-5">
             <ServiceDonut services={serviceDonutData} total={serviceTotal} />

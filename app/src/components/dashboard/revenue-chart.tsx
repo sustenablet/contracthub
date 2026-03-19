@@ -22,7 +22,7 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-[180px] text-xs text-[#5A5040]">
+      <div className="flex items-center justify-center h-[180px] text-xs text-[#CBD5E1]">
         No revenue data yet
       </div>
     );
@@ -65,7 +65,7 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
                 y1={y}
                 x2={totalW - 8}
                 y2={y}
-                stroke="#312B20"
+                stroke="#E2E8F0"
                 strokeWidth="1"
               />
               <text
@@ -73,7 +73,7 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
                 y={y + 4}
                 textAnchor="end"
                 fontSize="9"
-                fill="#4E4235"
+                fill="#CBD5E1"
               >
                 ${(val / 1000).toFixed(0)}K
               </text>
@@ -87,27 +87,25 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
           y1={avgY}
           x2={totalW - 8}
           y2={avgY}
-          stroke="#E8DFD0"
+          stroke="#94A3B8"
           strokeWidth="1"
           strokeDasharray="5,4"
-          opacity="0.15"
+          opacity="0.4"
         />
-        {/* Avg label pill */}
         <rect
           x={PADDING_LEFT}
           y={avgY - 11}
           width={28}
           height={14}
           rx={3}
-          fill="#E8DFD0"
-          opacity="0.1"
+          fill="#F1F5F9"
         />
         <text
           x={PADDING_LEFT + 14}
           y={avgY + 1}
           textAnchor="middle"
           fontSize="8"
-          fill="#8C7D6A"
+          fill="#94A3B8"
           fontWeight="700"
         >
           Avg
@@ -127,14 +125,14 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
               onMouseLeave={() => setHovered(null)}
               style={{ cursor: "pointer" }}
             >
-              {/* Track bar (full height bg) */}
+              {/* Track bar */}
               <rect
                 x={x}
                 y={PADDING_TOP}
                 width={BAR_W}
                 height={plotH}
                 rx={4}
-                fill="#262118"
+                fill="#F0F4F8"
               />
               {/* Actual bar */}
               <rect
@@ -143,8 +141,8 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
                 width={BAR_W}
                 height={bH}
                 rx={4}
-                fill={isHov ? "#D97706" : "#F59E0B"}
-                opacity={isHov ? 1 : 0.75}
+                fill={isHov ? "#C2410C" : "#EA580C"}
+                opacity={isHov ? 1 : 0.85}
                 style={{
                   transformBox: "fill-box",
                   transformOrigin: "bottom",
@@ -158,7 +156,7 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
                 y={CHART_H - 6}
                 textAnchor="middle"
                 fontSize="10"
-                fill={isHov ? "#E8DFD0" : "#5A5040"}
+                fill={isHov ? "#0D1B2A" : "#94A3B8"}
                 fontWeight={isHov ? "700" : "500"}
               >
                 {d.month}
@@ -173,21 +171,18 @@ export function RevenueChart({ data }: { data: RevenueDataPoint[] }) {
                     width={68}
                     height={24}
                     rx={4}
-                    fill="#262118"
-                    stroke="#312B20"
-                    strokeWidth="1"
+                    fill="#0D1B2A"
                   />
-                  {/* Tooltip tail */}
                   <polygon
                     points={`${x + BAR_W / 2 - 5},${bTop - 8} ${x + BAR_W / 2 + 5},${bTop - 8} ${x + BAR_W / 2},${bTop - 2}`}
-                    fill="#262118"
+                    fill="#0D1B2A"
                   />
                   <text
                     x={x + BAR_W / 2}
                     y={bTop - 16}
                     textAnchor="middle"
                     fontSize="11"
-                    fill="#E8DFD0"
+                    fill="#FFFFFF"
                     fontWeight="700"
                   >
                     ${d.amount.toLocaleString()}
