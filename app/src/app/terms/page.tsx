@@ -126,7 +126,7 @@ export default function TermsPage() {
             <p>For questions about these Terms, contact us at:</p>
             <div className="mt-3 p-4 bg-[#F6F4F1] rounded-lg border border-[#E2DED8] text-[13px]">
               <p className="font-semibold text-[#1F1B14]">ContractHub Support</p>
-              <p className="text-[#1F1B14]/55 mt-1">support@maidhub.io</p>
+              <p className="text-[#1F1B14]/55 mt-1">support@contracthub.io</p>
             </div>
           </section>
 

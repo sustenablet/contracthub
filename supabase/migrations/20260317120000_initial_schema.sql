@@ -1,5 +1,5 @@
 -- ============================================================
--- MaidHub Phase 1: Full database schema + Row Level Security
+-- ContractHub: Full database schema + Row Level Security
 -- ============================================================
 
 -- 1. USERS (extends Supabase auth.users)

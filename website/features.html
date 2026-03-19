@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Features — MaidHub</title>
-  <meta name="description" content="Everything you need to run your residential cleaning business — client management, scheduling, estimates, invoicing, and automated notifications." />
+  <title>Features — ContractHub</title>
+  <meta name="description" content="Everything you need to run your residential contracting business — client management, scheduling, estimates, invoicing, and automated notifications." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -21,9 +21,9 @@
       --dark-2:       #122030;
       --dark-3:       #0F1D2E;
       --darkest:      #070E16;
-      --lime:         #C5F244;
-      --lime-dim:     rgba(197,242,68,.14);
-      --teal:         #0B8775;
+      --lime:         #EA580C;
+      --lime-dim:     rgba(234,88,12,.14);
+      --teal:         #EA580C;
       --amber:        #F5A623;
       --text:         #0C1B2A;
       --muted:        #5C6B7A;
@@ -93,7 +93,7 @@
       background: var(--lime);
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 0 3px rgba(197,242,68,.25);
+      box-shadow: 0 0 0 3px rgba(234,88,12,.25);
     }
 
     .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
@@ -127,9 +127,9 @@
       transition: all .2s; letter-spacing: -.1px;
     }
     .btn-pill:hover {
-      background: #D0FF60;
+      background: #C2410C;
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(197,242,68,.45);
+      box-shadow: 0 8px 24px rgba(234,88,12,.45);
     }
     .btn-pill.lg { font-size: 15.5px; padding: 15px 32px; }
 
@@ -173,8 +173,8 @@
 
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(197,242,68,.12);
-      border: 1px solid rgba(197,242,68,.25);
+      background: rgba(234,88,12,.12);
+      border: 1px solid rgba(234,88,12,.25);
       padding: 6px 16px; border-radius: 100px;
       font-size: 12.5px; font-weight: 700;
       color: var(--lime); margin-bottom: 28px;
@@ -289,7 +289,7 @@
       flex-shrink: 0; margin-top: 1px;
     }
     .bullet-check.cream { background: rgba(11,135,117,.12); }
-    .bullet-check.dark  { background: rgba(197,242,68,.14); }
+    .bullet-check.dark  { background: rgba(234,88,12,.14); }
     .bullet-check svg { width: 11px; height: 11px; stroke-width: 2.5; fill: none; }
     .bullet-check.cream svg { stroke: var(--teal); }
     .bullet-check.dark  svg { stroke: var(--lime); }
@@ -485,7 +485,7 @@
     }
     .job-block:hover { transform: scale(1.03); box-shadow: 0 4px 16px rgba(0,0,0,.25); }
     .job-block.done   { background: rgba(40,200,64,.2); border-left: 3px solid #28C840; }
-    .job-block.upcoming { background: rgba(197,242,68,.18); border-left: 3px solid var(--lime); }
+    .job-block.upcoming { background: rgba(234,88,12,.18); border-left: 3px solid var(--lime); }
     .job-block-name { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .job-block-time { font-size: 9px; color: rgba(255,255,255,.5); margin-top: 1px; }
 
@@ -507,7 +507,7 @@
       font-size: 9.5px; font-weight: 700;
     }
     .tooltip-badge.done { background: rgba(40,200,64,.18); color: #28C840; }
-    .tooltip-badge.upcoming { background: rgba(197,242,68,.18); color: var(--lime); }
+    .tooltip-badge.upcoming { background: rgba(234,88,12,.18); color: var(--lime); }
 
     /* ─── DEMO: ESTIMATES ─────────────────────────────────────── */
     .estimate-demo-body { padding: 18px 20px; }
@@ -552,7 +552,7 @@
     .est-row td input.price-input {
       text-align: right; width: 70px; font-weight: 600;
     }
-    .est-row.new-row td { background: rgba(197,242,68,.06); }
+    .est-row.new-row td { background: rgba(234,88,12,.06); }
     .est-row.new-row td input::placeholder { color: rgba(12,27,42,.3); }
 
     .est-add-btn {
@@ -581,7 +581,7 @@
       display: flex; align-items: center; justify-content: center; gap: 7px;
       transition: all .2s;
     }
-    .est-send-btn:hover { background: #D0FF60; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(197,242,68,.4); }
+    .est-send-btn:hover { background: #C2410C; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,88,12,.4); }
     .est-send-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
     /* ─── DEMO: INVOICING ─────────────────────────────────────── */
@@ -627,7 +627,7 @@
       border: 1px solid transparent;
     }
     .status-badge.paid { background: rgba(40,200,64,.18); color: #28C840; border-color: rgba(40,200,64,.25); }
-    .status-badge.unpaid { background: rgba(197,242,68,.15); color: var(--lime); border-color: rgba(197,242,68,.25); }
+    .status-badge.unpaid { background: rgba(234,88,12,.15); color: var(--lime); border-color: rgba(234,88,12,.25); }
     .status-badge.overdue { background: rgba(239,68,68,.18); color: #F87171; border-color: rgba(239,68,68,.25); }
     .status-badge:hover { transform: scale(1.06); }
     .status-badge.flipping { animation: flip .3s ease; }
@@ -738,7 +738,7 @@
       content: '';
       position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(197,242,68,.1) 0%, transparent 65%);
+      background: radial-gradient(circle, rgba(234,88,12,.1) 0%, transparent 65%);
       pointer-events: none;
     }
     .final-cta h2 {
@@ -874,7 +874,7 @@
     <div class="nav-inner">
       <a href="/" class="nav-logo">
         <span class="logo-mark"></span>
-        MaidHub
+        ContractHub
       </a>
 
       <ul class="nav-links">
@@ -908,8 +908,8 @@
   <div class="container">
     <div class="hero-inner">
       <div class="hero-eyebrow">All features</div>
-      <h1>Everything you need to run your <em>cleaning business.</em></h1>
-      <p class="hero-sub">MaidHub packs five powerful tools into one tidy back-office — built specifically for solo residential cleaners who'd rather be cleaning than chasing paperwork.</p>
+      <h1>Everything you need to run your <em>contracting business.</em></h1>
+      <p class="hero-sub">ContractHub packs five powerful tools into one tidy back-office — built specifically for solo contractors who'd rather be cleaning than chasing paperwork.</p>
       <div class="hero-cta">
         <a href="/signup" class="btn-pill lg">Start free trial →</a>
         <a href="pricing.html" class="btn-pill-dark">See pricing</a>
@@ -953,7 +953,7 @@
           Client Management
         </div>
         <h2 class="feat-title on-cream">Every client, every detail — <em>at your fingertips.</em></h2>
-        <p class="feat-desc on-cream">Stop juggling sticky notes and spreadsheets. MaidHub gives every client their own profile — complete with contact info, service history, and private notes you'll actually use.</p>
+        <p class="feat-desc on-cream">Stop juggling sticky notes and spreadsheets. ContractHub gives every client their own profile — complete with contact info, service history, and private notes you'll actually use.</p>
         <ul class="feat-bullets">
           <li class="on-cream">
             <span class="bullet-check cream">
@@ -1306,7 +1306,7 @@
           Job Scheduling
         </div>
         <h2 class="feat-title on-dark">Recurring jobs, automated. <em>Your schedule runs itself.</em></h2>
-        <p class="feat-desc on-dark">Set up a weekly client once and MaidHub fills in every future appointment automatically. Your calendar stays full without you lifting a finger.</p>
+        <p class="feat-desc on-dark">Set up a weekly client once and ContractHub fills in every future appointment automatically. Your calendar stays full without you lifting a finger.</p>
         <ul class="feat-bullets">
           <li class="on-dark">
             <span class="bullet-check dark">
@@ -1330,7 +1330,7 @@
             <span class="bullet-check dark">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
-            Quick reschedule or cancel with one tap — no double-booking
+            Quick reschedule or cancel with one tap — no double-work order
           </li>
         </ul>
       </div>
@@ -1391,7 +1391,7 @@
           </div>
           <div class="estimate-demo-body">
             <div class="est-header">
-              <div class="est-logo-mark">MaidHub</div>
+              <div class="est-logo-mark">ContractHub</div>
               <div class="est-doc-info">
                 <div class="est-doc-num">EST-0042</div>
                 <div class="est-doc-date">Mar 17, 2026</div>
@@ -1541,7 +1541,7 @@
           Invoicing
         </div>
         <h2 class="feat-title on-dark">From job complete to <em>paid — in seconds.</em></h2>
-        <p class="feat-desc on-dark">Send a professional invoice the moment a job is done. MaidHub tracks what's paid, what's pending, and what's overdue — so you never have to wonder where your money is.</p>
+        <p class="feat-desc on-dark">Send a professional invoice the moment a job is done. ContractHub tracks what's paid, what's pending, and what's overdue — so you never have to wonder where your money is.</p>
         <ul class="feat-bullets">
           <li class="on-dark">
             <span class="bullet-check dark">
@@ -1586,7 +1586,7 @@
           Notifications
         </div>
         <h2 class="feat-title on-cream">Your clients are always <em>in the loop.</em></h2>
-        <p class="feat-desc on-cream">Automated reminders mean no more last-minute "wait, was that today?" texts. MaidHub pings your clients 24 hours before every appointment — and confirms when you're done.</p>
+        <p class="feat-desc on-cream">Automated reminders mean no more last-minute "wait, was that today?" texts. ContractHub pings your clients 24 hours before every appointment — and confirms when you're done.</p>
         <ul class="feat-bullets">
           <li class="on-cream">
             <span class="bullet-check cream">
@@ -1638,7 +1638,7 @@
             <div class="notif-panel visible" id="notif-email">
               <div class="email-wrap">
                 <div class="email-header">
-                  <div class="email-from">From: <span>MaidHub via hello@maidhub.io</span></div>
+                  <div class="email-from">From: <span>ContractHub via hello@contracthub.io</span></div>
                   <div class="email-subject">Your cleaning appointment is tomorrow ✨</div>
                 </div>
                 <div class="email-body">
@@ -1702,7 +1702,7 @@
   <div class="container">
     <div class="reveal">
       <h2>Ready to run your business <em>the right way?</em></h2>
-      <p>Join hundreds of solo cleaners who swapped the chaos for clarity — all for less than the cost of a tank of gas.</p>
+      <p>Join hundreds of solo contractors who swapped the chaos for clarity — all for less than the cost of a tank of gas.</p>
       <a href="/signup" class="btn-pill lg">Start 30-day free trial →</a>
       <div class="final-cta-hint">No credit card required. Cancel any time.</div>
     </div>
@@ -1716,9 +1716,9 @@
       <div class="footer-brand">
         <a href="/" class="footer-logo">
           <span class="logo-mark"></span>
-          MaidHub
+          ContractHub
         </a>
-        <p class="footer-tagline">The back-office built for solo residential cleaners who'd rather be cleaning.</p>
+        <p class="footer-tagline">The back-office built for solo contractors who'd rather be cleaning.</p>
       </div>
 
       <div>
@@ -1733,7 +1733,7 @@
       <div>
         <div class="footer-col-title">Company</div>
         <ul class="footer-col-links">
-          <li><a href="mailto:hello@maidhub.io">Contact</a></li>
+          <li><a href="mailto:hello@contracthub.io">Contact</a></li>
         </ul>
       </div>
 
@@ -1747,7 +1747,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span class="footer-copy">© 2026 MaidHub. All rights reserved.</span>
+      <span class="footer-copy">© 2026 ContractHub. All rights reserved.</span>
       <div class="footer-socials">
         <!-- Twitter / X -->
         <a href="#" class="footer-social" aria-label="Twitter">

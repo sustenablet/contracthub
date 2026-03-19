@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How It Works — MaidHub</title>
+  <title>How It Works — ContractHub</title>
   <meta name="description" content="Get up and running in under 5 minutes. Add clients, schedule jobs, send invoices. No training needed." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,9 +20,9 @@
       --dark:         #0C1B2A;
       --dark-2:       #122030;
       --darkest:      #070E16;
-      --lime:         #C5F244;
-      --lime-dim:     rgba(197,242,68,.14);
-      --teal:         #0B8775;
+      --lime:         #EA580C;
+      --lime-dim:     rgba(234,88,12,.14);
+      --teal:         #EA580C;
       --amber:        #F5A623;
       --text:         #0C1B2A;
       --muted:        #5C6B7A;
@@ -92,7 +92,7 @@
       background: var(--lime);
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 0 3px rgba(197,242,68,.25);
+      box-shadow: 0 0 0 3px rgba(234,88,12,.25);
     }
 
     .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
@@ -126,9 +126,9 @@
       transition: all .2s; letter-spacing: -.1px;
     }
     .btn-pill:hover {
-      background: #D0FF60;
+      background: #C2410C;
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(197,242,68,.45);
+      box-shadow: 0 8px 24px rgba(234,88,12,.45);
     }
     .btn-pill.lg { font-size: 15.5px; padding: 14px 30px; }
 
@@ -189,7 +189,7 @@
     .page-hero .eyebrow-tag {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--lime-dim);
-      border: 1px solid rgba(197,242,68,.28);
+      border: 1px solid rgba(234,88,12,.28);
       padding: 6px 16px; border-radius: 100px;
       font-size: 12px; font-weight: 700;
       color: var(--teal); margin-bottom: 30px;
@@ -350,7 +350,7 @@
     }
     .mock-input.focused {
       border-color: var(--lime);
-      box-shadow: 0 0 0 3px rgba(197,242,68,.12);
+      box-shadow: 0 0 0 3px rgba(234,88,12,.12);
       color: rgba(255,255,255,.85);
     }
     .mock-textarea {
@@ -418,7 +418,7 @@
     }
     .mcd.hdr { font-weight: 700; color: rgba(255,255,255,.2); font-size: 8px; }
     .mcd.today { background: var(--lime); color: var(--dark); font-weight: 800; }
-    .mcd.sel { background: rgba(197,242,68,.2); color: var(--lime); font-weight: 700; }
+    .mcd.sel { background: rgba(234,88,12,.2); color: var(--lime); font-weight: 700; }
     .mcd.job { color: rgba(255,255,255,.6); }
 
     .mock-price-row {
@@ -426,7 +426,7 @@
     }
     .recur-tag {
       display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(197,242,68,.15); color: var(--lime);
+      background: rgba(234,88,12,.15); color: var(--lime);
       font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
       margin-top: 8px;
     }
@@ -449,7 +449,7 @@
       flex-shrink: 0;
     }
     .status-chip.sched { background: rgba(255,255,255,.1); color: rgba(255,255,255,.5); }
-    .status-chip.active { background: rgba(197,242,68,.18); color: var(--lime); }
+    .status-chip.active { background: rgba(234,88,12,.18); color: var(--lime); }
     .status-chip.done { background: rgba(40,200,64,.18); color: #28C840; }
     .status-chip.invoiced { background: rgba(11,135,117,.25); color: #2FD1BB; }
     .status-arrow {
@@ -486,13 +486,13 @@
     .gen-arrow-head {
       font-size: 10px; color: var(--lime);
     }
-    .gen-label { font-size: 8.5px; color: rgba(197,242,68,.6); font-weight: 700; letter-spacing: .5px; }
+    .gen-label { font-size: 8.5px; color: rgba(234,88,12,.6); font-weight: 700; letter-spacing: .5px; }
     .invoice-mini-card {
-      flex: 1; background: rgba(197,242,68,.08);
+      flex: 1; background: rgba(234,88,12,.08);
       border-radius: 10px; padding: 12px;
-      border: 1px solid rgba(197,242,68,.2);
+      border: 1px solid rgba(234,88,12,.2);
     }
-    .imc-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(197,242,68,.5); margin-bottom: 5px; }
+    .imc-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(234,88,12,.5); margin-bottom: 5px; }
     .imc-num { font-family: var(--font-d); font-size: 15px; font-weight: 700; color: var(--lime); }
     .imc-amt { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 3px; }
     .imc-send {
@@ -510,7 +510,7 @@
       content: '';
       position: absolute; top: -160px; left: 50%; transform: translateX(-50%);
       width: 800px; height: 600px;
-      background: radial-gradient(circle, rgba(197,242,68,.06) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(234,88,12,.06) 0%, transparent 60%);
       pointer-events: none;
     }
     .daylife-hd { text-align: center; margin-bottom: 72px; }
@@ -545,8 +545,8 @@
       transition: all .3s;
     }
     .timeline-item:hover .tl-dot {
-      background: rgba(197,242,68,.12);
-      border-color: rgba(197,242,68,.35);
+      background: rgba(234,88,12,.12);
+      border-color: rgba(234,88,12,.35);
     }
     .tl-tick {
       position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
@@ -625,7 +625,7 @@
       content: '';
       position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
       width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(197,242,68,.09) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(234,88,12,.09) 0%, transparent 60%);
       pointer-events: none;
     }
     .cta-title {
@@ -649,7 +649,7 @@
       display: inline-flex; align-items: center; gap: 8px;
       transition: all .2s;
     }
-    .btn-pill-dark:hover { background: #D0FF60; transform: translateY(-2px); box-shadow: 0 14px 44px rgba(197,242,68,.42); }
+    .btn-pill-dark:hover { background: #C2410C; transform: translateY(-2px); box-shadow: 0 14px 44px rgba(234,88,12,.42); }
 
     /* ─── FOOTER ──────────────────────────────────────────────── */
     footer { background: var(--darkest); padding: 80px 0 40px; }
@@ -663,7 +663,7 @@
       color: rgba(255,255,255,.88); text-decoration: none;
       display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px;
     }
-    .f-logo .logo-mark { box-shadow: 0 0 0 3px rgba(197,242,68,.18); }
+    .f-logo .logo-mark { box-shadow: 0 0 0 3px rgba(234,88,12,.18); }
     .f-tag { font-size: 13.5px; color: rgba(255,255,255,.36); line-height: 1.68; max-width: 260px; margin-bottom: 24px; }
     .f-col-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: 18px; }
     .f-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
@@ -717,7 +717,7 @@
   <nav id="nav">
     <div class="container">
       <div class="nav-inner">
-        <a href="/" class="nav-logo">MaidHub<span class="logo-mark"></span></a>
+        <a href="/" class="nav-logo">ContractHub<span class="logo-mark"></span></a>
 
         <ul class="nav-links">
           <li><a href="features.html">Features</a></li>
@@ -921,7 +921,7 @@
           <div class="step-number">02</div>
           <span class="step-label">Step 02</span>
           <h2 class="step-headline">Schedule your<br>first job</h2>
-          <p class="step-desc">Create a one-time job or set up a recurring schedule. Pick the client, address, service type, price, and time. MaidHub auto-generates future appointments for recurring jobs.</p>
+          <p class="step-desc">Create a one-time job or set up a recurring schedule. Pick the client, address, service type, price, and time. ContractHub auto-generates future appointments for recurring jobs.</p>
           <ul class="step-bullets">
             <li>One-time or recurring (weekly / biweekly / monthly)</li>
             <li>Set price and estimated duration</li>
@@ -944,7 +944,7 @@
           <div class="step-number">03</div>
           <span class="step-label">Step 03</span>
           <h2 class="step-headline">Track, invoice,<br>and repeat</h2>
-          <p class="step-desc">On job day: mark it active, mark it done. MaidHub auto-generates the invoice. Send it with one click. Track payment. Done.</p>
+          <p class="step-desc">On job day: mark it active, mark it done. ContractHub auto-generates the invoice. Send it with one click. Track payment. Done.</p>
           <ul class="step-bullets">
             <li>Status flow: Scheduled → Active → Done → Invoiced</li>
             <li>Auto-generate invoice on completion</li>
@@ -1012,7 +1012,7 @@
     <div class="container">
       <div class="daylife-hd reveal">
         <span class="eyebrow on-dark">A real day</span>
-        <h2 class="s-title light">What a day looks like<br><em>with MaidHub</em></h2>
+        <h2 class="s-title light">What a day looks like<br><em>with ContractHub</em></h2>
       </div>
 
       <div class="timeline-wrap reveal d1">
@@ -1026,7 +1026,7 @@
             </div>
             <div class="tl-time">7:30 AM</div>
             <div class="tl-title">Check your schedule</div>
-            <p class="tl-desc">Open MaidHub and see today's 3 jobs — times, addresses, and client notes all in one glance.</p>
+            <p class="tl-desc">Open ContractHub and see today's 3 jobs — times, addresses, and client notes all in one glance.</p>
           </div>
 
           <div class="timeline-item">
@@ -1082,7 +1082,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">MaidHub is fully mobile-optimized and works great in any browser on your phone or tablet — no download required. Native iOS and Android apps are on the roadmap and coming soon.</p>
+              <p class="faq-a">ContractHub is fully mobile-optimized and works great in any browser on your phone or tablet — no download required. Native iOS and Android apps are on the roadmap and coming soon.</p>
             </div>
           </div>
         </div>
@@ -1094,7 +1094,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">After your 30-day free trial, you'll need an active subscription to continue using MaidHub. The Solo Cleaner Plan is $29/month. No credit card is required to start your trial — you only enter payment when you're ready to subscribe.</p>
+              <p class="faq-a">After your 30-day free trial, you'll need an active subscription to continue using ContractHub. The Solo Contractor Plan is $29/month. No credit card is required to start your trial — you only enter payment when you're ready to subscribe.</p>
             </div>
           </div>
         </div>
@@ -1106,7 +1106,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">CSV bulk import is coming very soon. For now, clients are added manually — which takes about 1–2 minutes each. Most solo cleaners have 10–20 active clients, so getting started takes under 30 minutes.</p>
+              <p class="faq-a">CSV bulk import is coming very soon. For now, clients are added manually — which takes about 1–2 minutes each. Most solo contractors have 10–20 active clients, so getting started takes under 30 minutes.</p>
             </div>
           </div>
         </div>
@@ -1118,7 +1118,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">Yes. MaidHub is built on Supabase with Row Level Security (RLS) enabled — meaning your data is completely isolated and invisible to any other user. All data is encrypted in transit and at rest.</p>
+              <p class="faq-a">Yes. ContractHub is built on Supabase with Row Level Security (RLS) enabled — meaning your data is completely isolated and invisible to any other user. All data is encrypted in transit and at rest.</p>
             </div>
           </div>
         </div>
@@ -1130,7 +1130,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">Phase 1 of MaidHub is built specifically for the solo cleaning business owner — one person, one account. Team management features (assign jobs to multiple cleaners, staff schedules, etc.) are planned for a future release.</p>
+              <p class="faq-a">Phase 1 of ContractHub is built specifically for the solo contracting business owner — one person, one account. Team management features (assign jobs to multiple cleaners, staff schedules, etc.) are planned for a future release.</p>
             </div>
           </div>
         </div>
@@ -1154,7 +1154,7 @@
           </button>
           <div class="faq-body" role="region">
             <div class="faq-body-inner">
-              <p class="faq-a">In the current MVP, MaidHub handles invoice generation and payment status tracking (mark as paid / pending). Direct integration with Stripe, Square, or other payment processors is on the roadmap for a future update.</p>
+              <p class="faq-a">In the current MVP, ContractHub handles invoice generation and payment status tracking (mark as paid / pending). Direct integration with Stripe, Square, or other payment processors is on the roadmap for a future update.</p>
             </div>
           </div>
         </div>
@@ -1181,8 +1181,8 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <a href="/" class="f-logo">MaidHub<span class="logo-mark"></span></a>
-          <p class="f-tag">The back-office command center built for solo residential cleaning business owners.</p>
+          <a href="/" class="f-logo">ContractHub<span class="logo-mark"></span></a>
+          <p class="f-tag">The back-office command center built for solo residential contracting business owners.</p>
         </div>
         <div>
           <p class="f-col-title">Product</p>
@@ -1195,7 +1195,7 @@
         <div>
           <p class="f-col-title">Company</p>
           <ul class="f-links">
-            <li><a href="mailto:hello@maidhub.io">Contact</a></li>
+            <li><a href="mailto:hello@contracthub.io">Contact</a></li>
           </ul>
         </div>
         <div>
@@ -1207,11 +1207,11 @@
         </div>
       </div>
       <div class="footer-bot">
-        <p class="f-copy">&copy; 2026 MaidHub. All rights reserved.</p>
+        <p class="f-copy">&copy; 2026 ContractHub. All rights reserved.</p>
         <div class="f-legal">
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
-          <a href="mailto:hello@maidhub.io">Contact</a>
+          <a href="mailto:hello@contracthub.io">Contact</a>
         </div>
       </div>
     </div>

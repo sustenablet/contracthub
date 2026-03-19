@@ -1,5 +1,5 @@
 {
-  "name": "maidhub",
+  "name": "contracthub",
   "private": true,
   "scripts": {
     "dev": "cd app && npm run dev",
