@@ -404,11 +404,11 @@ export default function EstimatesPage() {
 
   const statusBadge = (status: Estimate["status"]) => {
     const styles: Record<string, string> = {
-      draft: "bg-[#2A2A2A] text-[#888888] ring-1 ring-inset ring-[#2C2C2C]",
-      sent: "bg-[#0071E3]/10 text-[#0071E3] ring-1 ring-inset ring-[#0071E3]/20",
+      draft: "bg-[#2A2A2A] text-[#8C7D6A] ring-1 ring-inset ring-[#312B20]",
+      sent: "bg-[#F59E0B]/10 text-[#F59E0B] ring-1 ring-inset ring-[#F59E0B]/20",
       accepted: "bg-[#34C759]/10 text-[#34C759] ring-1 ring-inset ring-[#34C759]/20",
       declined: "bg-red-500/100/10 text-red-400 ring-1 ring-inset ring-red-500/20",
-      expired: "bg-[#252525] text-[#888888]",
+      expired: "bg-[#262118] text-[#8C7D6A]",
     };
     return styles[status] || "";
   };
@@ -416,7 +416,7 @@ export default function EstimatesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 className="h-6 w-6 animate-spin text-[#0071E3]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#F59E0B]" />
       </div>
     );
   }
@@ -426,16 +426,16 @@ export default function EstimatesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[21px] font-semibold text-[#D4D4D4] tracking-[-0.02em]">
+          <h1 className="text-[21px] font-semibold text-[#E8DFD0] tracking-[-0.02em]">
             Estimates
           </h1>
-          <p className="text-sm text-[#888888] mt-0.5">
+          <p className="text-sm text-[#8C7D6A] mt-0.5">
             Create bids and convert to work orders
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#0071E3] hover:bg-[#0071E3]/90 text-white text-[13px] font-semibold rounded-[6px] shadow-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-[#F59E0B] hover:bg-[#F59E0B]/90 text-white text-[13px] font-semibold rounded-[6px] shadow-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Estimate
@@ -443,17 +443,17 @@ export default function EstimatesPage() {
       </div>
 
       {/* Estimate Table */}
-      <div className="bg-[#1E1E1E] rounded-[6px] shadow-[0_1px_3px_rgba(0,0,0,0.4)] border border-[#2C2C2C]">
+      <div className="bg-[#1F1B14] rounded-[6px] shadow-[0_1px_3px_rgba(0,0,0,0.4)] border border-[#312B20]">
         {/* Toolbar */}
-        <div className="flex items-center justify-between p-5 border-b border-[#252525]">
+        <div className="flex items-center justify-between p-5 border-b border-[#262118]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#444444]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#4E4235]" />
             <input
               type="text"
               placeholder="Search estimates..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-2 text-xs bg-[#252525] border border-[#2C2C2C] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/50 focus:border-[#0071E3]/60 w-52 transition-all text-[#D4D4D4] placeholder:text-[#444444]"
+              className="pl-9 pr-3 py-2 text-xs bg-[#262118] border border-[#312B20] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/50 focus:border-[#F59E0B]/60 w-52 transition-all text-[#E8DFD0] placeholder:text-[#4E4235]"
             />
           </div>
           <div className="relative">
@@ -461,26 +461,26 @@ export default function EstimatesPage() {
               onClick={() => setFilterOpen(!filterOpen)}
               className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[6px] transition-colors ${
                 statusFilter !== "all"
-                  ? "text-[#D4D4D4] bg-white/[0.08] border border-white/20"
-                  : "text-[#888888] bg-[#252525] border border-[#2C2C2C] hover:bg-[#2A2A2A]"
+                  ? "text-[#E8DFD0] bg-white/[0.08] border border-white/20"
+                  : "text-[#8C7D6A] bg-[#262118] border border-[#312B20] hover:bg-[#2A2A2A]"
               }`}
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
               Filter
               {statusFilter !== "all" && (
-                <span className="h-1.5 w-1.5 rounded-full bg-[#D4D4D4]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E8DFD0]" />
               )}
             </button>
             {filterOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 w-36 bg-[#1E1E1E] rounded-[6px] shadow-[0_4px_16px_rgba(0,0,0,0.5)] border border-[#2C2C2C] py-1 z-50">
+                <div className="absolute right-0 top-full mt-1 w-36 bg-[#1F1B14] rounded-[6px] shadow-[0_4px_16px_rgba(0,0,0,0.5)] border border-[#312B20] py-1 z-50">
                   {(["all", "draft", "sent", "accepted", "declined"] as const).map((opt) => (
                     <button
                       key={opt}
                       onClick={() => { setStatusFilter(opt); setFilterOpen(false); }}
                       className={`w-full text-left px-3 py-2 text-xs font-medium capitalize transition-colors ${
-                        statusFilter === opt ? "text-[#D4D4D4] bg-white/[0.05]" : "text-[#888888] hover:bg-white/[0.02]"
+                        statusFilter === opt ? "text-[#E8DFD0] bg-white/[0.05]" : "text-[#8C7D6A] hover:bg-white/[0.02]"
                       }`}
                     >
                       {opt === "all" ? "All Estimates" : opt}
@@ -494,19 +494,19 @@ export default function EstimatesPage() {
 
         {estimates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center px-6">
-            <div className="h-16 w-16 rounded-[6px] bg-[#0071E3]/[0.12] flex items-center justify-center mb-4">
-              <FileText className="h-8 w-8 text-[#0071E3]" />
+            <div className="h-16 w-16 rounded-[6px] bg-[#F59E0B]/[0.12] flex items-center justify-center mb-4">
+              <FileText className="h-8 w-8 text-[#F59E0B]" />
             </div>
-            <h3 className="text-base font-semibold text-[#D4D4D4] mb-2">
+            <h3 className="text-base font-semibold text-[#E8DFD0] mb-2">
               No estimates yet
             </h3>
-            <p className="text-sm text-[#888888] mb-6 max-w-xs leading-relaxed">
+            <p className="text-sm text-[#8C7D6A] mb-6 max-w-xs leading-relaxed">
               Create bids for potential clients and convert accepted ones
               into work orders.
             </p>
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#0071E3] hover:bg-[#0071E3]/90 text-white text-sm font-semibold rounded-[6px] transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#F59E0B] hover:bg-[#F59E0B]/90 text-white text-sm font-semibold rounded-[6px] transition-colors"
             >
               <Plus className="h-4 w-4" />
               New Estimate
@@ -514,10 +514,10 @@ export default function EstimatesPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <p className="text-sm font-semibold text-[#D4D4D4]">
+            <p className="text-sm font-semibold text-[#E8DFD0]">
               No results for &ldquo;{search}&rdquo;
             </p>
-            <p className="text-xs text-[#888888] mt-1">
+            <p className="text-xs text-[#8C7D6A] mt-1">
               Try a different search term
             </p>
           </div>
@@ -525,55 +525,55 @@ export default function EstimatesPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-[#252525]/50 border-b border-[#252525]">
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888]">
+                <tr className="bg-[#262118]/50 border-b border-[#262118]">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A]">
                     Estimate #
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888]">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A]">
                     Client
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888] hidden md:table-cell">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A] hidden md:table-cell">
                     Service
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888]">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A]">
                     Amount
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888] hidden lg:table-cell">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A] hidden lg:table-cell">
                     Date
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#888888]">
+                  <th className="text-left px-5 py-3 text-[11px] font-semibold text-[#8C7D6A]">
                     Status
                   </th>
                   <th className="px-5 py-3 w-40" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#252525]">
+              <tbody className="divide-y divide-[#262118]">
                 {filtered.map((est) => (
                   <tr
                     key={est.id}
                     className="hover:bg-white/[0.02] transition-colors"
                   >
                     <td className="px-5 py-4">
-                      <span className="text-sm font-medium text-[#D4D4D4] font-mono">
+                      <span className="text-sm font-medium text-[#E8DFD0] font-mono">
                         {estimateNumber(est.id)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-sm text-[#888888]">
+                      <span className="text-sm text-[#8C7D6A]">
                         {est.clients
                           ? `${est.clients.first_name} ${est.clients.last_name}`
                           : "-"}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-xs text-[#888888] hidden md:table-cell">
+                    <td className="px-5 py-4 text-xs text-[#8C7D6A] hidden md:table-cell">
                       {est.line_items?.[0]?.description || "-"}
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-sm font-bold text-[#D4D4D4]">
+                      <span className="text-sm font-bold text-[#E8DFD0]">
                         {formatCurrency(est.total || 0)}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-xs text-[#888888] whitespace-nowrap hidden lg:table-cell">
+                    <td className="px-5 py-4 text-xs text-[#8C7D6A] whitespace-nowrap hidden lg:table-cell">
                       {formatDate(est.created_at?.split("T")[0] || null)}
                     </td>
                     <td className="px-5 py-4">
@@ -586,7 +586,7 @@ export default function EstimatesPage() {
                         {(est.status === "draft" || est.status === "sent") && (
                           <button
                             onClick={() => openEdit(est)}
-                            className="text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors"
+                            className="text-xs font-semibold text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
                           >
                             Edit
                           </button>
@@ -594,7 +594,7 @@ export default function EstimatesPage() {
                         {est.status === "draft" && (
                           <button
                             onClick={() => updateStatus(est, "sent")}
-                            className="text-xs font-semibold text-[#0071E3] hover:text-[#0071E3]/80 transition-colors"
+                            className="text-xs font-semibold text-[#F59E0B] hover:text-[#F59E0B]/80 transition-colors"
                           >
                             Send
                           </button>
@@ -609,7 +609,7 @@ export default function EstimatesPage() {
                             </button>
                             <button
                               onClick={() => updateStatus(est, "declined")}
-                              className="text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors"
+                              className="text-xs font-semibold text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
                             >
                               Decline
                             </button>
@@ -619,14 +619,14 @@ export default function EstimatesPage() {
                           <>
                             <button
                               onClick={() => openConvert(est)}
-                              className="flex items-center gap-1 text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors"
+                              className="flex items-center gap-1 text-xs font-semibold text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
                             >
                               Convert to Work Order
                               <ArrowRight className="h-3 w-3" />
                             </button>
                             <button
                               onClick={() => openConvertToInvoice(est)}
-                              className="flex items-center gap-1 text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors"
+                              className="flex items-center gap-1 text-xs font-semibold text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
                             >
                               Invoice
                               <Receipt className="h-3 w-3" />
@@ -638,7 +638,7 @@ export default function EstimatesPage() {
                           className={`text-xs font-semibold transition-colors ${
                             deleteConfirmId === est.id
                               ? "text-red-400"
-                              : "text-[#444444] hover:text-red-400"
+                              : "text-[#4E4235] hover:text-red-400"
                           }`}
                         >
                           {deleteConfirmId === est.id ? "Confirm?" : "Delete"}
@@ -690,7 +690,7 @@ export default function EstimatesPage() {
                       onChange={(e) =>
                         updateLineItem(idx, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2.5 text-sm bg-[#252525] border border-[#2C2C2C] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/50 focus:border-[#0071E3]/60 transition-all placeholder:text-[#444444] text-[#D4D4D4]"
+                      className="w-full px-3 py-2.5 text-sm bg-[#262118] border border-[#312B20] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/50 focus:border-[#F59E0B]/60 transition-all placeholder:text-[#4E4235] text-[#E8DFD0]"
                     />
                   </div>
                   <div className="w-16">
@@ -706,7 +706,7 @@ export default function EstimatesPage() {
                           Math.max(1, parseInt(e.target.value) || 1)
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-[#252525] border border-[#2C2C2C] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/50 focus:border-[#0071E3]/60 transition-all text-center text-[#D4D4D4]"
+                      className="w-full px-2 py-2.5 text-sm bg-[#262118] border border-[#312B20] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/50 focus:border-[#F59E0B]/60 transition-all text-center text-[#E8DFD0]"
                     />
                   </div>
                   <div className="w-24">
@@ -723,18 +723,18 @@ export default function EstimatesPage() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-2 py-2.5 text-sm bg-[#252525] border border-[#2C2C2C] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/50 focus:border-[#0071E3]/60 transition-all text-right text-[#D4D4D4]"
+                      className="w-full px-2 py-2.5 text-sm bg-[#262118] border border-[#312B20] rounded-[6px] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/50 focus:border-[#F59E0B]/60 transition-all text-right text-[#E8DFD0]"
                     />
                   </div>
                   <div className="w-20 flex items-center justify-end py-2.5">
-                    <span className="text-sm font-semibold text-[#888888]">
+                    <span className="text-sm font-semibold text-[#8C7D6A]">
                       {formatCurrency(li.quantity * li.unit_price)}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeLineItem(idx)}
-                    className="p-2.5 text-[#444444] hover:text-red-400 transition-colors"
+                    className="p-2.5 text-[#4E4235] hover:text-red-400 transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -744,7 +744,7 @@ export default function EstimatesPage() {
             <button
               type="button"
               onClick={addLineItem}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#888888] hover:text-[#D4D4D4] transition-colors mt-1"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors mt-1"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Line Item
@@ -763,12 +763,12 @@ export default function EstimatesPage() {
           </FormSection>
 
           {/* Total */}
-          <div className="border-t border-[#252525] pt-4">
+          <div className="border-t border-[#262118] pt-4">
             <div className="flex justify-between text-lg">
-              <span className="font-semibold text-[#D4D4D4]">
+              <span className="font-semibold text-[#E8DFD0]">
                 Total
               </span>
-              <span className="font-bold text-[#D4D4D4]">
+              <span className="font-bold text-[#E8DFD0]">
                 {formatCurrency(subtotal)}
               </span>
             </div>
@@ -919,27 +919,27 @@ export default function EstimatesPage() {
               {convertInvoiceEstimate?.line_items?.map((li, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between py-2 px-3 bg-[#252525] rounded-[6px]"
+                  className="flex items-center justify-between py-2 px-3 bg-[#262118] rounded-[6px]"
                 >
                   <div className="flex-1">
-                    <span className="text-sm text-[#888888]">
+                    <span className="text-sm text-[#8C7D6A]">
                       {li.description || "Untitled item"}
                     </span>
-                    <span className="text-xs text-[#555555] ml-2">
+                    <span className="text-xs text-[#5A5040] ml-2">
                       x{li.quantity}
                     </span>
                   </div>
-                  <span className="text-sm font-semibold text-[#888888]">
+                  <span className="text-sm font-semibold text-[#8C7D6A]">
                     {formatCurrency(li.quantity * li.unit_price)}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="flex justify-between pt-3 border-t border-[#252525]">
-              <span className="text-sm font-semibold text-[#D4D4D4]">
+            <div className="flex justify-between pt-3 border-t border-[#262118]">
+              <span className="text-sm font-semibold text-[#E8DFD0]">
                 Subtotal
               </span>
-              <span className="text-sm font-bold text-[#D4D4D4]">
+              <span className="text-sm font-bold text-[#E8DFD0]">
                 {formatCurrency(convertInvoiceEstimate?.total || 0)}
               </span>
             </div>
@@ -958,10 +958,10 @@ export default function EstimatesPage() {
               />
             </FormField>
             <div className="flex justify-between pt-2">
-              <span className="text-lg font-semibold text-[#D4D4D4]">
+              <span className="text-lg font-semibold text-[#E8DFD0]">
                 Total
               </span>
-              <span className="text-lg font-bold text-[#D4D4D4]">
+              <span className="text-lg font-bold text-[#E8DFD0]">
                 {formatCurrency(
                   ((convertInvoiceEstimate?.total || 0) *
                     (1 + invoiceTaxPercent / 100))

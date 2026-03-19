@@ -73,7 +73,7 @@ export default function UpgradePage() {
       {/* Back link */}
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#888888] hover:text-[#D4D4D4] transition-colors"
+        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#8C7D6A] hover:text-[#E8DFD0] transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
         Back to Dashboard
@@ -81,10 +81,10 @@ export default function UpgradePage() {
 
       {/* Header */}
       <div className="text-center space-y-3">
-        <h1 className="text-3xl font-bold text-[#D4D4D4]">
+        <h1 className="text-3xl font-bold text-[#E8DFD0]">
           Choose your plan
         </h1>
-        <p className="text-[15px] text-[#888888] max-w-md mx-auto leading-relaxed">
+        <p className="text-[15px] text-[#8C7D6A] max-w-md mx-auto leading-relaxed">
           Upgrade to keep managing your contracting business with all the tools you need.
         </p>
 
@@ -95,8 +95,8 @@ export default function UpgradePage() {
               onClick={() => setBilling("monthly")}
               className={`px-4 py-1.5 rounded-md text-[13px] font-semibold transition-all ${
                 billing === "monthly"
-                  ? "bg-white text-[#D4D4D4] shadow-sm"
-                  : "text-[#888888] hover:text-[#888888]"
+                  ? "bg-white text-[#E8DFD0] shadow-sm"
+                  : "text-[#8C7D6A] hover:text-[#8C7D6A]"
               }`}
             >
               Monthly
@@ -105,8 +105,8 @@ export default function UpgradePage() {
               onClick={() => setBilling("yearly")}
               className={`px-4 py-1.5 rounded-md text-[13px] font-semibold transition-all flex items-center gap-1.5 ${
                 billing === "yearly"
-                  ? "bg-white text-[#D4D4D4] shadow-sm"
-                  : "text-[#888888] hover:text-[#888888]"
+                  ? "bg-white text-[#E8DFD0] shadow-sm"
+                  : "text-[#8C7D6A] hover:text-[#8C7D6A]"
               }`}
             >
               Yearly
@@ -128,16 +128,16 @@ export default function UpgradePage() {
           return (
             <div
               key={plan.name}
-              className={`relative bg-[#1E1E1E] rounded-[6px] border overflow-hidden transition-all ${
+              className={`relative bg-[#1F1B14] rounded-[6px] border overflow-hidden transition-all ${
                 plan.popular
-                  ? "border-[#18181B]/20 shadow-md"
-                  : "border-[#2C2C2C] shadow-sm"
+                  ? "border-[#1F1B14]/20 shadow-md"
+                  : "border-[#312B20] shadow-sm"
               }`}
             >
               {plan.popular && (
                 <div className="absolute top-4 right-4">
                   <span
-                    className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-[#18181B] text-white uppercase tracking-wider"
+                    className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-[#1F1B14] text-white uppercase tracking-wider"
                   >
                     Recommended
                   </span>
@@ -145,23 +145,23 @@ export default function UpgradePage() {
               )}
 
               <div className="p-6 pb-0">
-                <p className="text-[13px] font-semibold text-[#888888] mb-1">
+                <p className="text-[13px] font-semibold text-[#8C7D6A] mb-1">
                   {plan.name}
                 </p>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-bold text-[#D4D4D4]">
+                  <span className="text-4xl font-bold text-[#E8DFD0]">
                     ${price}
                   </span>
-                  <span className="text-[13px] text-[#888888]">
+                  <span className="text-[13px] text-[#8C7D6A]">
                     /month
                   </span>
                 </div>
                 {billing === "yearly" && (
-                  <p className="text-[11px] text-[#888888] mb-1">
+                  <p className="text-[11px] text-[#8C7D6A] mb-1">
                     ${price * 12}/year, billed annually
                   </p>
                 )}
-                <p className="text-[13px] text-[#888888] leading-relaxed">
+                <p className="text-[13px] text-[#8C7D6A] leading-relaxed">
                   {plan.description}
                 </p>
               </div>
@@ -172,9 +172,9 @@ export default function UpgradePage() {
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-start gap-2.5">
                       <div className="h-[18px] w-[18px] rounded-full bg-white/[0.06] flex items-center justify-center shrink-0 mt-px">
-                        <Check className="h-2.5 w-2.5 text-[#D4D4D4]" strokeWidth={2.5} />
+                        <Check className="h-2.5 w-2.5 text-[#E8DFD0]" strokeWidth={2.5} />
                       </div>
-                      <span className="text-[13px] text-[#888888]">
+                      <span className="text-[13px] text-[#8C7D6A]">
                         {feature}
                       </span>
                     </div>
@@ -185,14 +185,14 @@ export default function UpgradePage() {
                 {plan.comingSoon ? (
                   <button
                     disabled
-                    className="w-full py-2.5 rounded-[6px] text-[13px] font-semibold bg-white/[0.05] text-[#888888] cursor-not-allowed"
+                    className="w-full py-2.5 rounded-[6px] text-[13px] font-semibold bg-white/[0.05] text-[#8C7D6A] cursor-not-allowed"
                   >
                     Coming Soon
                   </button>
                 ) : (
                   <button
                     onClick={() => handleSubscribe(plan.name)}
-                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-[6px] text-[13px] font-semibold bg-[#18181B] text-white hover:bg-[#18181B]/90 transition-colors shadow-sm"
+                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-[6px] text-[13px] font-semibold bg-[#1F1B14] text-white hover:bg-[#1F1B14]/90 transition-colors shadow-sm"
                   >
                     Get Started
                     <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
@@ -205,20 +205,20 @@ export default function UpgradePage() {
       </div>
 
       {/* Feature grid */}
-      <div className="bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] p-6 shadow-sm">
-        <h2 className="text-base font-bold text-[#D4D4D4] mb-1">
+      <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] p-6 shadow-sm">
+        <h2 className="text-base font-bold text-[#E8DFD0] mb-1">
           Everything included
         </h2>
-        <p className="text-[13px] text-[#888888] mb-5">
+        <p className="text-[13px] text-[#8C7D6A] mb-5">
           All the tools to run your contracting business efficiently
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {features.map((f) => (
             <div key={f.label} className="flex items-center gap-3 p-3 rounded-[6px] bg-white/[0.02]">
               <div className="h-8 w-8 rounded-[6px] bg-white/[0.06] flex items-center justify-center shrink-0">
-                <f.icon className="h-4 w-4 text-[#888888]" strokeWidth={1.8} />
+                <f.icon className="h-4 w-4 text-[#8C7D6A]" strokeWidth={1.8} />
               </div>
-              <span className="text-[13px] font-medium text-[#D4D4D4]">
+              <span className="text-[13px] font-medium text-[#E8DFD0]">
                 {f.label}
               </span>
             </div>
@@ -227,7 +227,7 @@ export default function UpgradePage() {
       </div>
 
       {/* Footer note */}
-      <p className="text-center text-[12px] text-[#888888] pb-4">
+      <p className="text-center text-[12px] text-[#8C7D6A] pb-4">
         Powered by Square. Cancel anytime. No hidden fees.
       </p>
     </div>

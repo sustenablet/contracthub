@@ -42,9 +42,9 @@ function FieldGroup({ children }: { children: React.ReactNode }) {
 function SectionHeader({ title, description }: { title: string; description?: string }) {
   return (
     <div className="pb-1">
-      <h3 className="text-[14px] font-bold text-[#D4D4D4]">{title}</h3>
+      <h3 className="text-[14px] font-bold text-[#E8DFD0]">{title}</h3>
       {description && (
-        <p className="text-[12px] text-[#888888] mt-0.5">{description}</p>
+        <p className="text-[12px] text-[#8C7D6A] mt-0.5">{description}</p>
       )}
     </div>
   );
@@ -63,13 +63,13 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1.5 text-[12px] font-semibold text-[#888888]">
+      <label className="flex items-center gap-1.5 text-[12px] font-semibold text-[#8C7D6A]">
         {Icon && <Icon className="h-3 w-3" strokeWidth={1.8} />}
         {label}
       </label>
       {children}
       {hint && (
-        <p className="text-[11px] text-[#555555]">{hint}</p>
+        <p className="text-[11px] text-[#5A5040]">{hint}</p>
       )}
     </div>
   );
@@ -79,7 +79,7 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
   return (
     <input
       {...props}
-      className={`w-full px-3 py-2 text-[13px] bg-white/[0.015] border border-[#2C2C2C] rounded-[6px] outline-none transition-all focus:border-[#0071E3]/60 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#555555] ${className || ""}`}
+      className={`w-full px-3 py-2 text-[13px] bg-white/[0.015] border border-[#312B20] rounded-[6px] outline-none transition-all focus:border-[#F59E0B]/60 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#5A5040] ${className || ""}`}
       style={props.style}
     />
   );
@@ -89,7 +89,7 @@ function TextArea({ className, ...props }: React.TextareaHTMLAttributes<HTMLText
   return (
     <textarea
       {...props}
-      className={`w-full px-3 py-2 text-[13px] bg-white/[0.015] border border-[#2C2C2C] rounded-[6px] outline-none transition-all focus:border-[#0071E3]/60 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#555555] resize-none ${className || ""}`}
+      className={`w-full px-3 py-2 text-[13px] bg-white/[0.015] border border-[#312B20] rounded-[6px] outline-none transition-all focus:border-[#F59E0B]/60 focus:shadow-[0_0_0_3px_rgba(26,35,50,0.04)] placeholder:text-[#5A5040] resize-none ${className || ""}`}
       style={props.style}
     />
   );
@@ -109,11 +109,11 @@ function Toggle({
       aria-checked={enabled}
       onClick={() => onChange(!enabled)}
       className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${
-        enabled ? "bg-[#18181B]" : "bg-white/[0.12]"
+        enabled ? "bg-[#1F1B14]" : "bg-white/[0.12]"
       }`}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 rounded-full bg-[#1E1E1E] shadow-sm transition-transform duration-200 ${
+        className={`inline-block h-3.5 w-3.5 rounded-full bg-[#1F1B14] shadow-sm transition-transform duration-200 ${
           enabled ? "translate-x-[18px]" : "translate-x-[3px]"
         }`}
       />
@@ -133,10 +133,10 @@ function NotifRow({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center justify-between py-3.5 border-b border-[#252525] last:border-0">
+    <div className="flex items-center justify-between py-3.5 border-b border-[#262118] last:border-0">
       <div className="pr-4">
-        <p className="text-[13px] font-semibold text-[#D4D4D4]">{label}</p>
-        <p className="text-[12px] text-[#888888] mt-0.5 leading-relaxed">{description}</p>
+        <p className="text-[13px] font-semibold text-[#E8DFD0]">{label}</p>
+        <p className="text-[12px] text-[#8C7D6A] mt-0.5 leading-relaxed">{description}</p>
       </div>
       <Toggle enabled={enabled} onChange={onChange} />
     </div>
@@ -145,7 +145,7 @@ function NotifRow({
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
+    <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
       {children}
     </div>
   );
@@ -153,10 +153,10 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function CardHeader({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="px-6 py-4 border-b border-[#2C2C2C]">
-      <h2 className="text-[15px] font-bold text-[#D4D4D4]">{title}</h2>
+    <div className="px-6 py-4 border-b border-[#312B20]">
+      <h2 className="text-[15px] font-bold text-[#E8DFD0]">{title}</h2>
       {description && (
-        <p className="text-[12px] text-[#888888] mt-0.5">{description}</p>
+        <p className="text-[12px] text-[#8C7D6A] mt-0.5">{description}</p>
       )}
     </div>
   );
@@ -168,7 +168,7 @@ function CardBody({ children, className }: { children: React.ReactNode; classNam
 
 function CardFooter({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-6 py-4 border-t border-[#2C2C2C] flex justify-end gap-3">
+    <div className="px-6 py-4 border-t border-[#312B20] flex justify-end gap-3">
       {children}
     </div>
   );
@@ -180,7 +180,7 @@ function SaveButton({ loading, onClick }: { loading: boolean; onClick?: () => vo
       type="submit"
       disabled={loading}
       onClick={onClick}
-      className="flex items-center gap-2 px-5 py-2 bg-[#0071E3] hover:bg-[#0077ED]/90 text-white text-[13px] font-semibold rounded-[6px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center gap-2 px-5 py-2 bg-[#F59E0B] hover:bg-[#D97706]/90 text-white text-[13px] font-semibold rounded-[6px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
       {loading ? "Saving..." : "Save Changes"}
@@ -459,7 +459,7 @@ export default function SettingsPage() {
   if (initialLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-5 w-5 text-[#888888] animate-spin" />
+        <Loader2 className="h-5 w-5 text-[#8C7D6A] animate-spin" />
       </div>
     );
   }
@@ -468,10 +468,10 @@ export default function SettingsPage() {
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <h1 className="text-[21px] font-semibold text-[#D4D4D4] tracking-[-0.02em]">
+        <h1 className="text-[21px] font-semibold text-[#E8DFD0] tracking-[-0.02em]">
           Settings
         </h1>
-        <p className="text-[13px] text-[#888888] mt-0.5">
+        <p className="text-[13px] text-[#8C7D6A] mt-0.5">
           Manage your profile, business, and account preferences
         </p>
       </div>
@@ -489,8 +489,8 @@ export default function SettingsPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-left transition-all whitespace-nowrap lg:whitespace-normal min-w-fit ${
                     isActive
-                      ? "bg-white shadow-sm border border-[#2C2C2C] text-[#D4D4D4]"
-                      : "text-[#888888] hover:text-[#888888] hover:bg-white/[0.02]"
+                      ? "bg-white shadow-sm border border-[#312B20] text-[#E8DFD0]"
+                      : "text-[#8C7D6A] hover:text-[#8C7D6A] hover:bg-white/[0.02]"
                   }`}
                 >
                   <div className={`h-8 w-8 rounded-[6px] flex items-center justify-center shrink-0 ${
@@ -500,7 +500,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="hidden lg:block">
                     <p className="text-[13px] font-semibold leading-tight">{tab.label}</p>
-                    <p className={`text-[11px] mt-0.5 ${isActive ? "text-[#888888]" : "text-[#555555]"}`}>
+                    <p className={`text-[11px] mt-0.5 ${isActive ? "text-[#8C7D6A]" : "text-[#5A5040]"}`}>
                       {tab.description}
                     </p>
                   </div>
@@ -524,7 +524,7 @@ export default function SettingsPage() {
                     {/* Avatar + name row */}
                     <div className="flex items-start gap-4">
                       <div className="h-14 w-14 rounded-[6px] bg-white/[0.07] flex items-center justify-center shrink-0">
-                        <span className="text-[#D4D4D4] text-lg font-bold">
+                        <span className="text-[#E8DFD0] text-lg font-bold">
                           {displayName ? displayName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "?"}
                         </span>
                       </div>
@@ -633,7 +633,7 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={addServiceType}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-[#0071E3] hover:bg-[#0077ED]/90 text-white text-[13px] font-semibold rounded-[6px] transition-colors shrink-0"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706]/90 text-white text-[13px] font-semibold rounded-[6px] transition-colors shrink-0"
                     >
                       <Plus className="h-3.5 w-3.5" strokeWidth={2} />
                       Add
@@ -644,16 +644,16 @@ export default function SettingsPage() {
                     {serviceTypes.map((service, index) => (
                       <div
                         key={`${service}-${index}`}
-                        className="flex items-center gap-3 px-3 py-2.5 bg-white/[0.015] border border-[#2C2C2C] rounded-[6px] group hover:bg-white/[0.04] transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 bg-white/[0.015] border border-[#312B20] rounded-[6px] group hover:bg-white/[0.04] transition-colors"
                       >
-                        <div className="h-1.5 w-1.5 rounded-full bg-[#18181B]/20 shrink-0" />
-                        <span className="flex-1 text-[13px] text-[#D4D4D4]">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#1F1B14]/20 shrink-0" />
+                        <span className="flex-1 text-[13px] text-[#E8DFD0]">
                           {service}
                         </span>
                         <button
                           type="button"
                           onClick={() => removeServiceType(index)}
-                          className="p-1 rounded text-[#555555] hover:text-red-500 hover:bg-red-500/[0.06]0/10 opacity-0 group-hover:opacity-100 transition-all"
+                          className="p-1 rounded text-[#5A5040] hover:text-red-500 hover:bg-red-500/[0.06]0/10 opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <X className="h-3.5 w-3.5" />
                         </button>
@@ -661,7 +661,7 @@ export default function SettingsPage() {
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-[#555555]">
+                  <p className="text-[11px] text-[#5A5040]">
                     {serviceTypes.length} work type{serviceTypes.length !== 1 ? "s" : ""} configured
                   </p>
                 </CardBody>
@@ -673,7 +673,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label="Default Hourly Rate" icon={DollarSign} hint="Used when creating new jobs">
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#888888]">$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#8C7D6A]">$</span>
                         <Input
                           type="number"
                           min="0"
@@ -698,7 +698,7 @@ export default function SettingsPage() {
                           className="pr-7"
                           placeholder="0"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#888888]">%</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#8C7D6A]">%</span>
                       </div>
                     </Field>
 
@@ -713,13 +713,13 @@ export default function SettingsPage() {
                           className="pr-12"
                           placeholder="120"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#555555]">min</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#5A5040]">min</span>
                       </div>
                     </Field>
 
                     <Field label="Payment Terms" icon={Hash} hint="Days until invoice is due">
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-[#555555]">Net</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-[#5A5040]">Net</span>
                         <Input
                           type="number"
                           min="0"
@@ -729,7 +729,7 @@ export default function SettingsPage() {
                           className="pl-10"
                           placeholder="14"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#555555]">days</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#5A5040]">days</span>
                       </div>
                     </Field>
                   </div>
@@ -783,9 +783,9 @@ export default function SettingsPage() {
                 </CardFooter>
               </Card>
 
-              <div className="bg-white/[0.02] rounded-[6px] border border-[#2C2C2C] px-5 py-4">
-                <p className="text-[12px] text-[#888888] leading-relaxed">
-                  Email notifications are sent to <span className="font-semibold text-[#888888]">{email}</span>.
+              <div className="bg-white/[0.02] rounded-[6px] border border-[#312B20] px-5 py-4">
+                <p className="text-[12px] text-[#8C7D6A] leading-relaxed">
+                  Email notifications are sent to <span className="font-semibold text-[#8C7D6A]">{email}</span>.
                   To change your email address, update it through your login provider.
                 </p>
               </div>
@@ -798,45 +798,45 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader title="Subscription" />
                 <CardBody className="space-y-0">
-                  <div className="flex items-center justify-between py-3.5 border-b border-[#252525]">
+                  <div className="flex items-center justify-between py-3.5 border-b border-[#262118]">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#D4D4D4]">Current Plan</p>
-                      <p className="text-[12px] text-[#888888] mt-0.5">
+                      <p className="text-[13px] font-semibold text-[#E8DFD0]">Current Plan</p>
+                      <p className="text-[12px] text-[#8C7D6A] mt-0.5">
                         {subscriptionPlan === "solo" ? "Solo Contractor" : "Team"} Plan
                       </p>
                     </div>
                     <span
-                      className="px-2.5 py-1 text-[10px] font-semibold bg-white/[0.06] text-[#888888] rounded-md uppercase tracking-wider"
+                      className="px-2.5 py-1 text-[10px] font-semibold bg-white/[0.06] text-[#8C7D6A] rounded-md uppercase tracking-wider"
                     >
                       {subscriptionStatus}
                     </span>
                   </div>
 
                   {subscriptionStatus === "trialing" && (
-                    <div className="flex items-center justify-between py-3.5 border-b border-[#252525]">
+                    <div className="flex items-center justify-between py-3.5 border-b border-[#262118]">
                       <div>
-                        <p className="text-[13px] font-semibold text-[#D4D4D4]">Trial Period</p>
-                        <p className="text-[12px] text-[#888888] mt-0.5">
+                        <p className="text-[13px] font-semibold text-[#E8DFD0]">Trial Period</p>
+                        <p className="text-[12px] text-[#8C7D6A] mt-0.5">
                           {getTrialDaysLeft()} days remaining in your free trial
                         </p>
                       </div>
                       <div className="h-8 w-8 rounded-[6px] bg-white/[0.05] flex items-center justify-center">
-                        <Clock className="h-4 w-4 text-[#888888]" strokeWidth={1.8} />
+                        <Clock className="h-4 w-4 text-[#8C7D6A]" strokeWidth={1.8} />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between py-3.5 border-b border-[#252525]">
+                  <div className="flex items-center justify-between py-3.5 border-b border-[#262118]">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#D4D4D4]">Email</p>
-                      <p className="text-[12px] text-[#888888] mt-0.5">{email}</p>
+                      <p className="text-[13px] font-semibold text-[#E8DFD0]">Email</p>
+                      <p className="text-[12px] text-[#8C7D6A] mt-0.5">{email}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between py-3.5">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#D4D4D4]">Payment Method</p>
-                      <p className="text-[12px] text-[#888888] mt-0.5">
+                      <p className="text-[13px] font-semibold text-[#E8DFD0]">Payment Method</p>
+                      <p className="text-[12px] text-[#8C7D6A] mt-0.5">
                         {subscriptionStatus === "trialing" ? "No payment method on file" : "Managed by Square"}
                       </p>
                     </div>
@@ -847,7 +847,7 @@ export default function SettingsPage() {
               {subscriptionStatus === "trialing" && (
                 <Link
                   href="/dashboard/upgrade"
-                  className="flex items-center justify-between p-5 bg-[#18181B] rounded-[6px] group hover:bg-[#18181B]/95 transition-colors"
+                  className="flex items-center justify-between p-5 bg-[#1F1B14] rounded-[6px] group hover:bg-[#1F1B14]/95 transition-colors"
                 >
                   <div>
                     <p className="text-[14px] font-semibold text-white">
@@ -888,7 +888,7 @@ export default function SettingsPage() {
                       type="button"
                       onClick={handlePasswordChange}
                       disabled={passwordSaving || !newPassword || !confirmPassword}
-                      className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold bg-[#18181B] text-white rounded-[6px] hover:bg-[#18181B]/88 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold bg-[#1F1B14] text-white rounded-[6px] hover:bg-[#1F1B14]/88 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {passwordSaving ? (
                         <>
@@ -911,7 +911,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <CardBody className="space-y-3">
-                  <p className="text-[12px] text-[#888888] leading-relaxed">
+                  <p className="text-[12px] text-[#8C7D6A] leading-relaxed">
                     Deleting your account is permanent. All your data including clients, jobs, invoices,
                     and estimates will be permanently removed. This action cannot be undone.
                   </p>

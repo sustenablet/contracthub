@@ -94,7 +94,7 @@ export default async function DashboardPage() {
     serviceMap[sType].revenue += job.price || 0;
   }
   const totalJobCount = allJobsService.length || 1;
-  const serviceColors = ["#0071E3", "#30B0C7", "#34C759", "#FF9F0A", "#BF5AF2", "#FF375F", "#00C7BE"];
+  const serviceColors = ["#F59E0B", "#30B0C7", "#34C759", "#FF9F0A", "#BF5AF2", "#FF375F", "#00C7BE"];
   const serviceDonutData: ServiceDataPoint[] = Object.entries(serviceMap)
     .sort((a, b) => b[1].count - a[1].count)
     .map(([label, data], i) => ({
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
       detail: `${name} — ${job.service_type || "Service"}`,
       time: job.updated_at,
       icon: "briefcase",
-      color: job.status === "completed" ? "bg-[#34C759]/10 text-[#34C759]" : job.status === "cancelled" ? "bg-red-500/10 text-red-400" : "bg-[#0071E3]/10 text-[#0071E3]",
+      color: job.status === "completed" ? "bg-[#34C759]/10 text-[#34C759]" : job.status === "cancelled" ? "bg-red-500/10 text-red-400" : "bg-[#F59E0B]/10 text-[#F59E0B]",
     });
   }
 
@@ -152,11 +152,11 @@ export default async function DashboardPage() {
   ];
 
   const jobStatusConfig: Record<string, { badge: string; label: string }> = {
-    scheduled: { badge: "bg-[#0071E3]/10 text-[#0071E3] ring-1 ring-inset ring-[#0071E3]/20", label: "Scheduled" },
+    scheduled: { badge: "bg-[#F59E0B]/10 text-[#F59E0B] ring-1 ring-inset ring-[#F59E0B]/20", label: "Scheduled" },
     in_progress: { badge: "bg-[#FF9F0A]/10 text-[#FF9F0A] ring-1 ring-inset ring-[#FF9F0A]/20", label: "In Progress" },
     completed: { badge: "bg-[#34C759]/10 text-[#34C759] ring-1 ring-inset ring-[#34C759]/20", label: "Completed" },
     invoiced: { badge: "bg-[#30B0C7]/10 text-[#30B0C7] ring-1 ring-inset ring-[#30B0C7]/20", label: "Invoiced" },
-    cancelled: { badge: "bg-[#555555]/20 text-[#888888] ring-1 ring-inset ring-[#555555]/20", label: "Cancelled" },
+    cancelled: { badge: "bg-[#5A5040]/20 text-[#8C7D6A] ring-1 ring-inset ring-[#5A5040]/20", label: "Cancelled" },
   };
 
   function formatTime(time: string | null) {
@@ -188,10 +188,10 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-[21px] font-bold text-[#D4D4D4] tracking-[-0.03em]">
+          <h1 className="text-[21px] font-bold text-[#E8DFD0] tracking-[-0.03em]">
             Dashboard
           </h1>
-          <p className="text-[12.5px] text-[#555555] mt-0.5">
+          <p className="text-[12.5px] text-[#5A5040] mt-0.5">
             Here&apos;s your business at a glance.
           </p>
         </div>
@@ -199,28 +199,28 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-1 text-[12px]">
           <Link
             href="/dashboard/clients"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#555555] hover:text-[#D4D4D4] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
           >
             <UserPlus className="h-3 w-3" strokeWidth={1.6} />
             Client
           </Link>
           <Link
             href="/dashboard/schedule"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#555555] hover:text-[#D4D4D4] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
           >
             <CalendarPlus className="h-3 w-3" strokeWidth={1.6} />
             Job
           </Link>
           <Link
             href="/dashboard/invoices"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#555555] hover:text-[#D4D4D4] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
           >
             <Receipt className="h-3 w-3" strokeWidth={1.6} />
             Invoice
           </Link>
           <Link
             href="/dashboard/estimates"
-            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#555555] hover:text-[#D4D4D4] rounded-[4px] hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium text-[#5A5040] hover:text-[#E8DFD0] rounded-[4px] hover:bg-white/[0.05] transition-all"
           >
             <FileText className="h-3 w-3" strokeWidth={1.6} />
             Estimate
@@ -232,11 +232,11 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, i) => (
           <Link key={stat.title} href={stat.href} className="group">
-            <div className={`bg-[#1E1E1E] rounded-[6px] p-4 border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] group-hover:border-[#3A3A3A] group-hover:shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-all ${i === 0 ? "border-l-2 border-l-[#0071E3]" : ""}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.09em] text-[#555555] mb-3">
+            <div className={`bg-[#1F1B14] rounded-[6px] p-4 border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] group-hover:border-[#3A3A3A] group-hover:shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-all ${i === 0 ? "border-l-2 border-l-[#F59E0B]" : ""}`}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.09em] text-[#5A5040] mb-3">
                 {stat.title}
               </p>
-              <div className="text-[36px] font-bold text-[#D4D4D4] tabular-nums leading-none tracking-[-0.03em]">
+              <div className="text-[36px] font-bold text-[#E8DFD0] tabular-nums leading-none tracking-[-0.03em]">
                 {stat.value}
               </div>
             </div>
@@ -245,21 +245,21 @@ export default async function DashboardPage() {
       </div>
 
       {/* Week summary strip */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2.5 bg-[#1E1E1E]/60 rounded-[6px] border border-[#2C2C2C]">
-        <span className="text-[10px] font-bold text-[#555555] uppercase tracking-[0.1em]">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2.5 bg-[#1F1B14]/60 rounded-[6px] border border-[#312B20]">
+        <span className="text-[10px] font-bold text-[#5A5040] uppercase tracking-[0.1em]">
           This Week
         </span>
-        <span className="text-[12px] text-[#888888]">
-          <span className="font-semibold text-[#D4D4D4]">{weekTotal}</span> jobs
+        <span className="text-[12px] text-[#8C7D6A]">
+          <span className="font-semibold text-[#E8DFD0]">{weekTotal}</span> jobs
         </span>
-        <span className="text-[12px] text-[#888888]">
+        <span className="text-[12px] text-[#8C7D6A]">
           <span className="font-semibold text-[#34C759]">{weekCompleted}</span> completed
         </span>
-        <span className="text-[12px] text-[#888888]">
-          <span className="font-bold text-[#D4D4D4]">${weekRevenue.toLocaleString()}</span> earned
+        <span className="text-[12px] text-[#8C7D6A]">
+          <span className="font-bold text-[#E8DFD0]">${weekRevenue.toLocaleString()}</span> earned
         </span>
         {weekScheduled > 0 && (
-          <span className="text-[12px] text-[#888888]">
+          <span className="text-[12px] text-[#8C7D6A]">
             <span className="font-semibold text-[#FF9F0A]">{weekScheduled}</span> remaining
           </span>
         )}
@@ -268,17 +268,17 @@ export default async function DashboardPage() {
       {/* Today's Jobs + Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Today's Jobs */}
-        <div className="bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#2C2C2C]">
+        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#312B20]">
             <div className="flex items-center gap-2">
-              <Clock className="h-3.5 w-3.5 text-[#0071E3]" strokeWidth={2} />
-              <h2 className="text-[13px] font-semibold text-[#D4D4D4]">
+              <Clock className="h-3.5 w-3.5 text-[#F59E0B]" strokeWidth={2} />
+              <h2 className="text-[13px] font-semibold text-[#E8DFD0]">
                 Today&apos;s Jobs
               </h2>
             </div>
             <Link
               href="/dashboard/schedule"
-              className="text-[11px] font-medium text-[#555555] hover:text-[#D4D4D4] transition-colors"
+              className="text-[11px] font-medium text-[#5A5040] hover:text-[#E8DFD0] transition-colors"
             >
               View all →
             </Link>
@@ -286,30 +286,30 @@ export default async function DashboardPage() {
 
           {todayJobs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
-              <CheckCircle2 className="h-8 w-8 text-[#333333] mb-2" strokeWidth={1.5} />
-              <p className="text-[12px] text-[#555555]">
+              <CheckCircle2 className="h-8 w-8 text-[#3C352A] mb-2" strokeWidth={1.5} />
+              <p className="text-[12px] text-[#5A5040]">
                 No jobs scheduled for today
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-[#252525]">
+            <div className="divide-y divide-[#262118]">
               {todayJobs.map((job: { id: string; start_time: string | null; service_type: string | null; status: string; price: number | null; clients: { first_name: string; last_name: string } | null }) => {
                 const config = jobStatusConfig[job.status] || jobStatusConfig.scheduled;
                 return (
                   <div key={job.id} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
-                    <div className="text-[11px] font-medium text-[#555555] w-14 shrink-0 tabular-nums">
+                    <div className="text-[11px] font-medium text-[#5A5040] w-14 shrink-0 tabular-nums">
                       {formatTime(job.start_time) || "TBD"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-[#D4D4D4] truncate">
+                      <p className="text-[13px] font-semibold text-[#E8DFD0] truncate">
                         {job.clients ? `${job.clients.first_name} ${job.clients.last_name}` : "Client"}
                       </p>
-                      <p className="text-[11px] text-[#888888] truncate">
+                      <p className="text-[11px] text-[#8C7D6A] truncate">
                         {job.service_type || "Service"}
                       </p>
                     </div>
                     {job.price != null && (
-                      <span className="text-[13px] font-semibold text-[#D4D4D4] shrink-0 tabular-nums">
+                      <span className="text-[13px] font-semibold text-[#E8DFD0] shrink-0 tabular-nums">
                         ${Number(job.price).toFixed(0)}
                       </span>
                     )}
@@ -324,37 +324,37 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[#2C2C2C]">
-            <AlertCircle className="h-3.5 w-3.5 text-[#555555]" strokeWidth={2} />
-            <h2 className="text-[13px] font-semibold text-[#D4D4D4]">
+        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[#312B20]">
+            <AlertCircle className="h-3.5 w-3.5 text-[#5A5040]" strokeWidth={2} />
+            <h2 className="text-[13px] font-semibold text-[#E8DFD0]">
               Recent Activity
             </h2>
           </div>
 
           {recentActivity.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
-              <Briefcase className="h-8 w-8 text-[#333333] mb-2" strokeWidth={1.5} />
-              <p className="text-[12px] text-[#555555]">
+              <Briefcase className="h-8 w-8 text-[#3C352A] mb-2" strokeWidth={1.5} />
+              <p className="text-[12px] text-[#5A5040]">
                 Activity will appear here as you use ContractHub
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-[#252525]">
+            <div className="divide-y divide-[#262118]">
               {recentActivity.map((item, i) => (
                 <div key={i} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
                   <div className={`h-7 w-7 rounded-[4px] ${item.color} flex items-center justify-center shrink-0`}>
                     <ActivityIcon type={item.icon} className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-semibold text-[#D4D4D4]">
+                    <p className="text-[12px] font-semibold text-[#E8DFD0]">
                       {item.label}
                     </p>
-                    <p className="text-[11px] text-[#888888] truncate">
+                    <p className="text-[11px] text-[#8C7D6A] truncate">
                       {item.detail}
                     </p>
                   </div>
-                  <span className="text-[10px] text-[#444444] shrink-0 tabular-nums">
+                  <span className="text-[10px] text-[#4E4235] shrink-0 tabular-nums">
                     {timeAgo(item.time)}
                   </span>
                 </div>
@@ -366,16 +366,16 @@ export default async function DashboardPage() {
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#2C2C2C]">
+        <div className="lg:col-span-2 bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#312B20]">
             <div>
-              <h2 className="text-[13px] font-semibold text-[#D4D4D4]">Revenue</h2>
+              <h2 className="text-[13px] font-semibold text-[#E8DFD0]">Revenue</h2>
               <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-[22px] font-bold text-[#D4D4D4] leading-none tabular-nums tracking-[-0.03em]">
+                <span className="text-[22px] font-bold text-[#E8DFD0] leading-none tabular-nums tracking-[-0.03em]">
                   ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 {revenueChartData.length === 0 && (
-                  <span className="text-[11px] text-[#444444]">No paid invoices yet</span>
+                  <span className="text-[11px] text-[#4E4235]">No paid invoices yet</span>
                 )}
               </div>
             </div>
@@ -385,9 +385,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="bg-[#1E1E1E] rounded-[6px] border border-[#2C2C2C] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-[#2C2C2C]">
-            <h2 className="text-[13px] font-semibold text-[#D4D4D4]">Services</h2>
+        <div className="bg-[#1F1B14] rounded-[6px] border border-[#312B20] shadow-[0_1px_3px_rgba(0,0,0,0.4)] overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-[#312B20]">
+            <h2 className="text-[13px] font-semibold text-[#E8DFD0]">Services</h2>
           </div>
           <div className="p-5">
             <ServiceDonut services={serviceDonutData} total={serviceTotal} />

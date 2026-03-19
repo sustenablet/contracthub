@@ -42,13 +42,13 @@ function getRelativeTime(dateStr: string): string {
 function getIcon(category: string) {
   switch (category) {
     case "jobs":
-      return { Icon: Briefcase, bg: "bg-[#0071E3]/[0.12]", color: "text-[#0071E3]" };
+      return { Icon: Briefcase, bg: "bg-[#F59E0B]/[0.12]", color: "text-[#F59E0B]" };
     case "invoices":
-      return { Icon: Receipt, bg: "bg-[#0071E3]/[0.12]", color: "text-[#0071E3]" };
+      return { Icon: Receipt, bg: "bg-[#F59E0B]/[0.12]", color: "text-[#F59E0B]" };
     case "estimates":
       return { Icon: FileText, bg: "bg-purple-500/10", color: "text-purple-400" };
     default:
-      return { Icon: Bell, bg: "bg-[#252525]", color: "text-[#888888]" };
+      return { Icon: Bell, bg: "bg-[#262118]", color: "text-[#8C7D6A]" };
   }
 }
 
@@ -267,16 +267,16 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[21px] font-semibold text-[#D4D4D4] tracking-[-0.02em]">
+          <h1 className="text-[21px] font-semibold text-[#E8DFD0] tracking-[-0.02em]">
             Notifications
           </h1>
-          <p className="text-sm text-[#888888] mt-0.5">
+          <p className="text-sm text-[#8C7D6A] mt-0.5">
             {loading
               ? "Loading activity…"
               : unreadCount > 0
                 ? (
                   <span>
-                    <strong className="text-[#D4D4D4]">{unreadCount}</strong> unread
+                    <strong className="text-[#E8DFD0]">{unreadCount}</strong> unread
                   </span>
                 )
                 : "You're all caught up"}
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[#888888] bg-[#1E1E1E] border border-[#2C2C2C] rounded-[6px] hover:bg-[#252525] shadow-sm transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[#8C7D6A] bg-[#1F1B14] border border-[#312B20] rounded-[6px] hover:bg-[#262118] shadow-sm transition-colors"
           >
             <Check className="h-4 w-4" />
             Mark all read
@@ -294,9 +294,9 @@ export default function NotificationsPage() {
       </div>
 
       {/* Main Card */}
-      <div className="bg-[#1E1E1E] rounded-[6px] shadow-[0_1px_3px_rgba(0,0,0,0.4)] border border-[#2C2C2C] overflow-hidden">
+      <div className="bg-[#1F1B14] rounded-[6px] shadow-[0_1px_3px_rgba(0,0,0,0.4)] border border-[#312B20] overflow-hidden">
         {/* Filter tabs */}
-        <div className="flex items-center gap-1 p-3 border-b border-[#252525]">
+        <div className="flex items-center gap-1 p-3 border-b border-[#262118]">
           {tabs.map((tab) => {
             const count =
               tab.value === "all"
@@ -310,13 +310,13 @@ export default function NotificationsPage() {
                 onClick={() => setActiveTab(tab.value)}
                 className={`px-4 py-1.5 rounded-[6px] text-xs font-semibold transition-colors ${
                   activeTab === tab.value
-                    ? "bg-white/[0.06] text-[#D4D4D4]"
-                    : "text-[#888888] hover:text-[#D4D4D4] hover:bg-white/[0.02]"
+                    ? "bg-white/[0.06] text-[#E8DFD0]"
+                    : "text-[#8C7D6A] hover:text-[#E8DFD0] hover:bg-white/[0.02]"
                 }`}
               >
                 {tab.label}
                 {count > 0 && (
-                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-[#0071E3] text-white text-[9px] font-bold">
+                  <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-[#F59E0B] text-white text-[9px] font-bold">
                     {count}
                   </span>
                 )}
@@ -328,21 +328,21 @@ export default function NotificationsPage() {
         {/* Loading */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-6 w-6 text-[#444444] animate-spin" />
-            <p className="text-sm text-[#888888] mt-3">
+            <Loader2 className="h-6 w-6 text-[#4E4235] animate-spin" />
+            <p className="text-sm text-[#8C7D6A] mt-3">
               Loading activity…
             </p>
           </div>
         ) : filtered.length === 0 ? (
           /* Empty state */
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="h-14 w-14 rounded-[6px] bg-[#252525] flex items-center justify-center mb-4">
-              <BellOff className="h-7 w-7 text-[#444444]" />
+            <div className="h-14 w-14 rounded-[6px] bg-[#262118] flex items-center justify-center mb-4">
+              <BellOff className="h-7 w-7 text-[#4E4235]" />
             </div>
-            <p className="text-sm font-semibold text-[#D4D4D4]">
+            <p className="text-sm font-semibold text-[#E8DFD0]">
               No activity yet
             </p>
-            <p className="text-xs text-[#888888] mt-1 max-w-xs">
+            <p className="text-xs text-[#8C7D6A] mt-1 max-w-xs">
               {activeTab === "all"
                 ? "Create clients, schedule work orders, and send invoices to see activity here"
                 : `No ${activeTab} activity yet`}
@@ -350,7 +350,7 @@ export default function NotificationsPage() {
           </div>
         ) : (
           /* Activity Feed */
-          <div className="divide-y divide-[#252525]">
+          <div className="divide-y divide-[#262118]">
             {filtered.map((item) => {
               const { Icon, bg, color } = getIcon(item.category);
               return (
@@ -372,25 +372,25 @@ export default function NotificationsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <p
-                        className={`text-sm font-semibold ${item.unread ? "text-[#D4D4D4]" : "text-[#888888]"}`}
+                        className={`text-sm font-semibold ${item.unread ? "text-[#E8DFD0]" : "text-[#8C7D6A]"}`}
                       >
                         {item.title}
                       </p>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="flex items-center gap-1 text-xs text-[#888888] whitespace-nowrap">
+                        <span className="flex items-center gap-1 text-xs text-[#8C7D6A] whitespace-nowrap">
                           <Clock className="h-3 w-3" />
                           {item.relativeTime}
                         </span>
                         {item.unread && (
-                          <div className="h-2 w-2 rounded-full bg-[#0071E3] shrink-0" />
+                          <div className="h-2 w-2 rounded-full bg-[#F59E0B] shrink-0" />
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-[#888888] mt-0.5 leading-relaxed">
+                    <p className="text-xs text-[#8C7D6A] mt-0.5 leading-relaxed">
                       {item.message}
                     </p>
                     <span
-                      className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#252525] text-[#888888] capitalize"
+                      className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#262118] text-[#8C7D6A] capitalize"
                     >
                       {item.category}
                     </span>
